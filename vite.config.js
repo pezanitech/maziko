@@ -12,7 +12,7 @@ export default defineConfig({
         }),
 
         laravel({
-            input: "frontend/js/app.jsx",
+            input: "frontend/app.jsx",
             publicDirectory: ".tmp",
             buildDirectory: "build",
             refresh: true,
@@ -22,7 +22,7 @@ export default defineConfig({
         manifest: true, // Generate manifest.json file
         outDir: "build",
         rollupOptions: {
-            input: "frontend/js/app.jsx",
+            input: "frontend/app.jsx",
             output: {
                 entryFileNames: "assets/[name].js",
                 chunkFileNames: "assets/[name].js",

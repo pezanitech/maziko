@@ -21,7 +21,7 @@ func Execute() {
 	mux.Handle("/", i.Middleware(rootHandler(i)))
 	mux.Handle("/build/", http.StripPrefix("/build/", http.FileServer(http.Dir("./build"))))
 
-	http.ListenAndServe(":8000", mux)
+	http.ListenAndServe(":3000", mux)
 }
 
 func initInertia() *inertia.Inertia {
@@ -127,7 +127,8 @@ func rootHandler(i *inertia.Inertia) http.Handler {
 		switch r.URL.Path {
 		case "/":
 			err := i.Render(w, r, "index", inertia.Props{
-				"text": "Inertia.js with React and Go! 💚",
+				"line1": "A full-stack framework",
+				"line2": "built with Inertia.js and Go! 💚",
 			})
 			if err != nil {
 				handleServerErr(w, err)
