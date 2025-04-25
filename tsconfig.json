@@ -14,7 +14,7 @@
         "incremental": true,
         "baseUrl": ".",
         "paths": {
-            "@/*": ["frontend/js/*"]
+            "@/*": ["frontend/app/*"]
         }
     },
     "include": ["**/*.ts", "**/*.tsx"],

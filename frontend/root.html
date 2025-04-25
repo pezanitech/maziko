@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ vite "frontend/global.css"}}" rel="stylesheet">
     {{ .inertiaHead }}
 
     {{ if .hmr }}
-
     <script type="module">
         import RefreshRuntime from '{{ vite "@react-refresh" }}'
         RefreshRuntime.injectIntoGlobalHook(window)
@@ -20,7 +20,7 @@
 
 <body class="font-sans antialiased">
     {{ .inertia }}
-    <script type="module" src="{{ vite "frontend/js/app.jsx" }}"></script>
+    <script type="module" src="{{ vite "frontend/app.jsx" }}"></script>
 </body>
 
 </html>

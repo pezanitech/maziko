@@ -26,7 +26,7 @@ func Execute() {
 
 func initInertia() *inertia.Inertia {
 	viteHotFile := ".tmp/hot"
-	rootViewFile := "frontend/views/root.html"
+	rootViewFile := "frontend/root.html"
 
 	// check if laravel-vite-plugin is running in dev mode
 	// it puts a "hot" file in the .tmp directory
@@ -126,7 +126,7 @@ func rootHandler(i *inertia.Inertia) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/":
-			err := i.Render(w, r, "Home/Index", inertia.Props{
+			err := i.Render(w, r, "index", inertia.Props{
 				"text": "Inertia.js with React and Go! 💚",
 			})
 			if err != nil {
