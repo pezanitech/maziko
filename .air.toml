@@ -15,6 +15,7 @@ exclude_dir = [
   "node_modules",
   "frontend",
   "bin",
+  "public",
 ]
 exclude_file = []
 exclude_regex = ["_test.go"]

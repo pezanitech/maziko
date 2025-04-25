@@ -9,23 +9,22 @@
         "build": "vite build && vite build --config ssr.config.js",
         "build-watch": "vite build --watch && vite build --config ssr.config.js"
     },
+    "dependencies": {
+        "@inertiajs/react": "^2.0.8",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0"
+    },
     "devDependencies": {
-        "@inertiajs/react": "^1.1.0",
         "@tailwindcss/vite": "^4.1.4",
         "@types/react": "^19.1.2",
-        "@vitejs/plugin-react": "^4.3.4",
-        "autoprefixer": "^10.4.12",
-        "axios": "^1.6.4",
+        "@vitejs/plugin-react": "^4.4.1",
+        "autoprefixer": "^10.4.21",
+        "axios": "^1.9.0",
         "concurrently": "^9.1.2",
-        "laravel-vite-plugin": "^1.0",
+        "laravel-vite-plugin": "^1.2.0",
         "postcss": "^8.5.3",
         "tailwindcss": "^4.1.4",
-        "vite": "^5.0"
-    },
-    "dependencies": {
-        "@inertiajs/react": "^1.1.0",
-        "react": "^18.3.1",
-        "react-dom": "^18.3.1"
+        "vite": "^6.3.3"
     },
     "pnpm": {
         "onlyBuiltDependencies": [
