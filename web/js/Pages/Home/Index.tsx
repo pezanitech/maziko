@@ -1,12 +1,7 @@
-import { usePage } from '@inertiajs/react';
+import { usePage } from "@inertiajs/react"
 
 export default function Home() {
+    const { text } = usePage().props
 
-  const { text } = usePage().props;
-
-  return (
-    <div>
-      Home: {text}
-    </div>
-  );
+    return <div>Home: {text}</div>
 }

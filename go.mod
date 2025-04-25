@@ -1,4 +1,4 @@
-module vuego
+module maziko
 
 go 1.22
 
