@@ -1,9 +1,8 @@
 {
     "name": "maziko",
-    "version": "1.0.0",
-    "main": "index.js",
+    "version": "0.1.0",
+    "private": true,
     "type": "module",
-    "license": "MIT",
     "scripts": {
         "dev": "concurrently --kill-others-on-fail --prefix-colors 'cyan.bold,magenta.bold' --prefix '[{name}]' --names 'Vite,Air' 'vite' 'bin/air'",
         "build": "vite build && vite build --config ssr.config.js",
