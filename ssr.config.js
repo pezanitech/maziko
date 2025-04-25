@@ -5,8 +5,8 @@ import laravel from "laravel-vite-plugin"
 export default defineConfig({
     plugins: [
         laravel({
-            input: ["web/js/app.jsx", "web/css/app.css"],
-            ssr: "web/js/ssr.jsx", // Enable SSR
+            input: ["frontend/js/app.jsx", "frontend/css/app.css"],
+            ssr: "frontend/js/ssr.jsx", // Enable SSR
             publicDirectory: "public",
             buildDirectory: "bootstrap",
             refresh: true,
@@ -17,7 +17,7 @@ export default defineConfig({
         ssr: true, // Enable SSR
         outDir: "bootstrap",
         rollupOptions: {
-            input: "web/js/ssr.jsx",
+            input: "frontend/js/ssr.jsx",
             output: {
                 entryFileNames: "assets/[name].js",
                 chunkFileNames: "assets/[name].js",

@@ -13,7 +13,7 @@ exclude_dir = [
   "vendor",
   "testdata",
   "node_modules",
-  "web",
+  "frontend",
   "bin",
 ]
 exclude_file = []

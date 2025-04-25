@@ -1,22 +1,28 @@
 import { defineConfig } from "vite"
 import laravel from "laravel-vite-plugin"
 import react from "@vitejs/plugin-react"
+import tailwindcss from "@tailwindcss/vite"
 
 export default defineConfig({
     plugins: [
+        tailwindcss(),
+
+        react({
+            include: /\.(mdx|js|jsx|ts|tsx)$/,
+        }),
+
         laravel({
-            input: "web/js/app.jsx",
-            publicDirectory: "public",
+            input: "frontend/js/app.jsx",
+            publicDirectory: ".tmp",
             buildDirectory: "build",
             refresh: true,
         }),
-        react({ include: /\.(mdx|js|jsx|ts|tsx)$/ }),
     ],
     build: {
         manifest: true, // Generate manifest.json file
-        outDir: "public/build",
+        outDir: "build",
         rollupOptions: {
-            input: "web/js/app.jsx",
+            input: "frontend/js/app.jsx",
             output: {
                 entryFileNames: "assets/[name].js",
                 chunkFileNames: "assets/[name].js",

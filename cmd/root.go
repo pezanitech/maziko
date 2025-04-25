@@ -18,22 +18,23 @@ func Execute() {
 
 	mux := http.NewServeMux()
 
-	mux.Handle("/", i.Middleware(homeHandler(i)))
-	mux.Handle("/build/", http.StripPrefix("/build/", http.FileServer(http.Dir("./public/build"))))
+	mux.Handle("/", i.Middleware(rootHandler(i)))
+	mux.Handle("/build/", http.StripPrefix("/build/", http.FileServer(http.Dir("./build"))))
 
 	http.ListenAndServe(":8000", mux)
 }
 
 func initInertia() *inertia.Inertia {
-	viteHotFile := "public/hot"
-	rootViewFile := "web/views/root.html"
+	viteHotFile := ".tmp/hot"
+	rootViewFile := "frontend/views/root.html"
 
-	// check if laravel-vite-plugin is running in dev mode (it puts a "hot" file in the public folder)
+	// check if laravel-vite-plugin is running in dev mode
+	// it puts a "hot" file in the .tmp directory
 	_, err := os.Stat(viteHotFile)
 
 	if err != nil {
 		// retry after 3 seconds, 3 attempts
-		for i := 0; i < 3; i++ {
+		for i := range 3 {
 			_, err = os.Stat(viteHotFile)
 			if err == nil {
 				break
@@ -76,19 +77,7 @@ func initInertia() *inertia.Inertia {
 		return i
 	}
 
-	// laravel-vite-plugin not running in dev mode, use build manifest file
-	manifestPath := "./public/build/manifest.json"
-
-	// check if the manifest file exists, if not, rename it
-	if _, err := os.Stat(manifestPath); os.IsNotExist(err) {
-		// move the manifest from ./public/build/.vite/manifest.json to ./public/build/manifest.json
-		// so that the vite function can find it
-		err := os.Rename("./public/build/.vite/manifest.json", "./public/build/manifest.json")
-
-		if err != nil {
-			return nil
-		}
-	}
+	manifestPath := "./build/.vite/manifest.json"
 
 	i, err := inertia.NewFromFile(
 		rootViewFile,
@@ -133,21 +122,26 @@ func vite(manifestPath, buildDir string) func(path string) (string, error) {
 	}
 }
 
-func homeHandler(i *inertia.Inertia) http.Handler {
+func rootHandler(i *inertia.Inertia) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Only serve the root path
-		if r.URL.Path != "/" {
+		switch r.URL.Path {
+		case "/":
+			err := i.Render(w, r, "Home/Index", inertia.Props{
+				"text": "Inertia.js with React and Go! 💚",
+			})
+			if err != nil {
+				handleServerErr(w, err)
+			}
+		default:
+			// if file exists in public serve it
+			_, err := os.Stat(path.Join("public", r.URL.Path))
+			if err == nil {
+				http.ServeFile(w, r, path.Join("public", r.URL.Path))
+				return
+			}
+
+			// otherwise return 404
 			http.NotFound(w, r)
-			return
-		}
-
-		err := i.Render(w, r, "Home/Index", inertia.Props{
-			"text": "Inertia.js with React and Go! 💚",
-		})
-
-		if err != nil {
-			handleServerErr(w, err)
-			return
 		}
 	})
 }

@@ -14,9 +14,9 @@
         "incremental": true,
         "baseUrl": ".",
         "paths": {
-            "@/*": ["web/js/*"]
+            "@/*": ["frontend/js/*"]
         }
     },
     "include": ["**/*.ts", "**/*.tsx"],
-    "exclude": ["node_modules", "public/build"]
+    "exclude": ["node_modules", "build", ".tmp", "cmd", ""]
 }
