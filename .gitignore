@@ -1,5 +1,5 @@
 /bootstrap
 /node_modules
-/tmp
+/.tmp
 /public
 .env
