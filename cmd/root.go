@@ -8,6 +8,7 @@ import (
 	"os"
 	"path"
 	"strings"
+	"time"
 
 	inertia "github.com/romsar/gonertia"
 )
@@ -24,11 +25,28 @@ func Execute() {
 }
 
 func initInertia() *inertia.Inertia {
-	viteHotFile := "./public/hot"
+	viteHotFile := "public/hot"
 	rootViewFile := "web/views/root.html"
 
 	// check if laravel-vite-plugin is running in dev mode (it puts a "hot" file in the public folder)
 	_, err := os.Stat(viteHotFile)
+
+	if err != nil {
+		// retry after 3 seconds, 3 attempts
+		for i := 0; i < 3; i++ {
+			_, err = os.Stat(viteHotFile)
+			if err == nil {
+				break
+			}
+
+			log.Printf(
+				"waiting for laravel-vite-plugin to start... attempt %d\n", i+1,
+			)
+
+			time.Sleep(3 * time.Second)
+		}
+	}
+
 	if err == nil {
 		i, err := inertia.NewFromFile(
 			rootViewFile,
@@ -66,6 +84,7 @@ func initInertia() *inertia.Inertia {
 		// move the manifest from ./public/build/.vite/manifest.json to ./public/build/manifest.json
 		// so that the vite function can find it
 		err := os.Rename("./public/build/.vite/manifest.json", "./public/build/manifest.json")
+
 		if err != nil {
 			return nil
 		}
