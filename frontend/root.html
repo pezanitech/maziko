@@ -7,7 +7,6 @@
     {{ .inertiaHead }}
 
     {{ if .hmr }}
-        <link href="{{ vite "frontend/global.css" }}" rel="stylesheet">
         <script type="module">
             import RefreshRuntime from '{{ vite "@react-refresh" }}'
             RefreshRuntime.injectIntoGlobalHook(window)
@@ -15,8 +14,6 @@
             window.$RefreshSig$ = () => (type) => type
             window.__vite_plugin_react_preamble_installed__ = true
         </script>
-    {{ else }}
-        <link href="build.css" rel="stylesheet">
     {{ end }}
 </head>
 

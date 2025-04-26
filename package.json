@@ -5,9 +5,11 @@
     "type": "module",
     "scripts": {
         "dev": "concurrently --kill-others-on-fail --prefix-colors 'cyan.bold,magenta.bold' --prefix '[{name}]' --names 'Vite,Air' 'vite' 'bin/air'",
-        "build": "vite build && vite build --config ssr.config.js && tailwindcss -i ./frontend/global.css -o ./public/build.css && go build -o ./build/main",
-        "build-watch": "vite build --watch && vite build --config ssr.config.js",
-        "start": "./build/main"
+        "build": "vite build && vite build --config ssr.config.js && go build -o ./build/main",
+        "start": "./build/main",
+        "clean": "rm -rf .tmp build bootstrap public/build.css node_modules/.vite",
+        "clean:all": "pnpm clean && rm -rf node_modules .pnpm-store && go clean -cache -testcache",
+        "reset": "pnpm clean:all && pnpm install"
     },
     "dependencies": {
         "@inertiajs/react": "^2.0.8",
@@ -15,7 +17,6 @@
         "react-dom": "^19.1.0"
     },
     "devDependencies": {
-        "@tailwindcss/cli": "^4.1.4",
         "@tailwindcss/postcss": "^4.1.4",
         "@tailwindcss/vite": "^4.1.4",
         "@types/react": "^19.1.2",
