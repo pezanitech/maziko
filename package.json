@@ -4,7 +4,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "concurrently --kill-others-on-fail --prefix-colors 'cyan.bold,magenta.bold' --prefix '[{name}]' --names 'Vite,Air' 'vite' 'bin/air'",
+        "dev": "concurrently --kill-others-on-fail --prefix-colors 'cyan.bold,magenta.bold' --prefix '[{name}]' --names 'Vite,Go Server' 'vite' 'go run main.go dev'",
         "build": "vite build && vite build --config ssr.config.js && go build -o ./build/main",
         "start": "./build/main",
         "clean": "rm -rf .tmp build bootstrap public/build.css node_modules/.vite",
