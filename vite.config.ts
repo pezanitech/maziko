@@ -1,4 +1,4 @@
-import { defineConfig } from "vite"
+import { defineConfig, UserConfig } from "vite"
 import laravel from "laravel-vite-plugin"
 import react from "@vitejs/plugin-react"
 import tailwindcss from "@tailwindcss/vite"
@@ -20,7 +20,7 @@ const common = {
         }),
     ],
 
-    inputFiles: ["frontend/app.jsx", "frontend/global.css"],
+    inputFiles: ["frontend/global.css"],
 
     rollupOutput: {
         entryFileNames: "assets/[name].js",
@@ -30,11 +30,11 @@ const common = {
     },
 }
 
-const defaultConfig = {
+const defaultConfig: UserConfig = {
     plugins: [
         ...common.plugins,
         laravel({
-            input: common.inputFiles,
+            input: [...common.inputFiles, "frontend/app.jsx"],
             publicDirectory: ".tmp",
             buildDirectory: "build",
             refresh: true,
@@ -44,7 +44,7 @@ const defaultConfig = {
         manifest: true, // Generate manifest.json file
         outDir: "build",
         rollupOptions: {
-            input: common.inputFiles,
+            input: [...common.inputFiles, "frontend/app.jsx"],
             output: common.rollupOutput,
         },
     },
@@ -59,7 +59,7 @@ const ssrConfig = {
     plugins: [
         ...common.plugins,
         laravel({
-            input: common.inputFiles,
+            input: [...common.inputFiles, "frontend/app.ssr.jsx"],
             ssr: "frontend/app.ssr.jsx", // SSR Entry point
             publicDirectory: ".tmp",
             buildDirectory: "ssrBuild",
@@ -70,7 +70,7 @@ const ssrConfig = {
         ssr: true,
         outDir: "ssrBuild",
         rollupOptions: {
-            input: common.inputFiles,
+            input: [...common.inputFiles, "frontend/app.ssr.jsx"],
             output: common.rollupOutput,
         },
     },

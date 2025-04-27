@@ -17,10 +17,8 @@ createServer(
                     import.meta.glob("./**/*.tsx"),
                 )
             },
-            setup({ el, App, props }) {
-                const root = createRoot(el)
-
-                root.render(<App {...props} />)
+            setup({ App, props }) {
+                return <App {...props} />
             },
         }),
     { cluster: true },

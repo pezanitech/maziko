@@ -10,26 +10,26 @@ import (
 )
 
 func vite(manifestPath, buildDir string) func(path string) (string, error) {
-	f, err := os.Open(manifestPath)
+	manifest, err := os.Open(manifestPath)
 	if err != nil {
 		utils.Logger.Error("cannot open provided vite manifest file", "error", err)
 		os.Exit(1)
 	}
-	defer f.Close()
+	defer manifest.Close()
 
 	viteAssets := make(map[string]*struct {
 		File   string `json:"file"`
 		Source string `json:"src"`
 	})
 
+	if err = json.NewDecoder(manifest).Decode(&viteAssets); err != nil {
+		utils.Logger.Error("cannot unmarshal vite manifest file to json", "error", err)
+		os.Exit(1)
+	}
+
 	// print content of viteAssets
 	for k, v := range viteAssets {
 		utils.Logger.Info("vite asset", "path", k, "file", v.File)
-	}
-
-	if err = json.NewDecoder(f).Decode(&viteAssets); err != nil {
-		utils.Logger.Error("cannot unmarshal vite manifest file to json", "error", err)
-		os.Exit(1)
 	}
 
 	return func(p string) (string, error) {
