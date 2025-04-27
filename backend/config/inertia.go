@@ -1,10 +1,11 @@
 package config
 
 import (
-	"log"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/pezanitech/maziko/backend/utils"
 
 	inertia "github.com/romsar/gonertia"
 )
@@ -25,8 +26,9 @@ func InitInertia() *inertia.Inertia {
 				break
 			}
 
-			log.Printf(
-				"waiting for laravel-vite-plugin to start... attempt %d\n", i+1,
+			utils.Logger.Info(
+				"waiting for laravel-vite-plugin to start...",
+				"attempt", i+1,
 			)
 
 			time.Sleep(3 * time.Second)
@@ -39,8 +41,9 @@ func InitInertia() *inertia.Inertia {
 			inertia.WithSSR(),
 		)
 		if err != nil {
-			log.Fatal(err)
+			utils.Logger.Error("failed to initialize inertia", "error", err)
 		}
+
 		i.ShareTemplateFunc("vite", func(entry string) (string, error) {
 			content, err := os.ReadFile(viteHotFile)
 			if err != nil {
@@ -69,8 +72,10 @@ func InitInertia() *inertia.Inertia {
 		inertia.WithVersionFromFile(manifestPath),
 		inertia.WithSSR(),
 	)
+
 	if err != nil {
-		log.Fatal(err)
+		utils.Logger.Error("failed to initialize inertia", "error", err)
+		os.Exit(1)
 	}
 
 	i.ShareTemplateFunc("vite", vite(manifestPath, "/build/"))

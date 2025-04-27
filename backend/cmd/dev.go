@@ -1,13 +1,13 @@
 package cmd
 
 import (
-	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/pezanitech/maziko/backend/utils"
 
 	"github.com/fsnotify/fsnotify"
 )
@@ -36,27 +36,26 @@ var (
 		".tpl",
 		".tmpl",
 		".html",
+		".env",
 	}
 )
 
 func RunDev() {
-	fmt.Println("Starting development mode...")
+	utils.InitLogger()
+
+	utils.Logger.Info("Starting development mode...")
 
 	// create .tmp directory if it doesn't exist
 	if err := os.MkdirAll(tmpDir, 0755); err != nil {
-		log.Fatalf(
-			"Failed to create .tmp directory: %v",
-			err,
-		)
+		utils.Logger.Error("Failed to create .tmp directory", "error", err)
+		os.Exit(1)
 	}
 
 	// create a new file watcher
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		log.Fatalf(
-			"Failed to create file watcher: %v",
-			err,
-		)
+		utils.Logger.Error("Failed to create file watcher", "error", err)
+		os.Exit(1)
 	}
 	defer watcher.Close()
 
@@ -66,31 +65,31 @@ func RunDev() {
 	buildAndRun := func() {
 		// kill any running process
 		if cmd != nil && cmd.Process != nil {
-			fmt.Println("\nstopping process...")
+			utils.Logger.Info("stopping process...")
 
 			if err := cmd.Process.Kill(); err != nil {
-				log.Printf("Failed to kill process: %v", err)
+				utils.Logger.Error("Failed to kill process", "error", err)
 			}
 			cmd.Wait() // Wait for process to exit
 		}
 
 		// build the application
-		fmt.Println("Building application...")
+		utils.Logger.Info("Building application...")
 		buildCmdExec := exec.Command("sh", "-c", buildCmd)
 		buildCmdExec.Stdout = os.Stdout
 		buildCmdExec.Stderr = os.Stderr
 		if err := buildCmdExec.Run(); err != nil {
-			log.Printf("Build failed: %v", err)
+			utils.Logger.Error("Build failed", "error", err)
 			return
 		}
 
 		// Run the application
-		fmt.Println("Starting application...")
+		utils.Logger.Info("Starting application...")
 		cmd = exec.Command(binPath)
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		if err := cmd.Start(); err != nil {
-			log.Printf("Failed to start application: %v", err)
+			utils.Logger.Error("Failed to start application", "error", err)
 			return
 		}
 	}
@@ -119,14 +118,15 @@ func RunDev() {
 
 			return nil
 		}); err != nil {
-		log.Fatalf("Failed to add directories to watcher: %v", err)
+		utils.Logger.Error("Failed to add directories to watcher", "error", err)
+		os.Exit(1)
 	}
 
 	// Timer for debouncing
 	var debounceTimer *time.Timer
 
 	// Watch for file changes
-	fmt.Println("Watching for file changes...")
+	utils.Logger.Info("Watching for file changes...")
 	for {
 		select {
 		case event, ok := <-watcher.Events:
@@ -162,7 +162,7 @@ func RunDev() {
 
 			// Check if the event is a file modification
 			if event.Op&fsnotify.Write == fsnotify.Write {
-				fmt.Printf("File modified: %s\n", event.Name)
+				utils.Logger.Info("File modified", "file", event.Name)
 
 				// Reset the debounce timer
 				if debounceTimer != nil {
@@ -175,7 +175,7 @@ func RunDev() {
 			if !ok {
 				return
 			}
-			log.Printf("Watcher error: %v", err)
+			utils.Logger.Error("Watcher error", "error", err)
 		}
 	}
 }

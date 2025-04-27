@@ -3,15 +3,17 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 	"path"
+
+	"github.com/pezanitech/maziko/backend/utils"
 )
 
 func vite(manifestPath, buildDir string) func(path string) (string, error) {
 	f, err := os.Open(manifestPath)
 	if err != nil {
-		log.Fatalf("cannot open provided vite manifest file: %s", err)
+		utils.Logger.Error("cannot open provided vite manifest file", "error", err)
+		os.Exit(1)
 	}
 	defer f.Close()
 
@@ -19,14 +21,15 @@ func vite(manifestPath, buildDir string) func(path string) (string, error) {
 		File   string `json:"file"`
 		Source string `json:"src"`
 	})
-	err = json.NewDecoder(f).Decode(&viteAssets)
+
 	// print content of viteAssets
 	for k, v := range viteAssets {
-		log.Printf("%s: %s\n", k, v.File)
+		utils.Logger.Info("vite asset", "path", k, "file", v.File)
 	}
 
-	if err != nil {
-		log.Fatalf("cannot unmarshal vite manifest file to json: %s", err)
+	if err = json.NewDecoder(f).Decode(&viteAssets); err != nil {
+		utils.Logger.Error("cannot unmarshal vite manifest file to json", "error", err)
+		os.Exit(1)
 	}
 
 	return func(p string) (string, error) {
