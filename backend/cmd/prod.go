@@ -10,6 +10,7 @@ import (
 )
 
 func RunProd() {
+	// Initialize logger before use
 	utils.InitLogger()
 
 	i := config.InitInertia()

@@ -6,18 +6,22 @@ import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers"
 
 import "./global.css"
 
-createServer((page) =>
-    createInertiaApp({
-        page,
-        render: renderToString,
-        resolve: (name) =>
-            resolvePageComponent(
-                `./${name}.tsx`,
-                import.meta.glob("./**/*.tsx"),
-            ),
-        setup({ el, App, props }) {
-            const root = createRoot(el)
-            root.render(<App {...props} />)
-        },
-    }),
+createServer(
+    (page) =>
+        createInertiaApp({
+            page,
+            render: renderToString,
+            resolve: (name) => {
+                return resolvePageComponent(
+                    `./app/${name}.tsx`,
+                    import.meta.glob("./**/*.tsx"),
+                )
+            },
+            setup({ el, App, props }) {
+                const root = createRoot(el)
+
+                root.render(<App {...props} />)
+            },
+        }),
+    { cluster: true },
 )

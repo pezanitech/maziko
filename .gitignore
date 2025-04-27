@@ -4,3 +4,4 @@
 .env
 /public/build.css
 /build
+/.vscode

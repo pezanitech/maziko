@@ -41,6 +41,7 @@ var (
 )
 
 func RunDev() {
+	// Initialize logger before use
 	utils.InitLogger()
 
 	utils.Logger.Info("Starting development mode...")
