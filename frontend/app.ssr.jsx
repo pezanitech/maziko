@@ -1,10 +1,7 @@
-import { createRoot } from "react-dom/client"
 import { renderToString } from "react-dom/server"
 import { createInertiaApp } from "@inertiajs/react"
 import createServer from "@inertiajs/react/server"
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers"
-
-import "./global.css"
 
 createServer(
     (page) =>
