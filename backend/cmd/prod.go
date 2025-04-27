@@ -3,11 +3,12 @@ package cmd
 import (
 	"net/http"
 
+	"github.com/pezanitech/maziko/backend/config"
 	"github.com/pezanitech/maziko/backend/handlers"
 )
 
 func RunProd() {
-	i := initInertia()
+	i := config.InitInertia()
 
 	mux := http.NewServeMux()
 
