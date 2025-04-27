@@ -1,18 +1,16 @@
 package main
 
 import (
-	"fmt"
-	"maziko/backend/cmd"
 	"os"
+
+	"github.com/pezanitech/maziko/backend/cmd"
 )
 
 func main() {
-	if len(os.Args) > 1 && os.Args[1] == "dev" {
-		fmt.Println("Starting development mode...")
-		cmd.Dev()
-
-		return
+	switch true {
+	case len(os.Args) > 1 && os.Args[1] == "dev":
+		cmd.RunDev()
+	default:
+		cmd.RunProd()
 	}
-
-	cmd.Execute()
 }

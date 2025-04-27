@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"path"
 	"strings"
@@ -12,17 +11,6 @@ import (
 
 	inertia "github.com/romsar/gonertia"
 )
-
-func Execute() {
-	i := initInertia()
-
-	mux := http.NewServeMux()
-
-	mux.Handle("/", i.Middleware(rootHandler(i)))
-	mux.Handle("/build/", http.StripPrefix("/build/", http.FileServer(http.Dir("./build"))))
-
-	http.ListenAndServe(":3000", mux)
-}
 
 func initInertia() *inertia.Inertia {
 	viteHotFile := ".tmp/hot"
@@ -120,35 +108,4 @@ func vite(manifestPath, buildDir string) func(path string) (string, error) {
 		}
 		return "", fmt.Errorf("asset %q not found", p)
 	}
-}
-
-func rootHandler(i *inertia.Inertia) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		switch r.URL.Path {
-		case "/":
-			err := i.Render(w, r, "index", inertia.Props{
-				"line1": "A full-stack framework",
-				"line2": "built with Inertia.js and Go! 💚",
-			})
-			if err != nil {
-				handleServerErr(w, err)
-			}
-		default:
-			// if file exists in public serve it
-			_, err := os.Stat(path.Join("public", r.URL.Path))
-			if err == nil {
-				http.ServeFile(w, r, path.Join("public", r.URL.Path))
-				return
-			}
-
-			// otherwise return 404
-			http.NotFound(w, r)
-		}
-	})
-}
-
-func handleServerErr(w http.ResponseWriter, err error) {
-	log.Printf("http error: %s\n", err)
-	w.WriteHeader(http.StatusInternalServerError)
-	w.Write([]byte("server error"))
 }

@@ -13,14 +13,15 @@ import (
 )
 
 var (
-	rootDir     = "."
-	tmpDir      = ".tmp"
-	binPath     = "./.tmp/main"
-	buildCmd    = "go build -o ./.tmp/main ."
-	buildDelay  = 1000 * time.Millisecond
-	excludeDirs = []string{
+	rootDir        = "."
+	tmpDir         = ".tmp"
+	binPath        = "./.tmp/main"
+	buildCmd       = "go build -o ./.tmp/main ."
+	buildDelay     = 1000 * time.Millisecond
+	excludeRegexes = []string{"_test.go"}
+	excludeDirs    = []string{
 		"assets",
-		".tmp",
+		tmpDir,
 		"vendor",
 		"testdata",
 		"node_modules",
@@ -30,8 +31,7 @@ var (
 		"ssrBuild",
 		"build",
 	}
-	excludeRegexes = []string{"_test.go"}
-	includeExts    = []string{
+	includeExts = []string{
 		".go",
 		".tpl",
 		".tmpl",
@@ -39,12 +39,13 @@ var (
 	}
 )
 
-func Dev() {
-	// create tmp directory if it doesn't exist
+func RunDev() {
+	fmt.Println("Starting development mode...")
 
+	// create .tmp directory if it doesn't exist
 	if err := os.MkdirAll(tmpDir, 0755); err != nil {
 		log.Fatalf(
-			"Failed to create tmp directory: %v",
+			"Failed to create .tmp directory: %v",
 			err,
 		)
 	}
