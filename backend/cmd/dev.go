@@ -27,7 +27,7 @@ var (
 		"frontend",
 		"bin",
 		"public",
-		"bootstrap",
+		"ssrBuild",
 		"build",
 	}
 	excludeRegexes = []string{"_test.go"}

@@ -1,4 +1,4 @@
-/bootstrap
+/ssrBuild
 /node_modules
 /.tmp
 .env

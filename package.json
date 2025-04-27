@@ -4,11 +4,11 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "concurrently --kill-others-on-fail --prefix-colors 'cyan.bold,magenta.bold' --prefix '[{name}]' --names 'Vite,Go Server' 'vite' 'go run main.go dev'",
-        "build": "vite build && vite build --config ssr.config.js && go build -o ./build/main",
+        "dev": "concurrently --kill-others-on-fail --prefix-colors 'green.bold,blue.bold' --prefix '[{name}]' --names 'Frontend,Backend' 'vite' 'go run main.go dev'",
+        "build": "vite build && vite build --ssr && go build -o ./build/main",
         "start": "./build/main",
-        "clean": "rm -rf .tmp build bootstrap public/build.css node_modules/.vite",
-        "clean:all": "pnpm clean && rm -rf node_modules .pnpm-store && go clean -cache -testcache",
+        "clean": "rm -rfv .tmp build ssrBuild public/build.css node_modules/.vite",
+        "clean:all": "pnpm clean && rm -rfv node_modules .pnpm-store && go clean -cache -testcache",
         "reset": "pnpm clean:all && pnpm install"
     },
     "dependencies": {
@@ -19,6 +19,7 @@
     "devDependencies": {
         "@tailwindcss/postcss": "^4.1.4",
         "@tailwindcss/vite": "^4.1.4",
+        "@types/node": "^22.15.2",
         "@types/react": "^19.1.2",
         "@vitejs/plugin-react": "^4.4.1",
         "autoprefixer": "^10.4.21",
