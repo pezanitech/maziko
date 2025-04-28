@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pezanitech/maziko/backend/utils"
+	"github.com/pezanitech/maziko/core/utils"
 
 	"github.com/fsnotify/fsnotify"
 )
@@ -25,9 +25,7 @@ var (
 		"vendor",
 		"testdata",
 		"node_modules",
-		"frontend",
 		"bin",
-		"public",
 		"ssrBuild",
 		"build",
 	}

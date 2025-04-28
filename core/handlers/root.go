@@ -5,7 +5,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/pezanitech/maziko/backend/utils"
+	"github.com/pezanitech/maziko/core/utils"
 
 	inertia "github.com/romsar/gonertia"
 )
@@ -49,8 +49,8 @@ func handleRoot(i *inertia.Inertia, w http.ResponseWriter, r *http.Request) {
 //   - w: The HTTP response writer to write the response to
 //   - r: The HTTP request containing the path to the requested file
 func handleFiles(w http.ResponseWriter, r *http.Request) {
-	if _, err := os.Stat(path.Join("public", r.URL.Path)); err == nil {
-		http.ServeFile(w, r, path.Join("public", r.URL.Path))
+	if _, err := os.Stat(path.Join("app/public", r.URL.Path)); err == nil {
+		http.ServeFile(w, r, path.Join("app/public", r.URL.Path))
 		return
 	}
 

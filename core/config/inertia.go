@@ -5,14 +5,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pezanitech/maziko/backend/utils"
+	"github.com/pezanitech/maziko/core/utils"
 
 	inertia "github.com/romsar/gonertia"
 )
 
 func InitInertia() *inertia.Inertia {
 	viteHotFile := ".tmp/hot"
-	rootViewFile := "frontend/root.html"
+	rootViewFile := "app/root.html"
 
 	// check if laravel-vite-plugin is running in dev mode
 	// it puts a "hot" file in the .tmp directory

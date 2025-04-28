@@ -5,7 +5,7 @@ import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers"
 createInertiaApp({
     resolve: (name) => {
         return resolvePageComponent(
-            `./app/${name}.tsx`,
+            `./pages/${name}.tsx`,
             import.meta.glob("./**/*.tsx"),
         )
     },

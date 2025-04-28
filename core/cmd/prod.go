@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/pezanitech/maziko/backend/config"
-	"github.com/pezanitech/maziko/backend/handlers"
-	"github.com/pezanitech/maziko/backend/utils"
+	"github.com/pezanitech/maziko/core/config"
+	"github.com/pezanitech/maziko/core/handlers"
+	"github.com/pezanitech/maziko/core/utils"
 )
 
 func RunProd() {

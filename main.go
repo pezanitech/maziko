@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/pezanitech/maziko/backend/cmd"
+	"github.com/pezanitech/maziko/core/cmd"
 )
 
 func main() {

@@ -20,7 +20,7 @@ const common = {
         }),
     ],
 
-    inputFiles: ["frontend/global.css"],
+    inputFiles: ["app/global.css"],
 
     rollupOutput: {
         entryFileNames: "assets/[name].js",
@@ -34,7 +34,7 @@ const defaultConfig: UserConfig = {
     plugins: [
         ...common.plugins,
         laravel({
-            input: [...common.inputFiles, "frontend/app.jsx"],
+            input: [...common.inputFiles, "app/app.jsx"],
             publicDirectory: ".tmp",
             buildDirectory: "build",
             refresh: true,
@@ -44,7 +44,7 @@ const defaultConfig: UserConfig = {
         manifest: true, // Generate manifest.json file
         outDir: "build",
         rollupOptions: {
-            input: [...common.inputFiles, "frontend/app.jsx"],
+            input: [...common.inputFiles, "app/app.jsx"],
             output: common.rollupOutput,
         },
     },
@@ -59,8 +59,8 @@ const ssrConfig = {
     plugins: [
         ...common.plugins,
         laravel({
-            input: [...common.inputFiles, "frontend/app.ssr.jsx"],
-            ssr: "frontend/app.ssr.jsx", // SSR Entry point
+            input: [...common.inputFiles, "app/app.ssr.jsx"],
+            ssr: "app/app.ssr.jsx", // SSR Entry point
             publicDirectory: ".tmp",
             buildDirectory: "ssrBuild",
             refresh: true,
@@ -70,7 +70,7 @@ const ssrConfig = {
         ssr: true,
         outDir: "ssrBuild",
         rollupOptions: {
-            input: [...common.inputFiles, "frontend/app.ssr.jsx"],
+            input: [...common.inputFiles, "app/app.ssr.jsx"],
             output: common.rollupOutput,
         },
     },

@@ -6,7 +6,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/pezanitech/maziko/backend/utils"
+	"github.com/pezanitech/maziko/core/utils"
 )
 
 func vite(manifestPath, buildDir string) func(path string) (string, error) {

@@ -10,7 +10,7 @@ createServer(
             render: renderToString,
             resolve: (name) => {
                 return resolvePageComponent(
-                    `./app/${name}.tsx`,
+                    `./pages/${name}.tsx`,
                     import.meta.glob("./**/*.tsx"),
                 )
             },
