@@ -1,6 +1,6 @@
 import { usePage } from "@inertiajs/react"
 
-export default function News() {
+export default function Page() {
     const { line1, line2 } = usePage().props
 
     const styles = {
