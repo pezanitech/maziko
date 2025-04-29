@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/pezanitech/maziko/app/routes/index"
+	"github.com/pezanitech/maziko/app/routes/news"
 	inertia "github.com/romsar/gonertia"
 )
 
@@ -18,7 +19,7 @@ func Router(i *inertia.Inertia) http.Handler {
 		case r.URL.Path == "/" && r.Method == http.MethodPost:
 			index.POST(i, w, r)
 		case r.URL.Path == "/news" && r.Method == http.MethodGet:
-			index.GET(i, w, r)
+			news.GET(i, w, r)
 		case strings.HasPrefix(r.URL.Path, "/build/"):
 			buildDirHandler().ServeHTTP(w, r)
 		default:

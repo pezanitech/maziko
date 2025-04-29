@@ -4,7 +4,7 @@ export default function Page() {
     const { line1, line2 } = usePage().props
 
     const styles = {
-        main: "h-[100dvh] bg-black text-white flex items-center justify-center px-4",
+        main: "h-[100dvh] bg-amber-500 text-white flex items-center justify-center px-4",
         container:
             "max-w-sm bg-[#080808] border border-[#121212] px-4 py-16 rounded-3xl w-full text-center space-y-6",
         heading: "text-4xl font-extrabold tracking-tight sm:text-5xl",

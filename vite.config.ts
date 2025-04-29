@@ -30,7 +30,7 @@ const common = {
     },
 }
 
-const defaultConfig: UserConfig = {
+const clientConfig: UserConfig = {
     plugins: [
         ...common.plugins,
         laravel({
@@ -81,5 +81,5 @@ export default defineConfig(({ isSsrBuild }) => {
         return ssrConfig
     }
 
-    return defaultConfig
+    return clientConfig
 })
