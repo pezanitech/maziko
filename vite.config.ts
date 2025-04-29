@@ -59,8 +59,8 @@ const ssrConfig = {
     plugins: [
         ...common.plugins,
         laravel({
-            input: [...common.inputFiles, "app/app.ssr.jsx"],
-            ssr: "app/app.ssr.jsx", // SSR Entry point
+            input: [...common.inputFiles, "app/app.jsx"],
+            ssr: "app/app.jsx", // SSR Entry point
             publicDirectory: ".tmp",
             buildDirectory: "ssrBuild",
             refresh: true,
@@ -70,7 +70,7 @@ const ssrConfig = {
         ssr: true,
         outDir: "ssrBuild",
         rollupOptions: {
-            input: [...common.inputFiles, "app/app.ssr.jsx"],
+            input: [...common.inputFiles, "app/app.jsx"],
             output: common.rollupOutput,
         },
     },
