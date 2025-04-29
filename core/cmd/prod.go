@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/pezanitech/maziko/core/config"
+	"github.com/pezanitech/maziko/core/router"
 	"github.com/pezanitech/maziko/core/utils"
 )
 
@@ -12,11 +12,11 @@ func RunProd() {
 	// Initialize logger before use
 	utils.InitLogger()
 
-	i := config.InitInertia()
+	i := router.InitInertia()
 
 	mux := http.NewServeMux()
 
-	mux.Handle("/", i.Middleware(config.Router(i)))
+	mux.Handle("/", i.Middleware(router.Router(i)))
 
 	utils.Logger.Info("Starting server on localhost:3000")
 

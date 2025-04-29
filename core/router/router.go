@@ -1,17 +1,37 @@
-package config
+package router
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/pezanitech/maziko/app/routes/index"
 	"github.com/pezanitech/maziko/app/routes/news"
+	"github.com/pezanitech/maziko/core/utils"
 	inertia "github.com/romsar/gonertia"
 )
 
 func Router(i *inertia.Inertia) http.Handler {
+	if err := filepath.Walk("./app/routes", func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if info.IsDir() {
+			if path != "./app/routes" {
+				fmt.Println("Path:", path)
+			}
+		}
+
+		return nil
+	}); err != nil {
+		utils.Logger.Error("Error walking the path", "error", err)
+		return nil
+	}
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch true {
 		case r.URL.Path == "/" && r.Method == http.MethodGet:
