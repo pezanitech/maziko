@@ -22,17 +22,11 @@ export default function Page() {
                 <h1 className={styles.heading}>Maziko</h1>
                 <p className={styles.paragraph}>
                     <span className="block">{line1}</span>
-                    <span className="block">{line2}</span>
                 </p>
 
                 <div className={styles.buttonContainer}>
-                    <a
-                        href="https://maziko.pezani.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.buttonPrimary}
-                    >
-                        Docs
+                    <a href="/" className={styles.buttonPrimary}>
+                        Home
                     </a>
                     <a
                         href="https://github.com/pezanitech/maziko"

@@ -26,12 +26,7 @@ export default function Page() {
                 </p>
 
                 <div className={styles.buttonContainer}>
-                    <a
-                        href="https://maziko.pezani.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.buttonPrimary}
-                    >
+                    <a href="/docs" className={styles.buttonPrimary}>
                         Docs
                     </a>
                     <a

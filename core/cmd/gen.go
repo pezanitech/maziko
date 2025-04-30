@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"text/template"
 
 	"github.com/pezanitech/maziko/core/utils"
 )
@@ -18,8 +19,24 @@ var (
 	packagePrefix = "github.com/pezanitech/maziko/"
 )
 
-// Package declaration and common imports
-var packageDeclaration = `
+// Define template structure
+type RouteTemplateData struct {
+	BuildPrefix   string
+	PublicDir     string
+	BuildDir      string
+	Imports       []string
+	RouteHandlers []RouteHandler
+}
+
+type RouteHandler struct {
+	Path     string
+	Method   string
+	Package  string
+	Function string
+}
+
+// Routes template
+var routesTemplate = `
 package gen
 
 import "net/http"
@@ -27,36 +44,32 @@ import "os"
 import "path"
 import "strings"
 import inertia "github.com/romsar/gonertia"
-`
+{{range .Imports}}
+import {{.}}
+{{end}}
 
-// Route handler definitions
-var routeHandler = fmt.Sprintf(`
 func DefineRoutes(i *inertia.Inertia) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch true {
-		case r.URL.Path == "/" && r.Method == http.MethodGet:
-			index.GET(i, w, r)
-		case r.URL.Path == "/" && r.Method == http.MethodPost:
-			index.POST(i, w, r)
-		case r.URL.Path == "/news" && r.Method == http.MethodGet:
-			news.GET(i, w, r)
-		case strings.HasPrefix(r.URL.Path, "%s"):
+		{{range .RouteHandlers}}
+		case r.URL.Path == "{{.Path}}" && r.Method == {{.Method}}:
+			{{.Package}}.{{.Function}}(i, w, r)
+		{{end}}
+		case strings.HasPrefix(r.URL.Path, "{{.BuildPrefix}}"):
 			handleRequest(w, r, buildDirHandler)
 		default:
 			handleRequest(w, r, staticFileHandler)
 		}
 	})
-}`, buildPrefix)
+}
 
-var requestHandler = `
 func handleRequest(w http.ResponseWriter, r *http.Request, f func() http.Handler) {
 	f().ServeHTTP(w, r)
-}`
+}
 
-var staticFileHandler = fmt.Sprintf(`
 func staticFileHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		resourcePath := path.Join("%s", r.URL.Path)
+		resourcePath := path.Join("{{.PublicDir}}", r.URL.Path)
 
 		if _, err := os.Stat(resourcePath); err == nil {
 			// file exists, serve it
@@ -67,15 +80,15 @@ func staticFileHandler() http.Handler {
 		// no file exists, respond with a 404
 		http.NotFound(w, r)
 	})
-}`, publicDir)
+}
 
-var buildDirHandler = fmt.Sprintf(`
 func buildDirHandler() http.Handler {
 	return http.StripPrefix(
-		"%s",
-		http.FileServer(http.Dir("%s")),
+		"{{.BuildPrefix}}",
+		http.FileServer(http.Dir("{{.BuildDir}}")),
 	)
-}`, buildPrefix, buildDir)
+}
+`
 
 // collectRouteImports gathers all route imports while walking the routes directory
 func collectRouteImports(path string, dirEntry os.DirEntry, err error) (string, error) {
@@ -97,8 +110,8 @@ func collectRouteImports(path string, dirEntry os.DirEntry, err error) (string, 
 }
 
 // collectAllRouteImports walks through the routes directory and collects all route imports
-func collectAllRouteImports() (string, error) {
-	var imports strings.Builder
+func collectAllRouteImports() ([]string, error) {
+	var imports []string
 	err := filepath.WalkDir(routesDir, func(path string, dirEntry os.DirEntry, err error) error {
 		if err != nil {
 			return err
@@ -110,14 +123,60 @@ func collectAllRouteImports() (string, error) {
 		}
 
 		if importStatement != "" {
-			imports.WriteString(importStatement)
+			imports = append(imports, fmt.Sprintf("\"%s%s\"", packagePrefix, path))
 			utils.Logger.Info("Adding route", "path", path)
 		}
 
 		return nil
 	})
 
-	return imports.String(), err
+	return imports, err
+}
+
+// collectRouteHandlers generates route handlers for each discovered route directory
+func collectRouteHandlers() ([]RouteHandler, error) {
+	var handlers []RouteHandler
+	httpMethods := []string{"http.MethodGet", "http.MethodPost", "http.MethodPut", "http.MethodDelete"}
+
+	err := filepath.WalkDir(routesDir, func(path string, dirEntry os.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		// Skip the root routes directory and non-directories
+		if path == routesDir || !dirEntry.IsDir() {
+			return nil
+		}
+
+		// Get the route path by removing the routes directory prefix
+		routePath := strings.TrimPrefix(path, strings.TrimPrefix(routesDir, "./"))
+		// Convert to URL path format
+		routePath = strings.ReplaceAll(routePath, "\\", "/")
+		// If it's an index route (app/routes/index), make it the root path
+		if routePath == "/index" {
+			routePath = "/"
+		}
+
+		// Get the package name from the last part of the path
+		packageName := filepath.Base(path)
+
+		// Add handlers for all HTTP methods
+		for _, method := range httpMethods {
+			// Extract method name and convert to uppercase
+			methodName := strings.ToUpper(strings.TrimPrefix(method, "http.Method"))
+			handlers = append(handlers, RouteHandler{
+				Path:     routePath,
+				Method:   method,
+				Package:  packageName,
+				Function: methodName,
+			})
+		}
+
+		utils.Logger.Info("Added route handlers", "path", routePath, "package", packageName)
+		return nil
+	})
+
+	return handlers, err
 }
 
 func GenerateRoutes() {
@@ -137,12 +196,6 @@ func GenerateRoutes() {
 
 	routesgenPath := filepath.Join(genDir, "routesgen.go")
 
-	// Build the file content in memory
-	var fileContent strings.Builder
-
-	// Write package declaration
-	fileContent.WriteString(packageDeclaration)
-
 	// Collect all route imports
 	imports, err := collectAllRouteImports()
 	if err != nil {
@@ -153,14 +206,43 @@ func GenerateRoutes() {
 		panic(fmt.Sprintf("Failed to collect route imports: %v", err))
 	}
 
-	// Add imports to file content
-	fileContent.WriteString(imports)
+	// Collect route handlers dynamically instead of hardcoding them
+	routeHandlers, err := collectRouteHandlers()
+	if err != nil {
+		utils.Logger.Error(
+			"Error collecting route handlers",
+			"error", err,
+		)
+		panic(fmt.Sprintf("Failed to collect route handlers: %v", err))
+	}
 
-	// Write routing definitions
-	fileContent.WriteString(routeHandler)
-	fileContent.WriteString(requestHandler)
-	fileContent.WriteString(staticFileHandler)
-	fileContent.WriteString(buildDirHandler)
+	// Create template data
+	data := RouteTemplateData{
+		BuildPrefix:   buildPrefix,
+		PublicDir:     publicDir,
+		BuildDir:      buildDir,
+		Imports:       imports,
+		RouteHandlers: routeHandlers,
+	}
+
+	// Parse and execute the template
+	tmpl, err := template.New("routes").Parse(routesTemplate)
+	if err != nil {
+		utils.Logger.Error(
+			"Error parsing template",
+			"error", err,
+		)
+		panic(fmt.Sprintf("Failed to parse template: %v", err))
+	}
+
+	var fileContent strings.Builder
+	if err := tmpl.Execute(&fileContent, data); err != nil {
+		utils.Logger.Error(
+			"Error executing template",
+			"error", err,
+		)
+		panic(fmt.Sprintf("Failed to execute template: %v", err))
+	}
 
 	// Log the generated content
 	utils.Logger.Info("Generated routes file content", "path", routesgenPath)

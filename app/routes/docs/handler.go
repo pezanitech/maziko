@@ -1,4 +1,4 @@
-package news
+package docs
 
 import (
 	"fmt"
@@ -9,8 +9,8 @@ import (
 )
 
 func GET(i *inertia.Inertia, w http.ResponseWriter, r *http.Request) {
-	err := i.Render(w, r, "news", inertia.Props{
-		"line1": "A full-stack framework",
+	err := i.Render(w, r, "docs", inertia.Props{
+		"line1": "Documentation Coming Soon",
 		"line2": "built with Inertia.js and Go! 💚",
 	})
 
