@@ -6,7 +6,7 @@ import (
 	inertia "github.com/romsar/gonertia"
 )
 
-func DefineRoutes(i *inertia.Inertia) http.Handler {
+func Routes(i *inertia.Inertia) http.Handler {
 	// Return a basic handler that responds with a 404 Not Found
 	// This prevents nil pointer dereference when the routes haven't been fully generated yet
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
