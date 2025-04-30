@@ -5,11 +5,11 @@ import tailwindcss from "@tailwindcss/vite"
 import fs from "fs"
 import path from "path"
 
-// create .tmp directory
-const tmpDir = path.resolve(__dirname, ".tmp")
+// create tmp directory
+const tmpDir = path.resolve(__dirname, "tmp")
 if (!fs.existsSync(tmpDir)) {
     fs.mkdirSync(tmpDir, { recursive: true })
-    console.log("created .tmp directory")
+    console.log("created tmp directory")
 }
 
 const common = {
@@ -35,7 +35,7 @@ const clientConfig: UserConfig = {
         ...common.plugins,
         laravel({
             input: [...common.inputFiles, "app/app.jsx"],
-            publicDirectory: ".tmp",
+            publicDirectory: "tmp",
             buildDirectory: "build",
             refresh: true,
         }),
@@ -61,7 +61,7 @@ const ssrConfig = {
         laravel({
             input: [...common.inputFiles, "app/app.jsx"],
             ssr: "app/app.jsx", // SSR Entry point
-            publicDirectory: ".tmp",
+            publicDirectory: "tmp",
             buildDirectory: "ssrBuild",
             refresh: true,
         }),

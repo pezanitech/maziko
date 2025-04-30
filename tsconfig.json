@@ -18,5 +18,5 @@
         }
     },
     "include": ["**/*.ts", "**/*.tsx"],
-    "exclude": ["node_modules", "build", "ssrBuild", ".tmp", "core"]
+    "exclude": ["node_modules", "build", "ssrBuild", "tmp", "core"]
 }

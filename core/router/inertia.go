@@ -41,10 +41,10 @@ var rootTemplate = `
 `
 
 func InitInertia() *inertia.Inertia {
-	viteHotFile := ".tmp/hot"
+	viteHotFile := "tmp/hot"
 
 	// check if laravel-vite-plugin is running in dev mode
-	// it puts a "hot" file in the .tmp directory
+	// it puts a "hot" file in the tmp directory
 	_, err := os.Stat(viteHotFile)
 
 	if err != nil {

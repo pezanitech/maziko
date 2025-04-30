@@ -4,12 +4,18 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "go run main.go genroutes && concurrently --kill-others-on-fail --prefix-colors 'green.bold,blue.bold' --prefix '[{name}]' --names 'Frontend,Backend' 'vite' 'go run main.go dev'",
-        "build": "vite build && vite build --ssr && go run main.go genroutes && go build -o ./build/main",
-        "start": "concurrently --kill-others-on-fail --prefix-colors 'green.bold,blue.bold' --prefix '[{name}]' --names 'SSR,App' 'node ssrBuild/assets/app.js' './build/main'",
-        "clean": "rm -rfv .tmp build ssrBuild node_modules/{.vite,.vite-temp}",
+        "genroutes": "go run main.go genroutes",
+        "dev": "pnpm genroutes && pnpm build:go:tmp && pnpm dev:live",
+        "dev:live": "concurrently -k -c 'green.bold,blue.bold' -p '[{name}]' -n 'vite,go' 'vite' './tmp/main dev'",
+        "build": "pnpm build:vite && pnpm genroutes && pnpm build:go",
+        "build:vite": "vite build && vite build --ssr",
+        "build:go": "go build -o ./build/main",
+        "build:go:tmp": "go build -o ./tmp/main",
+        "start": "concurrently -k -c 'green.bold,blue.bold' -p '[{name}]' -n 'SSR,App' 'pnpm start:ssr' './build/main'",
+        "start:ssr": "node ssrBuild/assets/app.js",
+        "clean": "rm -rfv tmp build ssrBuild node_modules/{.vite,.vite-temp}",
         "clean:all": "pnpm clean && rm -rfv node_modules .pnpm-store && go clean -cache -testcache",
-        "reset": "pnpm clean:all && pnpm install"
+        "reset": "pnpm clean:all && pnpm i"
     },
     "dependencies": {
         "@inertiajs/react": "^2.0.8",

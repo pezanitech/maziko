@@ -14,9 +14,9 @@ import (
 
 var (
 	rootDir        = "."
-	tmpDir         = ".tmp"
-	binPath        = "./.tmp/main"
-	buildCmd       = "go build -o ./.tmp/main ."
+	tmpDir         = "tmp"
+	binPath        = "./tmp/main"
+	buildCmd       = "go build -o ./tmp/main ."
 	buildDelay     = 1000 * time.Millisecond
 	excludeRegexes = []string{"_test.go"}
 	excludeDirs    = []string{
@@ -46,7 +46,7 @@ func RunDev() {
 
 	// create .tmp directory if it doesn't exist
 	if err := os.MkdirAll(tmpDir, 0755); err != nil {
-		utils.Logger.Error("Failed to create .tmp directory", "error", err)
+		utils.Logger.Error("Failed to create tmp directory", "error", err)
 		os.Exit(1)
 	}
 

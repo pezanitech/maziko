@@ -3,44 +3,31 @@ package utils
 import (
 	"log/slog"
 	"os"
-	"path/filepath"
-	"runtime"
 
 	"github.com/joho/godotenv"
 )
 
-// Shared Logger instance used across the application
+// application wide logger instance
 var Logger *slog.Logger
 
 func InitLogger() {
-	loadEnvFile()
+	// load variables from .env
+	if err := godotenv.Load(); err != nil {
+		slog.Error("Failed to load .env file", "error", err)
+	}
 
-	useJSONLogger := os.Getenv("JSON_LOGGER") == "true"
+	if os.Getenv("JSON_LOGGER") == "true" {
+		handler := slog.NewJSONHandler(
+			os.Stdout,
+			&slog.HandlerOptions{
+				Level: slog.LevelDebug,
+			},
+		)
 
-	if useJSONLogger {
-		handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-			Level: slog.LevelDebug,
-		})
-
-		Logger = slog.New(handler)
+		Logger = slog.New(handler) // use JSON logger
 		Logger.Info("Using JSON logger")
 	} else {
-		Logger = slog.Default()
+		Logger = slog.Default() // use default logger
 		Logger.Info("Using default logger")
-	}
-}
-
-// Loads environment variables from .env file
-func loadEnvFile() {
-	// determine the project root directory
-	_, filename, _, _ := runtime.Caller(0)
-	projectRoot := filepath.Join(filepath.Dir(filename), "../..")
-
-	envPath := filepath.Join(projectRoot, ".env")
-	err := godotenv.Load(envPath)
-
-	if err != nil {
-		// use slog since logger is not initialized
-		slog.Error("Failed to load .env file", "error", err)
 	}
 }

@@ -1,6 +1,6 @@
 /ssrBuild
 /node_modules
-/.tmp
+/tmp
 .env
 /public/build.css
 /build
