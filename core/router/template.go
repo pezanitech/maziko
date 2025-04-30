@@ -1,4 +1,4 @@
-package cmd
+package router
 
 type RouteTemplateData struct {
 	BuildPrefix   string
@@ -27,7 +27,7 @@ import (
 	inertia "github.com/romsar/gonertia"
 )
 
-func DefineRoutes(i *inertia.Inertia) http.Handler {
+func Routes(i *inertia.Inertia) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch true {
 		{{range .RouteHandlers}}

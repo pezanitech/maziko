@@ -8,6 +8,7 @@ import (
 	"text/template"
 
 	"github.com/pezanitech/maziko/core/config"
+	"github.com/pezanitech/maziko/core/router"
 	"github.com/pezanitech/maziko/core/utils"
 )
 
@@ -50,14 +51,14 @@ func GenerateRoutes() {
 	}
 
 	// Create template data
-	data := RouteTemplateData{
+	data := router.RouteTemplateData{
 		BuildPrefix:   config.BuildPrefix,
 		Imports:       imports,
 		RouteHandlers: routeHandlers,
 	}
 
 	// Parse and execute the template
-	tmpl, err := template.New("routes").Parse(RoutesTemplate)
+	tmpl, err := template.New("routes").Parse(router.RoutesTemplate)
 	if err != nil {
 		utils.Logger.Error(
 			"Error parsing template",

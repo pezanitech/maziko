@@ -25,7 +25,7 @@ func main() {
 
 		mux := http.NewServeMux()
 
-		mux.Handle("/", i.Middleware(gen.DefineRoutes(i)))
+		mux.Handle("/", i.Middleware(gen.Routes(i)))
 
 		utils.Logger.Info("Starting server on localhost:3000")
 

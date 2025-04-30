@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/pezanitech/maziko/core/config"
+	"github.com/pezanitech/maziko/core/router"
 	"github.com/pezanitech/maziko/core/utils"
 )
 
@@ -54,8 +55,8 @@ func collectAllRouteImports() ([]string, error) {
 }
 
 // collectRouteHandlers generates route handlers for each discovered route directory
-func collectRouteHandlers() ([]RouteHandler, error) {
-	var handlers []RouteHandler
+func collectRouteHandlers() ([]router.RouteHandler, error) {
+	var handlers []router.RouteHandler
 	httpMethods := []string{"http.MethodGet", "http.MethodPost", "http.MethodPut", "http.MethodDelete"}
 
 	err := filepath.WalkDir(config.RoutesDir, func(path string, dirEntry os.DirEntry, err error) error {
@@ -84,7 +85,7 @@ func collectRouteHandlers() ([]RouteHandler, error) {
 		for _, method := range httpMethods {
 			// Extract method name and convert to uppercase
 			methodName := strings.ToUpper(strings.TrimPrefix(method, "http.Method"))
-			handlers = append(handlers, RouteHandler{
+			handlers = append(handlers, router.RouteHandler{
 				Path:     routePath,
 				Method:   method,
 				Package:  packageName,
