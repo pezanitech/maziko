@@ -4,8 +4,8 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "concurrently --kill-others-on-fail --prefix-colors 'green.bold,blue.bold' --prefix '[{name}]' --names 'Frontend,Backend' 'vite' 'go run main.go dev'",
-        "build": "vite build && vite build --ssr && go build -o ./build/main",
+        "dev": "go run main.go genroutes && concurrently --kill-others-on-fail --prefix-colors 'green.bold,blue.bold' --prefix '[{name}]' --names 'Frontend,Backend' 'vite' 'go run main.go dev'",
+        "build": "vite build && vite build --ssr && go run main.go genroutes && go build -o ./build/main",
         "start": "concurrently --kill-others-on-fail --prefix-colors 'green.bold,blue.bold' --prefix '[{name}]' --names 'SSR,App' 'node ssrBuild/assets/app.js' './build/main'",
         "clean": "rm -rfv .tmp build ssrBuild node_modules/{.vite,.vite-temp}",
         "clean:all": "pnpm clean && rm -rfv node_modules .pnpm-store && go clean -cache -testcache",

@@ -7,9 +7,11 @@ import (
 )
 
 func main() {
-	switch true {
+	switch {
 	case len(os.Args) > 1 && os.Args[1] == "dev":
 		cmd.RunDev()
+	case len(os.Args) > 1 && os.Args[1] == "genroutes":
+		cmd.GenerateRoutes()
 	default:
 		cmd.RunProd()
 	}
