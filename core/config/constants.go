@@ -1,7 +1,7 @@
 package config
 
 const (
-	GenDir        = "./core/gen"
+	GenDir        = "./gen"
 	RoutesDir     = "./app/routes"
 	BuildPrefix   = "/build/"
 	PackagePrefix = "github.com/pezanitech/maziko/"

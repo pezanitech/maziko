@@ -92,7 +92,11 @@ func collectRouteHandlers() ([]RouteHandler, error) {
 			})
 		}
 
-		utils.Logger.Info("Added route handlers", "path", routePath, "package", packageName)
+		utils.Logger.Info(
+			"Added route handlers",
+			"path", routePath,
+			"package", packageName,
+		)
 		return nil
 	})
 
