@@ -18,7 +18,7 @@ var (
 	binPath        = "./.tmp/main"
 	buildCmd       = "go build -o ./.tmp/main ."
 	buildDelay     = 1000 * time.Millisecond
-	excludeRegexes = []string{"_test.go"}
+	excludeRegexes = []string{"_test.go", "routesgen.go"}
 	excludeDirs    = []string{
 		"assets",
 		tmpDir,
