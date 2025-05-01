@@ -7,27 +7,22 @@ import (
 	"strings"
 	"time"
 
+	"github.com/pezanitech/maziko/core/config"
 	"github.com/pezanitech/maziko/core/utils"
 
 	"github.com/fsnotify/fsnotify"
 )
 
 var (
+	// Use config values instead of hardcoded constants
 	rootDir        = "."
-	tmpDir         = "tmp"
-	binPath        = "./tmp/main"
-	buildCmd       = "go build -o ./tmp/main ."
-	buildDelay     = 1000 * time.Millisecond
 	excludeRegexes = []string{"_test.go"}
 	excludeDirs    = []string{
 		"assets",
-		tmpDir,
 		"vendor",
 		"testdata",
 		"node_modules",
 		"bin",
-		"ssrBuild",
-		"build",
 	}
 	includeExts = []string{
 		".go",
@@ -36,6 +31,7 @@ var (
 		".html",
 		".env",
 	}
+	buildDelay = 1000 * time.Millisecond
 )
 
 func RunDev() {
@@ -44,7 +40,19 @@ func RunDev() {
 
 	utils.Logger.Info("Starting development mode...")
 
-	// create .tmp directory if it doesn't exist
+	// Get config values
+	tmpDir := config.GetTempDir()
+	buildDir := config.GetBuildDir()
+	ssrDir := config.GetSSRDir()
+
+	// Add the build directories to excludeDirs
+	excludeDirs = append(excludeDirs, tmpDir, buildDir, ssrDir)
+
+	// Set binary path to be inside the temp directory
+	binPath := filepath.Join(tmpDir, "main")
+	buildCmd := "go build -o " + binPath + " ."
+
+	// create temp directory if it doesn't exist
 	if err := os.MkdirAll(tmpDir, 0755); err != nil {
 		utils.Logger.Error("Failed to create tmp directory", "error", err)
 		os.Exit(1)

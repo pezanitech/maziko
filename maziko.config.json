@@ -1,0 +1,30 @@
+{
+    "app": {
+        "name": "Maziko App",
+        "url": "http://localhost:3000",
+        "port": 3000
+    },
+    "build": {
+        "prefix": "/build/",
+        "dir": "./build",
+        "tempDir": "./tmp",
+        "ssrDir": "./ssrBuild"
+    },
+    "vite": {
+        "manifestFile": "./build/.vite/manifest.json",
+        "hotFile": "tmp/hot",
+        "detectionAttempts": 5,
+        "detectionInterval": 2000
+    },
+    "paths": {
+        "routes": "./app/routes",
+        "public": "./app/public",
+        "gen": "./gen"
+    },
+    "package": {
+        "prefix": "github.com/pezanitech/maziko/"
+    },
+    "logger": {
+        "useJson": false
+    }
+}

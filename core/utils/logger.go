@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/pezanitech/maziko/core/config"
 )
 
 // application wide logger instance
@@ -16,7 +17,8 @@ func InitLogger() {
 		slog.Error("Failed to load .env file", "error", err)
 	}
 
-	if os.Getenv("JSON_LOGGER") == "true" {
+	// Check if JSON logger is enabled in config
+	if config.UseJSONLogger() {
 		handler := slog.NewJSONHandler(
 			os.Stdout,
 			&slog.HandlerOptions{

@@ -20,7 +20,8 @@ func GenerateRoutes() {
 	utils.Logger.Info("Generating routes definitions...")
 
 	// Create directory if it doesn't exist
-	if err := os.MkdirAll(config.GenDir, 0755); err != nil {
+	genDir := config.GetGenDir()
+	if err := os.MkdirAll(genDir, 0755); err != nil {
 		utils.Logger.Error(
 			"Error creating gen directory",
 			"error", err,
@@ -28,7 +29,7 @@ func GenerateRoutes() {
 		panic(fmt.Sprintf("Failed to create gen directory: %v", err))
 	}
 
-	routesgenPath := filepath.Join(config.GenDir, "routesgen.go")
+	routesgenPath := filepath.Join(genDir, "routesgen.go")
 
 	// Collect all route imports
 	imports, err := collectAllRouteImports()
@@ -52,7 +53,7 @@ func GenerateRoutes() {
 
 	// Create template data
 	data := router.RouteTemplateData{
-		BuildPrefix:   config.BuildPrefix,
+		BuildPrefix:   config.GetBuildPrefix(),
 		Imports:       imports,
 		RouteHandlers: routeHandlers,
 	}

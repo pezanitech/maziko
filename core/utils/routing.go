@@ -14,7 +14,7 @@ func HandleRequest(w http.ResponseWriter, r *http.Request, h http.Handler) {
 
 var StaticFileHandler = http.HandlerFunc(
 	func(w http.ResponseWriter, r *http.Request) {
-		resourcePath := path.Join(config.PublicDir, r.URL.Path)
+		resourcePath := path.Join(config.GetPublicDir(), r.URL.Path)
 
 		if _, err := os.Stat(resourcePath); err == nil {
 			http.ServeFile(w, r, resourcePath) // serve file
@@ -25,6 +25,6 @@ var StaticFileHandler = http.HandlerFunc(
 )
 
 var BuildDirHandler = http.StripPrefix(
-	config.BuildPrefix,
-	http.FileServer(http.Dir(config.BuildDir)),
+	config.GetBuildPrefix(),
+	http.FileServer(http.Dir(config.GetBuildDir())),
 )

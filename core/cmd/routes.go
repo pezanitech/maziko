@@ -19,12 +19,12 @@ func collectRouteImports(path string, dirEntry os.DirEntry, err error) (string, 
 
 	if dirEntry.IsDir() {
 		// don't register routes directory
-		if path == config.RoutesDir {
+		if path == config.GetRoutesDir() {
 			return "", nil
 		}
 
 		// Build import statement for this directory
-		return fmt.Sprintf("import \"%s%s\"\n", config.PackagePrefix, path), nil
+		return fmt.Sprintf("import \"%s%s\"\n", config.GetPackagePrefix(), path), nil
 	}
 
 	return "", nil
@@ -33,7 +33,7 @@ func collectRouteImports(path string, dirEntry os.DirEntry, err error) (string, 
 // collectAllRouteImports walks through the routes directory and collects all route imports
 func collectAllRouteImports() ([]string, error) {
 	var imports []string
-	err := filepath.WalkDir(config.RoutesDir, func(path string, dirEntry os.DirEntry, err error) error {
+	err := filepath.WalkDir(config.GetRoutesDir(), func(path string, dirEntry os.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
@@ -44,7 +44,7 @@ func collectAllRouteImports() ([]string, error) {
 		}
 
 		if importStatement != "" {
-			imports = append(imports, fmt.Sprintf("\"%s%s\"", config.PackagePrefix, path))
+			imports = append(imports, fmt.Sprintf("\"%s%s\"", config.GetPackagePrefix(), path))
 			utils.Logger.Info("Adding route", "path", path)
 		}
 
@@ -59,18 +59,18 @@ func collectRouteHandlers() ([]router.RouteHandler, error) {
 	var handlers []router.RouteHandler
 	httpMethods := []string{"http.MethodGet", "http.MethodPost", "http.MethodPut", "http.MethodDelete"}
 
-	err := filepath.WalkDir(config.RoutesDir, func(path string, dirEntry os.DirEntry, err error) error {
+	err := filepath.WalkDir(config.GetRoutesDir(), func(path string, dirEntry os.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 
 		// Skip the root routes directory and non-directories
-		if path == config.RoutesDir || !dirEntry.IsDir() {
+		if path == config.GetRoutesDir() || !dirEntry.IsDir() {
 			return nil
 		}
 
 		// Get the route path by removing the routes directory prefix
-		routePath := strings.TrimPrefix(path, strings.TrimPrefix(config.RoutesDir, "./"))
+		routePath := strings.TrimPrefix(path, strings.TrimPrefix(config.GetRoutesDir(), "./"))
 		// Convert to URL path format
 		routePath = strings.ReplaceAll(routePath, "\\", "/")
 		// If it's an index route (app/routes/index), make it the root path

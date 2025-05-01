@@ -5,79 +5,115 @@ import (
 	"strings"
 	"time"
 
+	"github.com/pezanitech/maziko/core/config"
 	"github.com/pezanitech/maziko/core/utils"
 
 	inertia "github.com/romsar/gonertia"
 )
 
+// Initialize an Inertia instance based on environment
 func InitInertia() *inertia.Inertia {
-	viteHotFile := "tmp/hot"
+	if isDevMode() {
+		return initInertiaDevMode()
+	}
+	return initInertiaProdMode()
+}
 
-	// check if laravel-vite-plugin is running in dev mode
-	// it puts a "hot" file in the tmp directory
-	_, err := os.Stat(viteHotFile)
+// Check if running in dev mode
+// laravel-vite-plugin creates a tmp/hot file
+func isDevMode() bool {
+	utils.Logger.Info("Checking for development environment...")
 
-	if err != nil {
-		// retry after 3 seconds, 3 attempts
-		for i := range 3 {
-			_, err = os.Stat(viteHotFile)
-			if err == nil {
-				break
-			}
+	// Check for hot file
+	if _, err := os.Stat(config.GetHotFile()); err == nil {
+		utils.Logger.Info("Development mode detected")
+		return true
+	}
 
-			utils.Logger.Info(
-				"waiting for laravel-vite-plugin to start...",
-				"attempt", i+1,
-			)
+	// Hot file not found, wait for Vite to start up
+	utils.Logger.Info("Waiting for Vite development server to start...")
 
-			time.Sleep(3 * time.Second)
+	for attempt := 1; attempt <= config.MaxViteDetectionAttempts(); attempt++ {
+		utils.Logger.Info(
+			"Looking for Vite development server",
+			"attempt", attempt,
+			"of", config.MaxViteDetectionAttempts(),
+		)
+
+		time.Sleep(config.ViteDetectionInterval())
+
+		if _, err := os.Stat(config.GetHotFile()); err == nil {
+			utils.Logger.Info("Development mode detected")
+			return true
 		}
 	}
 
-	if err == nil {
-		i, err := inertia.New(
-			RootHTMLTemplate,
-			inertia.WithSSR(),
-		)
-		if err != nil {
-			utils.Logger.Error("failed to initialize inertia", "error", err)
-		}
+	utils.Logger.Info("Vite development server not detected, using production mode")
+	return false
+}
 
-		i.ShareTemplateFunc("vite", func(entry string) (string, error) {
-			content, err := os.ReadFile(viteHotFile)
+// Initialize Inertia in development mode with hot reloading
+func initInertiaDevMode() *inertia.Inertia {
+	i, err := inertia.New(
+		RootHTMLTemplate,
+		inertia.WithSSR(),
+	)
+	if err != nil {
+		utils.Logger.Error(
+			"failed to initialize inertia in dev mode",
+			"error", err,
+		)
+		os.Exit(1)
+	}
+
+	i.ShareTemplateFunc(
+		"vite",
+		func(entry string) (string, error) {
+			content, err := os.ReadFile(config.GetHotFile())
 			if err != nil {
 				return "", err
 			}
+
 			url := strings.TrimSpace(string(content))
+
 			if strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://") {
 				url = url[strings.Index(url, ":")+1:]
 			} else {
 				url = "//localhost:8080"
 			}
+
 			if entry != "" && !strings.HasPrefix(entry, "/") {
 				entry = "/" + entry
 			}
+
 			return url + entry, nil
-		})
+		},
+	)
 
-		i.ShareTemplateData("hmr", true)
-		return i
-	}
+	i.ShareTemplateData("hmr", true)
+	return i
+}
 
-	manifestPath := "./build/.vite/manifest.json"
-
+// Initialize Inertia in production mode
+func initInertiaProdMode() *inertia.Inertia {
 	i, err := inertia.New(
 		RootHTMLTemplate,
-		inertia.WithVersionFromFile(manifestPath),
+		inertia.WithVersionFromFile(config.GetViteManifestFile()),
 		inertia.WithSSR(),
 	)
 
 	if err != nil {
-		utils.Logger.Error("failed to initialize inertia", "error", err)
+		utils.Logger.Error(
+			"failed to initialize inertia in production mode",
+			"error", err,
+		)
 		os.Exit(1)
 	}
 
-	i.ShareTemplateFunc("vite", vite(manifestPath, "/build/"))
+	i.ShareTemplateFunc(
+		"vite",
+		vite(config.GetViteManifestFile(), config.GetBuildPrefix()),
+	)
 
 	return i
 }

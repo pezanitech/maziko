@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
+	"github.com/pezanitech/maziko/core/config"
 	"github.com/pezanitech/maziko/core/router"
 	"github.com/pezanitech/maziko/core/utils"
 	"github.com/pezanitech/maziko/gen"
@@ -12,6 +14,12 @@ import (
 )
 
 func main() {
+	// Initialize configuration
+	if err := config.Initialize(); err != nil {
+		fmt.Printf("Failed to load configuration: %v\n", err)
+		os.Exit(1)
+	}
+
 	switch {
 	case len(os.Args) > 1 && os.Args[1] == "dev":
 		cmd.RunDev()
@@ -27,12 +35,12 @@ func main() {
 
 		mux.Handle("/", i.Middleware(gen.Routes(i)))
 
-		utils.Logger.Info("Starting server on localhost:3000")
+		port := fmt.Sprintf(":%d", config.GetAppPort())
+		utils.Logger.Info("Starting server", "address", config.GetAppURL(), "port", port)
 
-		if err := http.ListenAndServe(":3000", mux); err != nil {
+		if err := http.ListenAndServe(port, mux); err != nil {
 			utils.Logger.Error("Server error", "error", err)
 			os.Exit(1)
 		}
-
 	}
 }
