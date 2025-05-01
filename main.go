@@ -50,7 +50,7 @@ func RunProd() {
 		"port", port,
 	)
 
-	if err := http.ListenAndServe(port, mux); err != nil {
+	if err := http.ListenAndServe(":"+port, mux); err != nil {
 		utils.Logger.Error(
 			"Server error",
 			"error", err,
