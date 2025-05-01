@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"github.com/pezanitech/maziko/core/config"
-	"github.com/pezanitech/maziko/core/router"
 	"github.com/pezanitech/maziko/core/utils"
 	"github.com/pezanitech/maziko/gen"
 
@@ -14,14 +13,15 @@ import (
 )
 
 func main() {
-	// Initialize config
+	// initialize config
 	if err := config.Initialize(); err != nil {
 		fmt.Printf(
-			"Failed to load configuration: %v\n", err)
+			"Failed to load configuration: %v\n", err,
+		)
 		os.Exit(1)
 	}
 
-	// Initialize logger
+	// initialize logger
 	utils.InitLogger()
 
 	switch {
@@ -37,7 +37,7 @@ func main() {
 }
 
 func RunProd() {
-	i := router.InitInertia()
+	i := cmd.InitRenderer()
 	mux := http.NewServeMux()
 	port := fmt.Sprintf("%d", config.GetAppPort())
 

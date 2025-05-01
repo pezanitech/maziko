@@ -32,10 +32,10 @@ func GenerateRoutes() {
 		))
 	}
 
-	routesgenPath := filepath.Join(genDir, "routesgen.go")
+	routesgenFile := filepath.Join(genDir, "routesgen.go")
 
 	// collect all routes to import
-	imports, err := collectAllRouteImports()
+	imports, err := router.CollectAllRouteImports()
 	if err != nil {
 		utils.Logger.Error(
 			"Error collecting route imports",
@@ -48,7 +48,7 @@ func GenerateRoutes() {
 	}
 
 	// collect route handlers for each route
-	routeHandlers, err := collectRouteHandlers()
+	routeHandlers, err := router.CollectRouteHandlers()
 	if err != nil {
 		utils.Logger.Error(
 			"Error collecting route handlers",
@@ -60,14 +60,14 @@ func GenerateRoutes() {
 		))
 	}
 
-	// create template data
-	data := router.RouteTemplateData{
+	// create template data struct
+	templateData := router.RouteTemplateData{
 		BuildPrefix:   config.GetBuildPrefix(),
 		Imports:       imports,
 		RouteHandlers: routeHandlers,
 	}
 
-	// Parse and execute the template
+	// parse and execute routes template
 	tmpl, err := template.New("routes").Parse(
 		router.RoutesTemplate,
 	)
@@ -76,29 +76,43 @@ func GenerateRoutes() {
 			"Error parsing template",
 			"error", err,
 		)
-		panic(fmt.Sprintf("Failed to parse template: %v", err))
+
+		panic(fmt.Sprintf(
+			"Failed to parse template: %v", err,
+		))
 	}
 
 	var fileContent strings.Builder
-	if err := tmpl.Execute(&fileContent, data); err != nil {
+	if err := tmpl.Execute(&fileContent, templateData); err != nil {
 		utils.Logger.Error(
 			"Error executing template",
 			"error", err,
 		)
-		panic(fmt.Sprintf("Failed to execute template: %v", err))
+
+		panic(fmt.Sprintf(
+			"Failed to execute template: %v", err,
+		))
 	}
 
-	// Log the generated content
-	utils.Logger.Info("Generated routes file content", "path", routesgenPath)
-
-	// Write the full content to the file at once
-	if err := os.WriteFile(routesgenPath, []byte(fileContent.String()), 0644); err != nil {
+	// write routesgen file
+	if err := os.WriteFile(routesgenFile, []byte(fileContent.String()), 0644); err != nil {
 		utils.Logger.Error(
-			"Error writing to routesgen.go file",
+			"Error writing to routesgen file",
+			"path", routesgenFile,
 			"error", err,
 		)
-		panic(fmt.Sprintf("Failed to write to routesgen.go: %v", err))
+
+		panic(fmt.Sprintf(
+			"Failed to write to routesgen: %v", err,
+		))
 	}
 
-	utils.Logger.Info("Routes generation completed successfully")
+	utils.Logger.Info(
+		"Generated routesgen file",
+		"path", routesgenFile,
+	)
+
+	utils.Logger.Info(
+		"Routes generation completed successfully",
+	)
 }

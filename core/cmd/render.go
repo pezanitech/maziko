@@ -1,22 +1,26 @@
-package router
+package cmd
 
 import (
+	"encoding/json"
+	"fmt"
 	"os"
+	"path"
 	"strings"
 	"time"
 
 	"github.com/pezanitech/maziko/core/config"
+	"github.com/pezanitech/maziko/core/router"
 	"github.com/pezanitech/maziko/core/utils"
 
 	inertia "github.com/romsar/gonertia"
 )
 
-// Initialize an Inertia instance based on environment
-func InitInertia() *inertia.Inertia {
+// Initialize a renderer instance based on environment
+func InitRenderer() *inertia.Inertia {
 	if isDevMode() {
-		return initInertiaDevMode()
+		return initDevRenderer()
 	}
-	return initInertiaProdMode()
+	return initProdRenderer()
 }
 
 // Check if running in dev mode
@@ -24,14 +28,16 @@ func InitInertia() *inertia.Inertia {
 func isDevMode() bool {
 	utils.Logger.Info("Checking for development environment...")
 
-	// Check for hot file
+	// check for hot file
 	if _, err := os.Stat(config.GetHotFile()); err == nil {
 		utils.Logger.Info("Development mode detected")
 		return true
 	}
 
-	// Hot file not found, wait for Vite to start up
-	utils.Logger.Info("Waiting for Vite development server to start...")
+	// hot file not found, wait for vite to start up
+	utils.Logger.Info(
+		"Waiting for Vite development server to start...",
+	)
 
 	for attempt := 1; attempt <= config.MaxViteDetectionAttempts(); attempt++ {
 		utils.Logger.Info(
@@ -48,19 +54,21 @@ func isDevMode() bool {
 		}
 	}
 
-	utils.Logger.Info("Vite development server not detected, using production mode")
+	utils.Logger.Info(
+		"Vite development server not detected, using production mode",
+	)
 	return false
 }
 
-// Initialize Inertia in development mode with hot reloading
-func initInertiaDevMode() *inertia.Inertia {
+// Initialize renderer in development mode with hot reloading
+func initDevRenderer() *inertia.Inertia {
 	i, err := inertia.New(
-		RootHTMLTemplate,
+		router.RootHTMLTemplate,
 		inertia.WithSSR(),
 	)
 	if err != nil {
 		utils.Logger.Error(
-			"failed to initialize inertia in dev mode",
+			"failed to initialize renderer in dev mode",
 			"error", err,
 		)
 		os.Exit(1)
@@ -94,17 +102,17 @@ func initInertiaDevMode() *inertia.Inertia {
 	return i
 }
 
-// Initialize Inertia in production mode
-func initInertiaProdMode() *inertia.Inertia {
+// Initialize renderer in production mode
+func initProdRenderer() *inertia.Inertia {
 	i, err := inertia.New(
-		RootHTMLTemplate,
+		router.RootHTMLTemplate,
 		inertia.WithVersionFromFile(config.GetViteManifestFile()),
 		inertia.WithSSR(),
 	)
 
 	if err != nil {
 		utils.Logger.Error(
-			"failed to initialize inertia in production mode",
+			"failed to initialize renderer in production mode",
 			"error", err,
 		)
 		os.Exit(1)
@@ -116,4 +124,46 @@ func initInertiaProdMode() *inertia.Inertia {
 	)
 
 	return i
+}
+
+// Creates a function that resolves vite asset paths from manifest
+func vite(manifestPath, buildDir string) func(path string) (string, error) {
+	manifest, err := os.Open(manifestPath)
+	if err != nil {
+		utils.Logger.Error(
+			"cannot open provided vite manifest file",
+			"error", err,
+		)
+		os.Exit(1)
+	}
+	defer manifest.Close()
+
+	viteAssets := make(map[string]*struct {
+		File   string `json:"file"`
+		Source string `json:"src"`
+	})
+
+	if err = json.NewDecoder(manifest).Decode(&viteAssets); err != nil {
+		utils.Logger.Error(
+			"cannot unmarshal vite manifest file to json",
+			"error", err,
+		)
+		os.Exit(1)
+	}
+
+	// print content of viteAssets
+	for k, v := range viteAssets {
+		utils.Logger.Info(
+			"vite asset",
+			"path", k,
+			"file", v.File,
+		)
+	}
+
+	return func(p string) (string, error) {
+		if val, ok := viteAssets[p]; ok {
+			return path.Join("/", buildDir, val.File), nil
+		}
+		return "", fmt.Errorf("asset %q not found", p)
+	}
 }

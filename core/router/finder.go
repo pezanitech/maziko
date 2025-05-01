@@ -1,4 +1,4 @@
-package cmd
+package router
 
 import (
 	"fmt"
@@ -7,12 +7,11 @@ import (
 	"strings"
 
 	"github.com/pezanitech/maziko/core/config"
-	"github.com/pezanitech/maziko/core/router"
 	"github.com/pezanitech/maziko/core/utils"
 )
 
-// collectRouteImports gathers all route imports while walking the routes directory
-func collectRouteImports(path string, dirEntry os.DirEntry, err error) (string, error) {
+// Gathers all route imports while walking the routes directory
+func CollectRouteImports(path string, dirEntry os.DirEntry, err error) (string, error) {
 	if err != nil {
 		return "", err
 	}
@@ -30,15 +29,15 @@ func collectRouteImports(path string, dirEntry os.DirEntry, err error) (string, 
 	return "", nil
 }
 
-// collectAllRouteImports walks through the routes directory and collects all route imports
-func collectAllRouteImports() ([]string, error) {
+// CollectAllRouteImports walks through the routes directory and collects all route imports
+func CollectAllRouteImports() ([]string, error) {
 	var imports []string
 	err := filepath.WalkDir(config.GetRoutesDir(), func(path string, dirEntry os.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 
-		importStatement, err := collectRouteImports(path, dirEntry, err)
+		importStatement, err := CollectRouteImports(path, dirEntry, err)
 		if err != nil {
 			return err
 		}
@@ -54,9 +53,9 @@ func collectAllRouteImports() ([]string, error) {
 	return imports, err
 }
 
-// collectRouteHandlers generates route handlers for each discovered route directory
-func collectRouteHandlers() ([]router.RouteHandler, error) {
-	var handlers []router.RouteHandler
+// CollectRouteHandlers generates route handlers for each discovered route directory
+func CollectRouteHandlers() ([]RouteHandler, error) {
+	var handlers []RouteHandler
 	httpMethods := []string{"http.MethodGet", "http.MethodPost", "http.MethodPut", "http.MethodDelete"}
 
 	err := filepath.WalkDir(config.GetRoutesDir(), func(path string, dirEntry os.DirEntry, err error) error {
@@ -85,7 +84,7 @@ func collectRouteHandlers() ([]router.RouteHandler, error) {
 		for _, method := range httpMethods {
 			// Extract method name and convert to uppercase
 			methodName := strings.ToUpper(strings.TrimPrefix(method, "http.Method"))
-			handlers = append(handlers, router.RouteHandler{
+			handlers = append(handlers, RouteHandler{
 				Path:     routePath,
 				Method:   method,
 				Package:  packageName,
