@@ -13,27 +13,6 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-var (
-	// Use config values instead of hardcoded constants
-	rootDir        = "."
-	excludeRegexes = []string{"_test.go"}
-	excludeDirs    = []string{
-		"assets",
-		"vendor",
-		"testdata",
-		"node_modules",
-		"bin",
-	}
-	includeExts = []string{
-		".go",
-		".tpl",
-		".tmpl",
-		".html",
-		".env",
-	}
-	buildDelay = 1000 * time.Millisecond
-)
-
 func RunDev() {
 	// Initialize logger before use
 	utils.InitLogger()
@@ -41,6 +20,13 @@ func RunDev() {
 	utils.Logger.Info("Starting development mode...")
 
 	// Get config values
+	rootDir := config.GetDevRootDir()
+	excludeRegexes := config.GetDevExcludeRegexes()
+	excludeDirs := config.GetDevExcludeDirs()
+	includeExts := config.GetDevIncludeExts()
+	buildDelay := config.GetDevBuildDelay()
+
+	// Get build directory values
 	tmpDir := config.GetTempDir()
 	buildDir := config.GetBuildDir()
 	ssrDir := config.GetSSRDir()

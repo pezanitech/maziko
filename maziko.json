@@ -26,5 +26,12 @@
     },
     "logger": {
         "useJson": false
+    },
+    "dev": {
+        "rootDir": ".",
+        "excludeRegexes": ["_test.go"],
+        "excludeDirs": ["assets", "vendor", "testdata", "node_modules", "bin"],
+        "includeExts": [".go", ".tpl", ".tmpl", ".html", ".env"],
+        "buildDelay": 1000
     }
 }

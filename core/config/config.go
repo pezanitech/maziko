@@ -43,6 +43,14 @@ type Config struct {
 	Logger struct {
 		UseJSON bool `json:"useJson"`
 	} `json:"logger"`
+
+	Dev struct {
+		RootDir        string   `json:"rootDir"`
+		ExcludeRegexes []string `json:"excludeRegexes"`
+		ExcludeDirs    []string `json:"excludeDirs"`
+		IncludeExts    []string `json:"includeExts"`
+		BuildDelay     int      `json:"buildDelay"`
+	} `json:"dev"`
 }
 
 // Global configuration instance
@@ -51,7 +59,7 @@ var AppConfig Config
 // Load configuration from JSON file
 func Initialize() error {
 	godotenv.Load() // load .env
-	configPath := "maziko.config.json"
+	configPath := "maziko.json"
 
 	// Allow overriding config path with .env
 	if envPath := os.Getenv("MAZIKO_CONFIG"); envPath != "" {
@@ -68,6 +76,15 @@ func Initialize() error {
 	decoder := json.NewDecoder(file)
 	if err := decoder.Decode(&AppConfig); err != nil {
 		return err
+	}
+
+	// Apply environment variable overrides if present
+	if appURL := os.Getenv("APP_URL"); appURL != "" {
+		AppConfig.App.URL = appURL
+	}
+
+	if jsonLogger := os.Getenv("JSON_LOGGER"); jsonLogger == "true" {
+		AppConfig.Logger.UseJSON = true
 	}
 
 	return nil
@@ -163,4 +180,31 @@ func GetPackagePrefix() string {
 // Returns whether JSON logging is enabled
 func UseJSONLogger() bool {
 	return AppConfig.Logger.UseJSON
+}
+
+// ---- Dev mode config getters ----
+
+// Returns the root directory for file watching
+func GetDevRootDir() string {
+	return AppConfig.Dev.RootDir
+}
+
+// Returns list of regex patterns to exclude from file watching
+func GetDevExcludeRegexes() []string {
+	return AppConfig.Dev.ExcludeRegexes
+}
+
+// Returns list of directories to exclude from file watching
+func GetDevExcludeDirs() []string {
+	return AppConfig.Dev.ExcludeDirs
+}
+
+// Returns list of file extensions to include in file watching
+func GetDevIncludeExts() []string {
+	return AppConfig.Dev.IncludeExts
+}
+
+// Returns the build delay in milliseconds
+func GetDevBuildDelay() time.Duration {
+	return time.Duration(AppConfig.Dev.BuildDelay) * time.Millisecond
 }
