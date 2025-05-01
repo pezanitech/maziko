@@ -12,46 +12,55 @@ import (
 	"github.com/pezanitech/maziko/core/utils"
 )
 
-// GenerateRoutes is the main function that orchestrates route generation
+// Generates route definitions for the application
+// The core mechanism behind maziko's routing system
 func GenerateRoutes() {
-	// Initialize logger before use
-	utils.InitLogger()
+	utils.Logger.Info(
+		"Generating routes definitions...",
+	)
 
-	utils.Logger.Info("Generating routes definitions...")
-
-	// Create directory if it doesn't exist
+	// create gen directory if it doesn't exist
 	genDir := config.GetGenDir()
 	if err := os.MkdirAll(genDir, 0755); err != nil {
 		utils.Logger.Error(
 			"Error creating gen directory",
 			"error", err,
 		)
-		panic(fmt.Sprintf("Failed to create gen directory: %v", err))
+
+		panic(fmt.Sprintf(
+			"Failed to create gen directory: %v", err,
+		))
 	}
 
 	routesgenPath := filepath.Join(genDir, "routesgen.go")
 
-	// Collect all route imports
+	// collect all routes to import
 	imports, err := collectAllRouteImports()
 	if err != nil {
 		utils.Logger.Error(
 			"Error collecting route imports",
 			"error", err,
 		)
-		panic(fmt.Sprintf("Failed to collect route imports: %v", err))
+
+		panic(fmt.Sprintf(
+			"Failed to collect route imports: %v", err,
+		))
 	}
 
-	// Collect route handlers dynamically instead of hardcoding them
+	// collect route handlers for each route
 	routeHandlers, err := collectRouteHandlers()
 	if err != nil {
 		utils.Logger.Error(
 			"Error collecting route handlers",
 			"error", err,
 		)
-		panic(fmt.Sprintf("Failed to collect route handlers: %v", err))
+
+		panic(fmt.Sprintf(
+			"Failed to collect route handlers: %v", err,
+		))
 	}
 
-	// Create template data
+	// create template data
 	data := router.RouteTemplateData{
 		BuildPrefix:   config.GetBuildPrefix(),
 		Imports:       imports,
@@ -59,7 +68,9 @@ func GenerateRoutes() {
 	}
 
 	// Parse and execute the template
-	tmpl, err := template.New("routes").Parse(router.RoutesTemplate)
+	tmpl, err := template.New("routes").Parse(
+		router.RoutesTemplate,
+	)
 	if err != nil {
 		utils.Logger.Error(
 			"Error parsing template",

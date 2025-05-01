@@ -14,33 +14,47 @@ import (
 )
 
 func main() {
-	// Initialize configuration
+	// Initialize config
 	if err := config.Initialize(); err != nil {
-		fmt.Printf("Failed to load configuration: %v\n", err)
+		fmt.Printf(
+			"Failed to load configuration: %v\n", err)
 		os.Exit(1)
 	}
+
+	// Initialize logger
+	utils.InitLogger()
 
 	switch {
 	case len(os.Args) > 1 && os.Args[1] == "dev":
 		cmd.RunDev()
+
 	case len(os.Args) > 1 && os.Args[1] == "genroutes":
 		cmd.GenerateRoutes()
+
 	default:
-		// Initialize logger before use
-		utils.InitLogger()
+		RunProd()
+	}
+}
 
-		i := router.InitInertia()
+func RunProd() {
+	i := router.InitInertia()
+	mux := http.NewServeMux()
+	port := fmt.Sprintf("%d", config.GetAppPort())
 
-		mux := http.NewServeMux()
+	// register routes
+	mux.Handle("/", i.Middleware(gen.Routes(i)))
 
-		mux.Handle("/", i.Middleware(gen.Routes(i)))
+	utils.Logger.Info(
+		"Starting server",
+		"address", config.GetAppURL(),
+		"port", port,
+	)
 
-		port := fmt.Sprintf(":%d", config.GetAppPort())
-		utils.Logger.Info("Starting server", "address", config.GetAppURL(), "port", port)
-
-		if err := http.ListenAndServe(port, mux); err != nil {
-			utils.Logger.Error("Server error", "error", err)
-			os.Exit(1)
-		}
+	if err := http.ListenAndServe(port, mux); err != nil {
+		utils.Logger.Error(
+			"Server error",
+			"error", err,
+		)
+		os.Exit(1)
 	}
 }
