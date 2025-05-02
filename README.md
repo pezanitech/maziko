@@ -161,6 +161,10 @@ The framework includes several development tools:
 - HMR for React components
 - Automatic route generation
 
+## 👥 Contributing
+
+We welcome contributions to Maziko! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to report bugs, suggest features, and submit pull requests.
+
 ## 📄 License
 
 [MIT](LICENSE)

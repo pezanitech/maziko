@@ -10,8 +10,8 @@ import (
 
 func GET(i *inertia.Inertia, w http.ResponseWriter, r *http.Request) {
 	err := i.Render(w, r, "docs", inertia.Props{
-		"line1": "Documentation Coming Soon",
-		"line2": "built with Inertia.js and Go! 💚",
+		"line1": "Documentation",
+		"line2": "Coming Soon",
 	})
 
 	if err != nil {
