@@ -12,12 +12,10 @@ import (
 	"github.com/pezanitech/maziko/core/errors"
 	"github.com/pezanitech/maziko/core/logger"
 	"github.com/pezanitech/maziko/core/router"
-
-	inertia "github.com/romsar/gonertia"
 )
 
 // Initializes an Inertia instance based on environment
-func InitRenderer() *inertia.Inertia {
+func InitRenderer() router.Inertia {
 	if isDevMode() {
 		return initDevRenderer()
 	}
@@ -43,7 +41,9 @@ func isDevMode() bool {
 
 // Attempts to detect Vite development server
 func waitForViteServer() bool {
-	logger.Log.Info("Waiting for Vite development server to start...")
+	logger.Log.Info(
+		"Waiting for Vite development server to start...",
+	)
 
 	// retry multiple times with a delay
 	for attempt := 1; attempt <= config.MaxViteDetectionAttempts(); attempt++ {
@@ -70,49 +70,50 @@ func waitForViteServer() bool {
 	return false
 }
 
-// initDevRenderer creates an Inertia renderer configured for development
-func initDevRenderer() *inertia.Inertia {
-	i, err := inertia.New(
+// Creates an Inertia instance configured for development
+func initDevRenderer() router.Inertia {
+	i, err := router.NewInertia(
 		router.RootHTMLTemplate,
-		inertia.WithSSR(),
+		router.InertiaOptions.WithSSR(),
 	)
-
 	if err != nil {
-		errors.HandleFatalError("Failed to initialize renderer in dev mode", err)
+		errors.HandleFatalError(
+			"Failed to initialize renderer in dev mode", err,
+		)
 	}
 
-	// Add the vite template function for dev mode
+	// add vite template function for dev mode
 	i.ShareTemplateFunc(
 		"vite",
 		createDevViteFunction(),
 	)
 
-	// Enable hot module reloading
+	// enable hot module reloading
 	i.ShareTemplateData("hmr", true)
 
 	return i
 }
 
-// createDevViteFunction creates a template function that resolves asset paths in development
+// Creates a template function that resolves asset paths in development
 func createDevViteFunction() func(string) (string, error) {
 	return func(entry string) (string, error) {
-		// Read the Vite hot file to get the development server URL
+		// read Vite hot file to get dev server URL
 		content, err := os.ReadFile(config.GetHotFile())
 		if err != nil {
 			return "", err
 		}
 
-		// Parse the URL from hot file content
+		// parse the URL from hot file content
 		url := strings.TrimSpace(string(content))
 
-		// Format URL consistently
+		// format URL consistently
 		if strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://") {
 			url = url[strings.Index(url, ":")+1:]
 		} else {
 			url = "//localhost:8080"
 		}
 
-		// Ensure path format is consistent
+		// ensure path format is consistent
 		if entry != "" && !strings.HasPrefix(entry, "/") {
 			entry = "/" + entry
 		}
@@ -121,12 +122,12 @@ func createDevViteFunction() func(string) (string, error) {
 	}
 }
 
-// initProdRenderer creates an Inertia renderer configured for production
-func initProdRenderer() *inertia.Inertia {
-	i, err := inertia.New(
+// Creates an Inertia instance configured for production
+func initProdRenderer() router.Inertia {
+	i, err := router.NewInertia(
 		router.RootHTMLTemplate,
-		inertia.WithVersionFromFile(config.GetViteManifestFile()),
-		inertia.WithSSR(),
+		router.InertiaOptions.WithVersionFromFile(config.GetViteManifestFile()),
+		router.InertiaOptions.WithSSR(),
 	)
 
 	if err != nil {
@@ -135,22 +136,25 @@ func initProdRenderer() *inertia.Inertia {
 		)
 	}
 
-	// Add the vite template function for production mode
+	// add the vite template function for production mode
 	i.ShareTemplateFunc(
 		"vite",
-		createProdViteFunction(config.GetViteManifestFile(), config.GetBuildPrefix()),
+		createProdViteFunction(
+			config.GetViteManifestFile(),
+			config.GetBuildPrefix(),
+		),
 	)
 
 	return i
 }
 
-// createProdViteFunction creates a template function that resolves
+// Create a template function that resolves
 // vite asset paths from manifest for production
 func createProdViteFunction(manifestPath, buildDir string) func(string) (string, error) {
-	// Load and parse the Vite manifest file
+	// load and parse the Vite manifest file
 	viteAssets := loadViteManifest(manifestPath)
 
-	// Return template function that uses the manifest to resolve asset paths
+	// template function that uses manifest to resolve asset paths
 	return func(p string) (string, error) {
 		if val, ok := viteAssets[p]; ok {
 			return path.Join("/", buildDir, val.File), nil
@@ -159,31 +163,35 @@ func createProdViteFunction(manifestPath, buildDir string) func(string) (string,
 	}
 }
 
-// loadViteManifest loads the Vite manifest file and parses it
+// Loads the Vite manifest file and parses it
 func loadViteManifest(manifestPath string) map[string]*struct {
 	File   string `json:"file"`
 	Source string `json:"src"`
 } {
-	// Open manifest file
+	// open manifest file
 	manifest, err := os.Open(manifestPath)
 	if err != nil {
-		errors.HandleFatalError("Cannot open provided vite manifest file", err)
+		errors.HandleFatalError(
+			"Cannot open provided vite manifest file", err,
+		)
 	}
 	defer manifest.Close()
 
-	// Parse manifest JSON
+	// parse manifest JSON
 	viteAssets := make(map[string]*struct {
 		File   string `json:"file"`
 		Source string `json:"src"`
 	})
 
 	if err = json.NewDecoder(manifest).Decode(&viteAssets); err != nil {
-		errors.HandleFatalError("Cannot unmarshal vite manifest file to JSON", err)
+		errors.HandleFatalError(
+			"Cannot unmarshal vite manifest file to JSON", err,
+		)
 	}
 
-	// Log available assets for debugging
+	// log available assets for debugging
 	for k, v := range viteAssets {
-		logger.Log.Info(
+		logger.Log.Debug(
 			"Vite asset",
 			"path", k,
 			"file", v.File,

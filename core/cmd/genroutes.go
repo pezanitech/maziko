@@ -12,8 +12,8 @@ import (
 	"github.com/pezanitech/maziko/core/router"
 )
 
-// GenerateRoutes creates route definitions for the application
-// This is the core mechanism behind maziko's routing system
+// Generates route definitions for the application
+// The core mechanism behind Maziko's routing system
 func GenerateRoutes() {
 	logger.Log.Info("Generating routes definitions...")
 

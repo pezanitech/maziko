@@ -7,12 +7,11 @@ import (
 
 	"github.com/pezanitech/maziko/core/errors"
 	"github.com/pezanitech/maziko/core/logger"
-	inertia "github.com/romsar/gonertia"
 )
 
 // Renders a page with the provided props,
 // can optionally be specified with component parameter
-func RenderPage(i *inertia.Inertia, w http.ResponseWriter, r *http.Request, props inertia.Props, component ...string) {
+func RenderPage(i Inertia, w http.ResponseWriter, r *http.Request, props Props, component ...string) {
 	componentName := ""
 
 	if len(component) > 0 && component[0] != "" {
@@ -46,7 +45,7 @@ func RenderPage(i *inertia.Inertia, w http.ResponseWriter, r *http.Request, prop
 	)
 
 	// render the page
-	err := i.Render(w, r, componentName, props)
+	err := RenderInertiaPage(i, w, r, componentName, props)
 	if err != nil {
 		errors.HandleServerErr(w, err)
 	}

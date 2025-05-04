@@ -6,18 +6,14 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/pezanitech/maziko/core/config"
 	"github.com/pezanitech/maziko/core/logger"
-	inertia "github.com/romsar/gonertia"
 )
 
-type InertiaHTTPHandler func(
-	*inertia.Inertia,
-	http.ResponseWriter,
-	*http.Request,
-)
+// InertiaHTTPHandler is now using our abstracted type
+type InertiaHTTPHandler = InertiaHandler
 
 type AppRouter struct {
 	Router   *chi.Mux
-	renderer *inertia.Inertia
+	renderer Inertia
 }
 
 // Global appRouter instance
@@ -27,7 +23,7 @@ var appRouter AppRouter
 var routeComponents map[string]string
 
 // Initializes and returns a global AppRouter instance
-func InitRouter(i *inertia.Inertia) AppRouter {
+func InitRouter(i Inertia) AppRouter {
 	appRouter = AppRouter{
 		Router:   chi.NewRouter(),
 		renderer: i,

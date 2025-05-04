@@ -14,32 +14,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-// RunDev starts the application in development mode with hot reloading
-func RunDev() {
-	logger.Log.Info("Starting development mode...")
-
-	// Configure development environment
-	setupConfig := newDevConfig()
-
-	// Set up file watcher
-	watcher := setupFileWatcher()
-	defer watcher.Close()
-
-	// Start initial build and set up watch directories
-	var cmd *exec.Cmd
-	buildAndRun := createBuildAndRunFunc(setupConfig.binPath, &cmd)
-
-	// Initial build and run
-	buildAndRun()
-
-	// Add directories to watch
-	addDirectoriesToWatch(watcher, setupConfig)
-
-	// Watch for file changes
-	watchForChanges(watcher, setupConfig, buildAndRun)
-}
-
-// devConfig holds all configuration parameters for dev mode
+// Holds all configuration parameters for dev mode
 type devConfig struct {
 	rootDir        string
 	excludeRegexes []string
@@ -52,30 +27,57 @@ type devConfig struct {
 	buildCmd       string
 }
 
-// newDevConfig loads all configuration settings for development mode
+// Starts the app in dev mode with hot reloading
+func RunDev() {
+	logger.Log.Info("Starting development mode...")
+
+	// configure development environment
+	setupConfig := newDevConfig()
+
+	// set up file watcher
+	watcher := setupFileWatcher()
+	defer watcher.Close()
+
+	// start initial build and set up watch directories
+	var cmd *exec.Cmd
+	buildAndRun := createBuildAndRunFunc(setupConfig.binPath, &cmd)
+
+	// initial build and run
+	buildAndRun()
+
+	// add directories to watch
+	addDirectoriesToWatch(watcher, setupConfig)
+
+	// watch for file changes
+	watchForChanges(watcher, setupConfig, buildAndRun)
+}
+
+// Creates an instance of devConfig with global config values
 func newDevConfig() devConfig {
-	// Get config values
+	// get config values
 	rootDir := config.GetDevRootDir()
 	excludeRegexes := config.GetDevExcludeRegexes()
 	excludeDirs := config.GetDevExcludeDirs()
 	includeExts := config.GetDevIncludeExts()
 	buildDelay := config.GetDevBuildDelay()
 
-	// Get build directory values
+	// get build directory values
 	tmpDir := config.GetTempDir()
 	buildDir := config.GetBuildDir()
 	ssrDir := config.GetSSRDir()
 
-	// Add the build directories to excludeDirs
+	// add the build directories to excludeDirs
 	excludeDirs = append(excludeDirs, tmpDir, buildDir, ssrDir)
 
-	// Set binary path to be inside the temp directory
+	// set binary output path to temp directory
 	binPath := filepath.Join(tmpDir, "main")
 	buildCmd := "go build -o " + binPath + " ."
 
-	// Create temp directory if it doesn't exist
+	// create temp directory if it doesn't exist
 	if err := os.MkdirAll(tmpDir, 0755); err != nil {
-		errors.HandleFatalError("Failed to create tmp directory", err)
+		errors.HandleFatalError(
+			"Failed to create tmp directory", err,
+		)
 	}
 
 	return devConfig{
@@ -91,70 +93,84 @@ func newDevConfig() devConfig {
 	}
 }
 
-// setupFileWatcher creates and configures a new file watcher
+// Createss a new file watcher
 func setupFileWatcher() *fsnotify.Watcher {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		errors.HandleFatalError("Failed to create file watcher", err)
+		errors.HandleFatalError(
+			"Failed to create file watcher", err,
+		)
 	}
 	return watcher
 }
 
-// createBuildAndRunFunc returns a function that builds and runs the application
+// Creates a function to build and run the application
 func createBuildAndRunFunc(binPath string, cmdRef **exec.Cmd) func() {
 	return func() {
-		// Kill any running process
+		// kill any running process
 		stopProcess(cmdRef)
 
-		// Build and run the application
+		// build and run the application
 		if buildApp(binPath) {
 			startApp(binPath, cmdRef)
 		}
 	}
 }
 
-// stopProcess kills the currently running process if it exists
+// Kills the currently running process if it exists
 func stopProcess(cmdRef **exec.Cmd) {
 	cmd := *cmdRef
+
 	if cmd != nil && cmd.Process != nil {
 		logger.Log.Info("Stopping process...")
 
 		if err := cmd.Process.Kill(); err != nil {
-			logger.Log.Error("Failed to kill process", "error", err)
+			logger.Log.Error(
+				"Failed to kill process",
+				"error", err,
+			)
 		}
 		cmd.Wait() // Wait for process to exit
 	}
 }
 
-// buildApp executes the build command for the application
+// Executes the build command for the app
 func buildApp(binPath string) bool {
 	logger.Log.Info("Building application...")
+
 	buildCmdExec := exec.Command("sh", "-c", "go build -o "+binPath+" .")
 	buildCmdExec.Stdout = os.Stdout
 	buildCmdExec.Stderr = os.Stderr
 
 	if err := buildCmdExec.Run(); err != nil {
-		logger.Log.Error("Build failed", "error", err)
+		logger.Log.Error(
+			"Build failed",
+			"error", err,
+		)
 		return false
 	}
 	return true
 }
 
-// startApp runs the built application
+// Runs the built application
 func startApp(binPath string, cmdRef **exec.Cmd) {
 	logger.Log.Info("Starting application...")
+
 	cmd := exec.Command(binPath)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
 	if err := cmd.Start(); err != nil {
-		logger.Log.Error("Failed to start application", "error", err)
+		logger.Log.Error(
+			"Failed to start application",
+			"error", err,
+		)
 		return
 	}
 	*cmdRef = cmd
 }
 
-// addDirectoriesToWatch walks through the project and adds directories to the watcher
+// Walks the project and adds directories to the watcher
 func addDirectoriesToWatch(watcher *fsnotify.Watcher, config devConfig) {
 	err := filepath.Walk(
 		config.rootDir,
@@ -174,11 +190,13 @@ func addDirectoriesToWatch(watcher *fsnotify.Watcher, config devConfig) {
 		})
 
 	if err != nil {
-		errors.HandleFatalError("Failed to add directories to watcher", err)
+		errors.HandleFatalError(
+			"Failed to add directories to watcher", err,
+		)
 	}
 }
 
-// shouldSkipDir checks if a directory should be excluded from watching
+// Checks if a directory should be excluded from watching
 func shouldSkipDir(path string, excludeDirs []string) bool {
 	for _, excludeDir := range excludeDirs {
 		if strings.Contains(path, excludeDir) {
@@ -188,9 +206,9 @@ func shouldSkipDir(path string, excludeDirs []string) bool {
 	return false
 }
 
-// watchForChanges monitors file changes and triggers rebuilds when needed
+// Monitors file changes and triggers rebuilds when needed
 func watchForChanges(watcher *fsnotify.Watcher, config devConfig, buildAndRun func()) {
-	// Timer for debouncing
+	// timer for debouncing
 	var debounceTimer *time.Timer
 
 	logger.Log.Info("Watching for file changes...")
@@ -206,34 +224,59 @@ func watchForChanges(watcher *fsnotify.Watcher, config devConfig, buildAndRun fu
 				continue
 			}
 
-			// Check if the event is a file modification
+			// check if the event is a file modification
 			if event.Op&fsnotify.Write == fsnotify.Write {
-				logger.Log.Info("File modified", "file", event.Name)
-				debounceRebuild(event.Name, &debounceTimer, config.buildDelay, buildAndRun)
+				logger.Log.Info(
+					"File modified",
+					"file", event.Name,
+				)
+
+				debounceRebuild(
+					&debounceTimer,
+					config.buildDelay,
+					event.Name,
+					buildAndRun,
+				)
 			}
 
 		case err, ok := <-watcher.Errors:
 			if !ok {
 				return
 			}
-			logger.Log.Error("Watcher error", "error", err)
+			logger.Log.Error(
+				"Watcher error",
+				"error", err,
+			)
 		}
 	}
 }
 
 // debounceRebuild delays rebuilding to avoid multiple rapid rebuilds
-func debounceRebuild(filename string, timerRef **time.Timer, delay time.Duration, buildFunc func()) {
-	// Reset the debounce timer
+func debounceRebuild(
+	timerRef **time.Timer,
+	delay time.Duration,
+	filename string,
+	buildFunc func(),
+) {
+	// log which file triggered the rebuild
+	logger.Log.Debug(
+		"Scheduling rebuild",
+		"trigger", filename,
+		"delay", delay,
+	)
+
+	// reset the debounce timer
 	if *timerRef != nil {
 		(*timerRef).Stop()
 	}
 	*timerRef = time.AfterFunc(delay, buildFunc)
 }
 
-// shouldSkipFile determines if a file should be ignored based on extension and patterns
+// Checks if file should be ignored based on extension and patterns
 func shouldSkipFile(filename string, config devConfig) bool {
-	// Check if the file has one of the included extensions
+	// check if file has an included extension
 	hasIncludedExt := false
+
 	for _, ext := range config.includeExts {
 		if strings.HasSuffix(filename, ext) {
 			hasIncludedExt = true
@@ -241,12 +284,12 @@ func shouldSkipFile(filename string, config devConfig) bool {
 		}
 	}
 
-	// Skip files that don't have included extensions
+	// skip files without included extensions
 	if !hasIncludedExt {
 		return true
 	}
 
-	// Skip files that match exclude regexes
+	// skip files that match exclude regexes
 	for _, excludeRegex := range config.excludeRegexes {
 		if strings.Contains(filename, excludeRegex) {
 			return true
