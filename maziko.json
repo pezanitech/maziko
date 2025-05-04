@@ -25,13 +25,14 @@
         "prefix": "github.com/pezanitech/maziko/"
     },
     "logger": {
-        "useJson": false
+        "type": "concise",
+        "level": "debug"
     },
     "dev": {
         "rootDir": ".",
         "excludeRegexes": ["_test.go"],
         "excludeDirs": ["assets", "vendor", "testdata", "node_modules", "bin"],
-        "includeExts": [".go", ".tpl", ".tmpl", ".html", ".env"],
+        "includeExts": [".go", ".tpl", ".tmpl", ".html", ".env", "maziko.json"],
         "buildDelay": 1000
     }
 }

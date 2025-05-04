@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/pezanitech/maziko/core/config"
+	"github.com/pezanitech/maziko/core/logger"
 	"github.com/pezanitech/maziko/core/router"
 	"github.com/pezanitech/maziko/core/utils"
 
@@ -26,11 +27,11 @@ func InitRenderer() *inertia.Inertia {
 // isDevMode determines if the application is running in development mode
 // In development, Vite creates a tmp/hot file that we can detect
 func isDevMode() bool {
-	utils.Logger.Info("Checking for development environment...")
+	logger.Logger.Info("Checking for development environment...")
 
 	// Check for hot file - immediate indicator of dev mode
 	if _, err := os.Stat(config.GetHotFile()); err == nil {
-		utils.Logger.Info("Development mode detected")
+		logger.Logger.Info("Development mode detected")
 		return true
 	}
 
@@ -40,11 +41,11 @@ func isDevMode() bool {
 
 // waitForViteServer attempts to detect a starting Vite development server
 func waitForViteServer() bool {
-	utils.Logger.Info("Waiting for Vite development server to start...")
+	logger.Logger.Info("Waiting for Vite development server to start...")
 
 	// Retry multiple times with a delay
 	for attempt := 1; attempt <= config.MaxViteDetectionAttempts(); attempt++ {
-		utils.Logger.Info(
+		logger.Logger.Info(
 			"Looking for Vite development server",
 			"attempt", attempt,
 			"of", config.MaxViteDetectionAttempts(),
@@ -54,12 +55,12 @@ func waitForViteServer() bool {
 
 		// Check again for hot file
 		if _, err := os.Stat(config.GetHotFile()); err == nil {
-			utils.Logger.Info("Development mode detected")
+			logger.Logger.Info("Development mode detected")
 			return true
 		}
 	}
 
-	utils.Logger.Info("Vite development server not detected, using production mode")
+	logger.Logger.Info("Vite development server not detected, using production mode")
 	return false
 }
 
@@ -69,13 +70,9 @@ func initDevRenderer() *inertia.Inertia {
 		router.RootHTMLTemplate,
 		inertia.WithSSR(),
 	)
-	
+
 	if err != nil {
-		utils.Logger.Error(
-			"Failed to initialize renderer in dev mode",
-			"error", err,
-		)
-		os.Exit(1)
+		utils.HandleFatalError("Failed to initialize renderer in dev mode", err)
 	}
 
 	// Add the vite template function for dev mode
@@ -86,7 +83,7 @@ func initDevRenderer() *inertia.Inertia {
 
 	// Enable hot module reloading
 	i.ShareTemplateData("hmr", true)
-	
+
 	return i
 }
 
@@ -127,11 +124,9 @@ func initProdRenderer() *inertia.Inertia {
 	)
 
 	if err != nil {
-		utils.Logger.Error(
-				"Failed to initialize renderer in production mode",
-				"error", err,
+		utils.HandleFatalError(
+			"Failed to initialize renderer in production mode", err,
 		)
-		os.Exit(1)
 	}
 
 	// Add the vite template function for production mode
@@ -148,7 +143,7 @@ func initProdRenderer() *inertia.Inertia {
 func createProdViteFunction(manifestPath, buildDir string) func(string) (string, error) {
 	// Load and parse the Vite manifest file
 	viteAssets := loadViteManifest(manifestPath)
-	
+
 	// Return template function that uses the manifest to resolve asset paths
 	return func(p string) (string, error) {
 		if val, ok := viteAssets[p]; ok {
@@ -166,11 +161,7 @@ func loadViteManifest(manifestPath string) map[string]*struct {
 	// Open manifest file
 	manifest, err := os.Open(manifestPath)
 	if err != nil {
-		utils.Logger.Error(
-			"Cannot open provided vite manifest file",
-			"error", err,
-		)
-		os.Exit(1)
+		utils.HandleFatalError("Cannot open provided vite manifest file", err)
 	}
 	defer manifest.Close()
 
@@ -181,16 +172,12 @@ func loadViteManifest(manifestPath string) map[string]*struct {
 	})
 
 	if err = json.NewDecoder(manifest).Decode(&viteAssets); err != nil {
-		utils.Logger.Error(
-			"Cannot unmarshal vite manifest file to JSON",
-			"error", err,
-		)
-		os.Exit(1)
+		utils.HandleFatalError("Cannot unmarshal vite manifest file to JSON", err)
 	}
 
 	// Log available assets for debugging
 	for k, v := range viteAssets {
-		utils.Logger.Info(
+		logger.Logger.Info(
 			"Vite asset",
 			"path", k,
 			"file", v.File,

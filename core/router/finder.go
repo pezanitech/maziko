@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/pezanitech/maziko/core/config"
-	"github.com/pezanitech/maziko/core/utils"
+	"github.com/pezanitech/maziko/core/logger"
 )
 
 // Collects routes to import
@@ -29,7 +29,7 @@ func FindRouteImports() ([]string, error) {
 			if importStmt != "" {
 				imports = append(imports, importStmt)
 
-				utils.Logger.Info(
+				logger.Logger.Info(
 					"Adding route import",
 					"path", path,
 				)
@@ -82,7 +82,7 @@ func FindRouteHandlers() ([]RouteHandler, error) {
 
 			handlers = append(handlers, handler)
 
-			utils.Logger.Info(
+			logger.Logger.Info(
 				"Added route handler",
 				"path", handler.Path,
 				"package", handler.Package,

@@ -2,7 +2,9 @@ package config
 
 import (
 	"encoding/json"
+	"log/slog"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -41,7 +43,8 @@ type Config struct {
 	} `json:"package"`
 
 	Logger struct {
-		UseJSON bool `json:"useJson"`
+		Type  string `json:"type"` // "text" (default), "json", or "concise"
+		Level string `json:"level"`
 	} `json:"logger"`
 
 	Dev struct {
@@ -83,8 +86,12 @@ func Initialize() error {
 		AppConfig.App.URL = appURL
 	}
 
-	if jsonLogger := os.Getenv("JSON_LOGGER"); jsonLogger == "true" {
-		AppConfig.Logger.UseJSON = true
+	if loggerType := os.Getenv("LOGGER_TYPE"); loggerType != "" {
+		AppConfig.Logger.Type = loggerType
+	}
+
+	if logLevel := os.Getenv("LOG_LEVEL"); logLevel != "" {
+		AppConfig.Logger.Level = logLevel
 	}
 
 	return nil
@@ -177,9 +184,35 @@ func GetPackagePrefix() string {
 
 // ---- Logger config getters ----
 
-// Returns whether JSON logging is enabled
-func UseJSONLogger() bool {
-	return AppConfig.Logger.UseJSON
+// Returns the logger type (text, json, or concise)
+func GetLoggerType() string {
+	logType := strings.ToLower(AppConfig.Logger.Type)
+
+	// Default to text if not specified or invalid
+	if logType != "text" && logType != "json" && logType != "concise" {
+		return "text"
+	}
+
+	return logType
+}
+
+// Returns the configured log level
+func GetLogLevel() slog.Level {
+	level := strings.ToLower(AppConfig.Logger.Level)
+
+	switch level {
+	case "debug":
+		return slog.LevelDebug
+	case "info":
+		return slog.LevelInfo
+	case "warn", "warning":
+		return slog.LevelWarn
+	case "error":
+		return slog.LevelError
+	default:
+		// use info if unspecified or invalid
+		return slog.LevelInfo
+	}
 }
 
 // ---- Dev mode config getters ----

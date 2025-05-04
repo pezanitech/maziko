@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/pezanitech/maziko/core/config"
+	"github.com/pezanitech/maziko/core/logger"
 	"github.com/pezanitech/maziko/core/router"
-	"github.com/pezanitech/maziko/core/utils"
 	"github.com/pezanitech/maziko/gen"
 
 	"github.com/pezanitech/maziko/core/cmd"
@@ -23,7 +23,7 @@ func main() {
 	}
 
 	// initialize logger
-	utils.InitLogger()
+	logger.InitLogger()
 
 	switch {
 	case len(os.Args) > 1 && os.Args[1] == "dev":
@@ -45,14 +45,14 @@ func RunProd() {
 
 	gen.Routes()
 
-	utils.Logger.Info(
+	logger.Logger.Info(
 		"Starting server",
 		"address", config.GetAppURL(),
 		"port", port,
 	)
 
 	if err := http.ListenAndServe(":"+port, appRouter.Router); err != nil {
-		utils.Logger.Error(
+		logger.Logger.Error(
 			"Server error",
 			"error", err,
 		)

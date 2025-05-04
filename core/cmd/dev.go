@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/pezanitech/maziko/core/config"
+	"github.com/pezanitech/maziko/core/logger"
 	"github.com/pezanitech/maziko/core/utils"
 
 	"github.com/fsnotify/fsnotify"
@@ -15,7 +16,7 @@ import (
 
 // RunDev starts the application in development mode with hot reloading
 func RunDev() {
-	utils.Logger.Info("Starting development mode...")
+	logger.Logger.Info("Starting development mode...")
 
 	// Configure development environment
 	setupConfig := newDevConfig()
@@ -74,8 +75,7 @@ func newDevConfig() devConfig {
 
 	// Create temp directory if it doesn't exist
 	if err := os.MkdirAll(tmpDir, 0755); err != nil {
-		utils.Logger.Error("Failed to create tmp directory", "error", err)
-		os.Exit(1)
+		utils.HandleFatalError("Failed to create tmp directory", err)
 	}
 
 	return devConfig{
@@ -95,8 +95,7 @@ func newDevConfig() devConfig {
 func setupFileWatcher() *fsnotify.Watcher {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		utils.Logger.Error("Failed to create file watcher", "error", err)
-		os.Exit(1)
+		utils.HandleFatalError("Failed to create file watcher", err)
 	}
 	return watcher
 }
@@ -105,37 +104,54 @@ func setupFileWatcher() *fsnotify.Watcher {
 func createBuildAndRunFunc(binPath string, cmdRef **exec.Cmd) func() {
 	return func() {
 		// Kill any running process
-		cmd := *cmdRef
-		if cmd != nil && cmd.Process != nil {
-			utils.Logger.Info("Stopping process...")
+		stopProcess(cmdRef)
 
-			if err := cmd.Process.Kill(); err != nil {
-				utils.Logger.Error("Failed to kill process", "error", err)
-			}
-			cmd.Wait() // Wait for process to exit
+		// Build and run the application
+		if buildApp(binPath) {
+			startApp(binPath, cmdRef)
 		}
-
-		// Build the application
-		utils.Logger.Info("Building application...")
-		buildCmdExec := exec.Command("sh", "-c", "go build -o "+binPath+" .")
-		buildCmdExec.Stdout = os.Stdout
-		buildCmdExec.Stderr = os.Stderr
-		if err := buildCmdExec.Run(); err != nil {
-			utils.Logger.Error("Build failed", "error", err)
-			return
-		}
-
-		// Run the application
-		utils.Logger.Info("Starting application...")
-		cmd = exec.Command(binPath)
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		if err := cmd.Start(); err != nil {
-			utils.Logger.Error("Failed to start application", "error", err)
-			return
-		}
-		*cmdRef = cmd
 	}
+}
+
+// stopProcess kills the currently running process if it exists
+func stopProcess(cmdRef **exec.Cmd) {
+	cmd := *cmdRef
+	if cmd != nil && cmd.Process != nil {
+		logger.Logger.Info("Stopping process...")
+
+		if err := cmd.Process.Kill(); err != nil {
+			logger.Logger.Error("Failed to kill process", "error", err)
+		}
+		cmd.Wait() // Wait for process to exit
+	}
+}
+
+// buildApp executes the build command for the application
+func buildApp(binPath string) bool {
+	logger.Logger.Info("Building application...")
+	buildCmdExec := exec.Command("sh", "-c", "go build -o "+binPath+" .")
+	buildCmdExec.Stdout = os.Stdout
+	buildCmdExec.Stderr = os.Stderr
+
+	if err := buildCmdExec.Run(); err != nil {
+		logger.Logger.Error("Build failed", "error", err)
+		return false
+	}
+	return true
+}
+
+// startApp runs the built application
+func startApp(binPath string, cmdRef **exec.Cmd) {
+	logger.Logger.Info("Starting application...")
+	cmd := exec.Command(binPath)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	if err := cmd.Start(); err != nil {
+		logger.Logger.Error("Failed to start application", "error", err)
+		return
+	}
+	*cmdRef = cmd
 }
 
 // addDirectoriesToWatch walks through the project and adds directories to the watcher
@@ -149,10 +165,8 @@ func addDirectoriesToWatch(watcher *fsnotify.Watcher, config devConfig) {
 
 			// Skip excluded directories
 			if info.IsDir() {
-				for _, excludeDir := range config.excludeDirs {
-					if strings.Contains(path, excludeDir) {
-						return filepath.SkipDir
-					}
+				if shouldSkipDir(path, config.excludeDirs) {
+					return filepath.SkipDir
 				}
 				return watcher.Add(path)
 			}
@@ -160,9 +174,18 @@ func addDirectoriesToWatch(watcher *fsnotify.Watcher, config devConfig) {
 		})
 
 	if err != nil {
-		utils.Logger.Error("Failed to add directories to watcher", "error", err)
-		os.Exit(1)
+		utils.HandleFatalError("Failed to add directories to watcher", err)
 	}
+}
+
+// shouldSkipDir checks if a directory should be excluded from watching
+func shouldSkipDir(path string, excludeDirs []string) bool {
+	for _, excludeDir := range excludeDirs {
+		if strings.Contains(path, excludeDir) {
+			return true
+		}
+	}
+	return false
 }
 
 // watchForChanges monitors file changes and triggers rebuilds when needed
@@ -170,7 +193,7 @@ func watchForChanges(watcher *fsnotify.Watcher, config devConfig, buildAndRun fu
 	// Timer for debouncing
 	var debounceTimer *time.Timer
 
-	utils.Logger.Info("Watching for file changes...")
+	logger.Logger.Info("Watching for file changes...")
 
 	for {
 		select {
@@ -185,22 +208,26 @@ func watchForChanges(watcher *fsnotify.Watcher, config devConfig, buildAndRun fu
 
 			// Check if the event is a file modification
 			if event.Op&fsnotify.Write == fsnotify.Write {
-				utils.Logger.Info("File modified", "file", event.Name)
-
-				// Reset the debounce timer
-				if debounceTimer != nil {
-					debounceTimer.Stop()
-				}
-				debounceTimer = time.AfterFunc(config.buildDelay, buildAndRun)
+				logger.Logger.Info("File modified", "file", event.Name)
+				debounceRebuild(event.Name, &debounceTimer, config.buildDelay, buildAndRun)
 			}
 
 		case err, ok := <-watcher.Errors:
 			if !ok {
 				return
 			}
-			utils.Logger.Error("Watcher error", "error", err)
+			logger.Logger.Error("Watcher error", "error", err)
 		}
 	}
+}
+
+// debounceRebuild delays rebuilding to avoid multiple rapid rebuilds
+func debounceRebuild(filename string, timerRef **time.Timer, delay time.Duration, buildFunc func()) {
+	// Reset the debounce timer
+	if *timerRef != nil {
+		(*timerRef).Stop()
+	}
+	*timerRef = time.AfterFunc(delay, buildFunc)
 }
 
 // shouldSkipFile determines if a file should be ignored based on extension and patterns

@@ -2,12 +2,10 @@ package router
 
 import (
 	"net/http"
-	"runtime"
-	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/pezanitech/maziko/core/config"
-	"github.com/pezanitech/maziko/core/utils"
+	"github.com/pezanitech/maziko/core/logger"
 	inertia "github.com/romsar/gonertia"
 )
 
@@ -21,17 +19,29 @@ type InertiaHTTPHandler func(*inertia.Inertia, http.ResponseWriter, *http.Reques
 // Global router instance
 var appRouter AppRouter
 
+// Stores route component names for handlers
+var routeComponents map[string]string
+
 func InitRouter(i *inertia.Inertia) AppRouter {
 	appRouter = AppRouter{
 		Router:   chi.NewRouter(),
 		renderer: i,
 	}
 
-	// Serve static files from public directory
-	fileServer(appRouter.Router, "/", http.Dir(config.GetPublicDir()))
+	// Initialize the route components map
+	routeComponents = make(map[string]string)
 
-	// Serve build artifacts
-	fileServer(appRouter.Router, config.GetBuildPrefix(), http.Dir(config.GetBuildDir()))
+	fileServer( // Serve static files (app/public/)
+		appRouter.Router,
+		"/",
+		http.Dir(config.GetPublicDir()),
+	)
+
+	fileServer( // Serve build artifacts (build/)
+		appRouter.Router,
+		config.GetBuildPrefix(),
+		http.Dir(config.GetBuildDir()),
+	)
 
 	return appRouter
 }
@@ -42,69 +52,34 @@ func fileServer(r chi.Router, path string, root http.FileSystem) {
 		path += "/"
 	}
 
-	fs := http.StripPrefix(path, http.FileServer(root))
+	fileServer := http.StripPrefix(path, http.FileServer(root))
 
 	r.Get(path+"*", func(w http.ResponseWriter, r *http.Request) {
-		utils.Logger.Debug(
+		logger.Logger.Debug(
 			"Serving static file",
 			"path", r.URL.Path,
 		)
-		fs.ServeHTTP(w, r)
+		fileServer.ServeHTTP(w, r)
 	})
 }
 
 // Registers a GET route handler
 func GET(handler InertiaHTTPHandler) {
 	routePath := determineRoutePath()
+	componentName := determineComponentName()
 
-	utils.Logger.Info(
+	logger.Logger.Info(
 		"Registering route",
 		"path", routePath,
+		"component", componentName,
 	)
+
+	// store component name for this route
+	routeComponents[routePath] = componentName
 
 	appRouter.Router.Get(routePath,
 		func(w http.ResponseWriter, r *http.Request) {
 			handler(appRouter.renderer, w, r)
 		},
 	)
-}
-
-// Extracts a routes path
-func determineRoutePath() string {
-	pc, _, _, ok := runtime.Caller(2)
-	if !ok {
-		utils.Logger.Warn(
-			"Could not determine route path, using root path",
-		)
-		return "/"
-	}
-
-	callerFunction := runtime.FuncForPC(pc).Name()
-
-	utils.Logger.Debug(
-		"Route caller function",
-		"function", callerFunction,
-	)
-
-	// extract the package path
-	parts := strings.Split(callerFunction, "/")
-
-	if len(parts) >= 2 {
-		lastPart := parts[len(parts)-1]
-		pkgFunc := strings.Split(lastPart, ".")
-
-		if len(pkgFunc) >= 1 {
-			pkgName := pkgFunc[0]
-			if pkgName == "index" {
-				return "/"
-			}
-			return "/" + pkgName
-		}
-	}
-
-	utils.Logger.Warn(
-		"Could not parse route path from caller, using root path",
-	)
-
-	return "/"
 }
