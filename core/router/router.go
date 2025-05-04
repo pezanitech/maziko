@@ -16,28 +16,29 @@ type AppRouter struct {
 
 type InertiaHTTPHandler func(*inertia.Inertia, http.ResponseWriter, *http.Request)
 
-// Global router instance
+// Global appRouter instance
 var appRouter AppRouter
 
 // Stores route component names for handlers
 var routeComponents map[string]string
 
+// Initializes and returns a global AppRouter instance
 func InitRouter(i *inertia.Inertia) AppRouter {
 	appRouter = AppRouter{
 		Router:   chi.NewRouter(),
 		renderer: i,
 	}
 
-	// Initialize the route components map
+	// initialize route components map
 	routeComponents = make(map[string]string)
 
-	fileServer( // Serve static files (app/public/)
+	fileServer( // serve static files (app/public/)
 		appRouter.Router,
 		"/",
 		http.Dir(config.GetPublicDir()),
 	)
 
-	fileServer( // Serve build artifacts (build/)
+	fileServer( // serve build artifacts (build/)
 		appRouter.Router,
 		config.GetBuildPrefix(),
 		http.Dir(config.GetBuildDir()),
@@ -46,7 +47,7 @@ func InitRouter(i *inertia.Inertia) AppRouter {
 	return appRouter
 }
 
-// Helper function to serve files from a directory
+// serves files from a directory
 func fileServer(r chi.Router, path string, root http.FileSystem) {
 	if path != "/" && path[len(path)-1] != '/' {
 		path += "/"
@@ -63,7 +64,7 @@ func fileServer(r chi.Router, path string, root http.FileSystem) {
 	})
 }
 
-// Registers a GET route handler
+// Registers a GET request handler for a route
 func GET(handler InertiaHTTPHandler) {
 	routePath := determineRoutePath()
 	componentName := determineComponentName()
