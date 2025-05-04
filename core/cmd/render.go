@@ -16,7 +16,7 @@ import (
 	inertia "github.com/romsar/gonertia"
 )
 
-// InitRenderer creates and configures an Inertia renderer instance based on environment
+// Initializes an Inertia instance based on environment
 func InitRenderer() *inertia.Inertia {
 	if isDevMode() {
 		return initDevRenderer()
@@ -24,26 +24,28 @@ func InitRenderer() *inertia.Inertia {
 	return initProdRenderer()
 }
 
-// isDevMode determines if the application is running in development mode
-// In development, Vite creates a tmp/hot file that we can detect
+// Checks whether application is running in dev mode
+// In dev mode, Vite creates a tmp/hot file
 func isDevMode() bool {
-	logger.Log.Info("Checking for development environment...")
+	logger.Log.Info(
+		"Checking for development environment...",
+	)
 
-	// Check for hot file - immediate indicator of dev mode
+	// check for hot file - immediate indicator of dev mode
 	if _, err := os.Stat(config.GetHotFile()); err == nil {
 		logger.Log.Info("Development mode detected")
 		return true
 	}
 
-	// Hot file not found - wait for Vite server to start
+	// hot file not found - wait for Vite server to start
 	return waitForViteServer()
 }
 
-// waitForViteServer attempts to detect a starting Vite development server
+// Attempts to detect Vite development server
 func waitForViteServer() bool {
 	logger.Log.Info("Waiting for Vite development server to start...")
 
-	// Retry multiple times with a delay
+	// retry multiple times with a delay
 	for attempt := 1; attempt <= config.MaxViteDetectionAttempts(); attempt++ {
 		logger.Log.Info(
 			"Looking for Vite development server",
@@ -53,14 +55,18 @@ func waitForViteServer() bool {
 
 		time.Sleep(config.ViteDetectionInterval())
 
-		// Check again for hot file
+		// check again for hot file
 		if _, err := os.Stat(config.GetHotFile()); err == nil {
-			logger.Log.Info("Development mode detected")
+			logger.Log.Info(
+				"Development mode detected",
+			)
 			return true
 		}
 	}
 
-	logger.Log.Info("Vite development server not detected, using production mode")
+	logger.Log.Info(
+		"Vite development server not detected, using production mode",
+	)
 	return false
 }
 
