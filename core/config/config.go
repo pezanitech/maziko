@@ -184,7 +184,7 @@ func GetPackagePrefix() string {
 
 // ---- Logger config getters ----
 
-// Returns the logger type (text, json, or concise)
+// Returns the logger type (text, json, concise)
 func GetLoggerType() string {
 	logType := strings.ToLower(AppConfig.Logger.Type)
 

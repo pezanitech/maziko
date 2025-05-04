@@ -5,8 +5,8 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/pezanitech/maziko/core/errors"
 	"github.com/pezanitech/maziko/core/logger"
-	"github.com/pezanitech/maziko/core/utils"
 	inertia "github.com/romsar/gonertia"
 )
 
@@ -48,7 +48,7 @@ func RenderPage(i *inertia.Inertia, w http.ResponseWriter, r *http.Request, prop
 	// render the page
 	err := i.Render(w, r, componentName, props)
 	if err != nil {
-		utils.HandleServerErr(w, err)
+		errors.HandleServerErr(w, err)
 	}
 }
 

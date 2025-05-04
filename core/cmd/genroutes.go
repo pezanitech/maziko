@@ -7,9 +7,9 @@ import (
 	"text/template"
 
 	"github.com/pezanitech/maziko/core/config"
+	"github.com/pezanitech/maziko/core/errors"
 	"github.com/pezanitech/maziko/core/logger"
 	"github.com/pezanitech/maziko/core/router"
-	"github.com/pezanitech/maziko/core/utils"
 )
 
 // GenerateRoutes creates route definitions for the application
@@ -37,7 +37,7 @@ func GenerateRoutes() {
 func prepareGenerationDirectory() string {
 	genDir := config.GetGenDir()
 	if err := os.MkdirAll(genDir, 0755); err != nil {
-		utils.HandleFatalError("Error creating gen directory", err)
+		errors.HandleFatalError("Error creating gen directory", err)
 	}
 	return genDir
 }
@@ -46,7 +46,7 @@ func prepareGenerationDirectory() string {
 func collectRouteImports() []string {
 	imports, err := router.FindRouteImports()
 	if err != nil {
-		utils.HandleFatalError("Error collecting route imports", err)
+		errors.HandleFatalError("Error collecting route imports", err)
 	}
 	return imports
 }
@@ -55,7 +55,7 @@ func collectRouteImports() []string {
 func collectRouteHandlers() []router.RouteHandler {
 	routeHandlers, err := router.FindRouteHandlers()
 	if err != nil {
-		utils.HandleFatalError("Error collecting route handlers", err)
+		errors.HandleFatalError("Error collecting route handlers", err)
 	}
 	return routeHandlers
 }
@@ -72,18 +72,18 @@ func generateRoutesFromTemplate(outputFile string, imports []string, routeHandle
 	// Parse routes template
 	tmpl, err := template.New("routes").Parse(router.RoutesTemplate)
 	if err != nil {
-		utils.HandleFatalError("Error parsing template", err)
+		errors.HandleFatalError("Error parsing template", err)
 	}
 
 	// Execute template with data
 	var fileContent strings.Builder
 	if err := tmpl.Execute(&fileContent, templateData); err != nil {
-		utils.HandleFatalError("Error executing template", err)
+		errors.HandleFatalError("Error executing template", err)
 	}
 
 	// Write generated content to file
 	if err := os.WriteFile(outputFile, []byte(fileContent.String()), 0644); err != nil {
-		utils.HandleFatalError(
+		errors.HandleFatalError(
 			"Error writing to routesgen file", err,
 			"path", outputFile,
 		)

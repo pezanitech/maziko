@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/pezanitech/maziko/core/config"
+	"github.com/pezanitech/maziko/core/errors"
 	"github.com/pezanitech/maziko/core/logger"
-	"github.com/pezanitech/maziko/core/utils"
 
 	"github.com/fsnotify/fsnotify"
 )
@@ -75,7 +75,7 @@ func newDevConfig() devConfig {
 
 	// Create temp directory if it doesn't exist
 	if err := os.MkdirAll(tmpDir, 0755); err != nil {
-		utils.HandleFatalError("Failed to create tmp directory", err)
+		errors.HandleFatalError("Failed to create tmp directory", err)
 	}
 
 	return devConfig{
@@ -95,7 +95,7 @@ func newDevConfig() devConfig {
 func setupFileWatcher() *fsnotify.Watcher {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		utils.HandleFatalError("Failed to create file watcher", err)
+		errors.HandleFatalError("Failed to create file watcher", err)
 	}
 	return watcher
 }
@@ -174,7 +174,7 @@ func addDirectoriesToWatch(watcher *fsnotify.Watcher, config devConfig) {
 		})
 
 	if err != nil {
-		utils.HandleFatalError("Failed to add directories to watcher", err)
+		errors.HandleFatalError("Failed to add directories to watcher", err)
 	}
 }
 

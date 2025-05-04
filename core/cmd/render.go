@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/pezanitech/maziko/core/config"
+	"github.com/pezanitech/maziko/core/errors"
 	"github.com/pezanitech/maziko/core/logger"
 	"github.com/pezanitech/maziko/core/router"
-	"github.com/pezanitech/maziko/core/utils"
 
 	inertia "github.com/romsar/gonertia"
 )
@@ -72,7 +72,7 @@ func initDevRenderer() *inertia.Inertia {
 	)
 
 	if err != nil {
-		utils.HandleFatalError("Failed to initialize renderer in dev mode", err)
+		errors.HandleFatalError("Failed to initialize renderer in dev mode", err)
 	}
 
 	// Add the vite template function for dev mode
@@ -124,7 +124,7 @@ func initProdRenderer() *inertia.Inertia {
 	)
 
 	if err != nil {
-		utils.HandleFatalError(
+		errors.HandleFatalError(
 			"Failed to initialize renderer in production mode", err,
 		)
 	}
@@ -161,7 +161,7 @@ func loadViteManifest(manifestPath string) map[string]*struct {
 	// Open manifest file
 	manifest, err := os.Open(manifestPath)
 	if err != nil {
-		utils.HandleFatalError("Cannot open provided vite manifest file", err)
+		errors.HandleFatalError("Cannot open provided vite manifest file", err)
 	}
 	defer manifest.Close()
 
@@ -172,7 +172,7 @@ func loadViteManifest(manifestPath string) map[string]*struct {
 	})
 
 	if err = json.NewDecoder(manifest).Decode(&viteAssets); err != nil {
-		utils.HandleFatalError("Cannot unmarshal vite manifest file to JSON", err)
+		errors.HandleFatalError("Cannot unmarshal vite manifest file to JSON", err)
 	}
 
 	// Log available assets for debugging

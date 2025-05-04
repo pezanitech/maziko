@@ -2,7 +2,7 @@ package logger
 
 import "log/slog"
 
-// Creates a new logger based on the specified type and level
+// Creates a new logger based on loggerType and logLevel
 func createLogger(loggerType string, logLevel slog.Level) *slog.Logger {
 	var logger *slog.Logger
 	var handlerType string
