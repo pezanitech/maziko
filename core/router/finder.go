@@ -10,95 +10,111 @@ import (
 	"github.com/pezanitech/maziko/core/utils"
 )
 
-// Gathers all route imports while walking the routes directory
-func CollectRouteImports(path string, dirEntry os.DirEntry, err error) (string, error) {
-	if err != nil {
-		return "", err
-	}
-
-	if dirEntry.IsDir() {
-		// don't register routes directory
-		if path == config.GetRoutesDir() {
-			return "", nil
-		}
-
-		// Build import statement for this directory
-		return fmt.Sprintf("import \"%s%s\"\n", config.GetPackagePrefix(), path), nil
-	}
-
-	return "", nil
-}
-
-// CollectAllRouteImports walks through the routes directory and collects all route imports
-func CollectAllRouteImports() ([]string, error) {
+// Collects routes to import
+func FindRouteImports() ([]string, error) {
 	var imports []string
-	err := filepath.WalkDir(config.GetRoutesDir(), func(path string, dirEntry os.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
 
-		importStatement, err := CollectRouteImports(path, dirEntry, err)
-		if err != nil {
-			return err
-		}
+	// walk through routes directory
+	err := filepath.WalkDir(config.GetRoutesDir(),
+		func(path string, dirEntry os.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
 
-		if importStatement != "" {
-			imports = append(imports, fmt.Sprintf("\"%s%s\"", config.GetPackagePrefix(), path))
-			utils.Logger.Info("Adding route", "path", path)
-		}
+			importStmt, err := buildImportFromPath(path, dirEntry)
+			if err != nil {
+				return err
+			}
 
-		return nil
-	})
+			if importStmt != "" {
+				imports = append(imports, importStmt)
 
+				utils.Logger.Info(
+					"Adding route import",
+					"path", path,
+				)
+			}
+			return nil
+		},
+	)
 	return imports, err
 }
 
-// CollectRouteHandlers generates route handlers for each discovered route directory
-func CollectRouteHandlers() ([]RouteHandler, error) {
+// Returns import if directory is a route
+func buildImportFromPath(path string, dirEntry os.DirEntry) (string, error) {
+	if !dirEntry.IsDir() {
+		return "", nil
+	}
+
+	// don't register routes directory
+	if path == config.GetRoutesDir() {
+		return "", nil
+	}
+
+	importStatement := fmt.Sprintf(
+		"\"%s%s\"", config.GetPackagePrefix(), path,
+	)
+
+	return importStatement, nil
+}
+
+// Generates route handlers route directories
+func FindRouteHandlers() ([]RouteHandler, error) {
 	var handlers []RouteHandler
-	httpMethods := []string{"http.MethodGet", "http.MethodPost", "http.MethodPut", "http.MethodDelete"}
 
-	err := filepath.WalkDir(config.GetRoutesDir(), func(path string, dirEntry os.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
+	// Walk through the routes directory recursively
+	err := filepath.WalkDir(config.GetRoutesDir(),
+		func(path string, dirEntry os.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
 
-		// Skip the root routes directory and non-directories
-		if path == config.GetRoutesDir() || !dirEntry.IsDir() {
+			// Skip non-directories and the root routes directory
+			if !dirEntry.IsDir() || path == config.GetRoutesDir() {
+				return nil
+			}
+
+			// Create a route handler for this directory
+			handler, err := newHandlerFromPath(path)
+			if err != nil {
+				return err
+			}
+
+			handlers = append(handlers, handler)
+
+			utils.Logger.Info(
+				"Added route handler",
+				"path", handler.Path,
+				"package", handler.Package,
+			)
+
 			return nil
-		}
-
-		// Get the route path by removing the routes directory prefix
-		routePath := strings.TrimPrefix(path, strings.TrimPrefix(config.GetRoutesDir(), "./"))
-		// Convert to URL path format
-		routePath = strings.ReplaceAll(routePath, "\\", "/")
-		// If it's an index route (app/routes/index), make it the root path
-		if routePath == "/index" {
-			routePath = "/"
-		}
-
-		// Get the package name from the last part of the path
-		packageName := filepath.Base(path)
-
-		// Add handlers for all HTTP methods
-		for _, method := range httpMethods {
-			// Extract method name and convert to uppercase
-			methodName := strings.ToUpper(strings.TrimPrefix(method, "http.Method"))
-			handlers = append(handlers, RouteHandler{
-				Path:     routePath,
-				Method:   method,
-				Package:  packageName,
-				Function: methodName,
-			})
-		}
-
-		utils.Logger.Info(
-			"Added route handlers",
-			"path", routePath,
-			"package", packageName,
-		)
-		return nil
-	})
+		},
+	)
 
 	return handlers, err
+}
+
+// Creates RouteHandler object from directory path
+func newHandlerFromPath(path string) (RouteHandler, error) {
+	routesDir := config.GetRoutesDir()
+	routePath := strings.TrimPrefix(
+		path, strings.TrimPrefix(routesDir, "./"),
+	)
+
+	// ensure forward slashes for path
+	routePath = strings.ReplaceAll(routePath, "\\", "/")
+
+	if routePath == "/index" {
+		routePath = "/"
+	}
+
+	// get name end of the path
+	packageName := filepath.Base(path)
+
+	return RouteHandler{
+		Path:     routePath,
+		Package:  packageName,
+		Function: "Route", // main Route function
+	}, nil
 }

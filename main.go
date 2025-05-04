@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/pezanitech/maziko/core/config"
+	"github.com/pezanitech/maziko/core/router"
 	"github.com/pezanitech/maziko/core/utils"
 	"github.com/pezanitech/maziko/gen"
 
@@ -38,11 +39,11 @@ func main() {
 
 func RunProd() {
 	i := cmd.InitRenderer()
-	mux := http.NewServeMux()
 	port := fmt.Sprintf("%d", config.GetAppPort())
 
-	// register routes
-	mux.Handle("/", i.Middleware(gen.Routes(i)))
+	appRouter := router.InitRouter(i)
+
+	gen.Routes()
 
 	utils.Logger.Info(
 		"Starting server",
@@ -50,7 +51,7 @@ func RunProd() {
 		"port", port,
 	)
 
-	if err := http.ListenAndServe(":"+port, mux); err != nil {
+	if err := http.ListenAndServe(":"+port, appRouter.Router); err != nil {
 		utils.Logger.Error(
 			"Server error",
 			"error", err,

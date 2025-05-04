@@ -19,27 +19,9 @@ var RoutesTemplate = `
 package gen
 
 import (
-	"net/http"
-	"strings"
-	{{range .Imports}}
-	{{.}}{{end}}
-	"github.com/pezanitech/maziko/core/utils"
-	inertia "github.com/romsar/gonertia"
-)
+{{range .Imports}}	{{.}}
+{{end}})
 
-func Routes(i *inertia.Inertia) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		switch true {
-		{{range .RouteHandlers}}
-		case r.URL.Path == "{{.Path}}" && r.Method == {{.Method}}:
-			{{.Package}}.{{.Function}}(i, w, r)
-		{{end}}
-		case strings.HasPrefix(r.URL.Path, "{{.BuildPrefix}}"):
-			utils.HandleRequest(w, r, utils.BuildDirHandler)
-
-		default:
-			utils.HandleRequest(w, r, utils.StaticFileHandler)
-		}
-	})
-}
-`
+func Routes() {
+{{range .RouteHandlers}}	{{.Package}}.Route()
+{{end}}}`
