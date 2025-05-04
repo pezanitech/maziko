@@ -43,7 +43,7 @@ type Config struct {
 	} `json:"package"`
 
 	Logger struct {
-		Type  string `json:"type"` // "text" (default), "json", or "concise"
+		Type  string `json:"type"` // "text","json","concise"
 		Level string `json:"level"`
 	} `json:"logger"`
 
@@ -59,17 +59,13 @@ type Config struct {
 // Global configuration instance
 var AppConfig Config
 
+const ConfigPath = "maziko.json"
+
 // Load configuration from JSON file
 func Initialize() error {
 	godotenv.Load() // load .env
-	configPath := "maziko.json"
 
-	// Allow overriding config path with .env
-	if envPath := os.Getenv("MAZIKO_CONFIG"); envPath != "" {
-		configPath = envPath
-	}
-
-	file, err := os.Open(configPath)
+	file, err := os.Open(ConfigPath)
 	if err != nil {
 		return err
 	}
