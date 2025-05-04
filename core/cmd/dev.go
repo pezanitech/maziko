@@ -16,7 +16,7 @@ import (
 
 // RunDev starts the application in development mode with hot reloading
 func RunDev() {
-	logger.Logger.Info("Starting development mode...")
+	logger.Log.Info("Starting development mode...")
 
 	// Configure development environment
 	setupConfig := newDevConfig()
@@ -117,10 +117,10 @@ func createBuildAndRunFunc(binPath string, cmdRef **exec.Cmd) func() {
 func stopProcess(cmdRef **exec.Cmd) {
 	cmd := *cmdRef
 	if cmd != nil && cmd.Process != nil {
-		logger.Logger.Info("Stopping process...")
+		logger.Log.Info("Stopping process...")
 
 		if err := cmd.Process.Kill(); err != nil {
-			logger.Logger.Error("Failed to kill process", "error", err)
+			logger.Log.Error("Failed to kill process", "error", err)
 		}
 		cmd.Wait() // Wait for process to exit
 	}
@@ -128,13 +128,13 @@ func stopProcess(cmdRef **exec.Cmd) {
 
 // buildApp executes the build command for the application
 func buildApp(binPath string) bool {
-	logger.Logger.Info("Building application...")
+	logger.Log.Info("Building application...")
 	buildCmdExec := exec.Command("sh", "-c", "go build -o "+binPath+" .")
 	buildCmdExec.Stdout = os.Stdout
 	buildCmdExec.Stderr = os.Stderr
 
 	if err := buildCmdExec.Run(); err != nil {
-		logger.Logger.Error("Build failed", "error", err)
+		logger.Log.Error("Build failed", "error", err)
 		return false
 	}
 	return true
@@ -142,13 +142,13 @@ func buildApp(binPath string) bool {
 
 // startApp runs the built application
 func startApp(binPath string, cmdRef **exec.Cmd) {
-	logger.Logger.Info("Starting application...")
+	logger.Log.Info("Starting application...")
 	cmd := exec.Command(binPath)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
 	if err := cmd.Start(); err != nil {
-		logger.Logger.Error("Failed to start application", "error", err)
+		logger.Log.Error("Failed to start application", "error", err)
 		return
 	}
 	*cmdRef = cmd
@@ -193,7 +193,7 @@ func watchForChanges(watcher *fsnotify.Watcher, config devConfig, buildAndRun fu
 	// Timer for debouncing
 	var debounceTimer *time.Timer
 
-	logger.Logger.Info("Watching for file changes...")
+	logger.Log.Info("Watching for file changes...")
 
 	for {
 		select {
@@ -208,7 +208,7 @@ func watchForChanges(watcher *fsnotify.Watcher, config devConfig, buildAndRun fu
 
 			// Check if the event is a file modification
 			if event.Op&fsnotify.Write == fsnotify.Write {
-				logger.Logger.Info("File modified", "file", event.Name)
+				logger.Log.Info("File modified", "file", event.Name)
 				debounceRebuild(event.Name, &debounceTimer, config.buildDelay, buildAndRun)
 			}
 
@@ -216,7 +216,7 @@ func watchForChanges(watcher *fsnotify.Watcher, config devConfig, buildAndRun fu
 			if !ok {
 				return
 			}
-			logger.Logger.Error("Watcher error", "error", err)
+			logger.Log.Error("Watcher error", "error", err)
 		}
 	}
 }

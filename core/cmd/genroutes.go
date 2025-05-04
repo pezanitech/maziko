@@ -15,7 +15,7 @@ import (
 // GenerateRoutes creates route definitions for the application
 // This is the core mechanism behind maziko's routing system
 func GenerateRoutes() {
-	logger.Logger.Info("Generating routes definitions...")
+	logger.Log.Info("Generating routes definitions...")
 
 	// Ensure directories exist
 	genDir := prepareGenerationDirectory()
@@ -30,7 +30,7 @@ func GenerateRoutes() {
 	// Generate routes file from template
 	generateRoutesFromTemplate(routesgenFile, imports, routeHandlers)
 
-	logger.Logger.Info("Routes generation completed successfully")
+	logger.Log.Info("Routes generation completed successfully")
 }
 
 // prepareGenerationDirectory ensures the generation directory exists
@@ -89,7 +89,7 @@ func generateRoutesFromTemplate(outputFile string, imports []string, routeHandle
 		)
 	}
 
-	logger.Logger.Info(
+	logger.Log.Info(
 		"Generated routesgen file",
 		"path", outputFile,
 	)

@@ -29,7 +29,7 @@ func FindRouteImports() ([]string, error) {
 			if importStmt != "" {
 				imports = append(imports, importStmt)
 
-				logger.Logger.Info(
+				logger.Log.Info(
 					"Adding route import",
 					"path", path,
 				)
@@ -82,7 +82,7 @@ func FindRouteHandlers() ([]RouteHandler, error) {
 
 			handlers = append(handlers, handler)
 
-			logger.Logger.Info(
+			logger.Log.Info(
 				"Added route handler",
 				"path", handler.Path,
 				"package", handler.Package,

@@ -45,14 +45,14 @@ func RunProd() {
 
 	gen.Routes()
 
-	logger.Logger.Info(
+	logger.Log.Info(
 		"Starting server",
 		"address", config.GetAppURL(),
 		"port", port,
 	)
 
 	if err := http.ListenAndServe(":"+port, appRouter.Router); err != nil {
-		logger.Logger.Error(
+		logger.Log.Error(
 			"Server error",
 			"error", err,
 		)

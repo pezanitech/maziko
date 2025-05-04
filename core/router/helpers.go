@@ -27,7 +27,7 @@ func RenderPage(i *inertia.Inertia, w http.ResponseWriter, r *http.Request, prop
 
 		if storedComponent, exists := routeComponents[path]; exists {
 			componentName = storedComponent
-			logger.Logger.Debug(
+			logger.Log.Debug(
 				"Using component from route map",
 				"path", path,
 				"component", componentName,
@@ -38,7 +38,7 @@ func RenderPage(i *inertia.Inertia, w http.ResponseWriter, r *http.Request, prop
 		}
 	}
 
-	logger.Logger.Info(
+	logger.Log.Info(
 		"Rendering page",
 		"component", componentName,
 	)
@@ -61,7 +61,7 @@ func extractPackageName(skipFrames int) (string, bool) {
 
 	callerFunction := runtime.FuncForPC(pc).Name()
 
-	logger.Logger.Debug(
+	logger.Log.Debug(
 		"Extracting package from caller",
 		"function", callerFunction,
 		"skipFrames", skipFrames,
@@ -97,7 +97,7 @@ func determineComponentName() string {
 			continue
 		}
 
-		logger.Logger.Debug(
+		logger.Log.Debug(
 			"Component determined from package",
 			"package", pkgName,
 			"skipFrames", skipFrames,
@@ -106,7 +106,7 @@ func determineComponentName() string {
 		return pkgName
 	}
 
-	logger.Logger.Warn(
+	logger.Log.Warn(
 		"Could not determine component name, using 'index'",
 	)
 	return "index"
@@ -127,7 +127,7 @@ func determineRoutePath() string {
 			continue
 		}
 
-		logger.Logger.Debug(
+		logger.Log.Debug(
 			"Route path determined from package",
 			"package", pkgName,
 			"skipFrames", skipFrames,
@@ -141,7 +141,7 @@ func determineRoutePath() string {
 		return "/" + pkgName
 	}
 
-	logger.Logger.Warn(
+	logger.Log.Warn(
 		"Could not determine route path, using root path",
 	)
 	return "/"

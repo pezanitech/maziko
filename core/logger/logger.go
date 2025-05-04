@@ -9,7 +9,7 @@ import (
 )
 
 // App wide logger instance
-var Logger *slog.Logger
+var Log *slog.Logger
 var loggerOnce sync.Once
 
 // Initialize the logger if it hasn't been already
@@ -22,10 +22,10 @@ func InitLogger() *slog.Logger {
 		loggerType := config.GetLoggerType()
 
 		// create and configure logger based on type
-		Logger = createLogger(loggerType, logLevel)
+		Log = createLogger(loggerType, logLevel)
 	})
 
-	return Logger
+	return Log
 }
 
 // Loads variables from .env file if available

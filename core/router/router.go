@@ -9,12 +9,16 @@ import (
 	inertia "github.com/romsar/gonertia"
 )
 
+type InertiaHTTPHandler func(
+	*inertia.Inertia,
+	http.ResponseWriter,
+	*http.Request,
+)
+
 type AppRouter struct {
 	Router   *chi.Mux
 	renderer *inertia.Inertia
 }
-
-type InertiaHTTPHandler func(*inertia.Inertia, http.ResponseWriter, *http.Request)
 
 // Global appRouter instance
 var appRouter AppRouter
@@ -47,40 +51,20 @@ func InitRouter(i *inertia.Inertia) AppRouter {
 	return appRouter
 }
 
-// serves files from a directory
+// Serves files from a directory
 func fileServer(r chi.Router, path string, root http.FileSystem) {
 	if path != "/" && path[len(path)-1] != '/' {
 		path += "/"
 	}
 
-	fileServer := http.StripPrefix(path, http.FileServer(root))
+	server := http.StripPrefix(path, http.FileServer(root))
 
 	r.Get(path+"*", func(w http.ResponseWriter, r *http.Request) {
-		logger.Logger.Debug(
+		logger.Log.Debug(
 			"Serving static file",
 			"path", r.URL.Path,
 		)
-		fileServer.ServeHTTP(w, r)
+
+		server.ServeHTTP(w, r)
 	})
-}
-
-// Registers a GET request handler for a route
-func GET(handler InertiaHTTPHandler) {
-	routePath := determineRoutePath()
-	componentName := determineComponentName()
-
-	logger.Logger.Info(
-		"Registering route",
-		"path", routePath,
-		"component", componentName,
-	)
-
-	// store component name for this route
-	routeComponents[routePath] = componentName
-
-	appRouter.Router.Get(routePath,
-		func(w http.ResponseWriter, r *http.Request) {
-			handler(appRouter.renderer, w, r)
-		},
-	)
 }

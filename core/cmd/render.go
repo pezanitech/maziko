@@ -27,11 +27,11 @@ func InitRenderer() *inertia.Inertia {
 // isDevMode determines if the application is running in development mode
 // In development, Vite creates a tmp/hot file that we can detect
 func isDevMode() bool {
-	logger.Logger.Info("Checking for development environment...")
+	logger.Log.Info("Checking for development environment...")
 
 	// Check for hot file - immediate indicator of dev mode
 	if _, err := os.Stat(config.GetHotFile()); err == nil {
-		logger.Logger.Info("Development mode detected")
+		logger.Log.Info("Development mode detected")
 		return true
 	}
 
@@ -41,11 +41,11 @@ func isDevMode() bool {
 
 // waitForViteServer attempts to detect a starting Vite development server
 func waitForViteServer() bool {
-	logger.Logger.Info("Waiting for Vite development server to start...")
+	logger.Log.Info("Waiting for Vite development server to start...")
 
 	// Retry multiple times with a delay
 	for attempt := 1; attempt <= config.MaxViteDetectionAttempts(); attempt++ {
-		logger.Logger.Info(
+		logger.Log.Info(
 			"Looking for Vite development server",
 			"attempt", attempt,
 			"of", config.MaxViteDetectionAttempts(),
@@ -55,12 +55,12 @@ func waitForViteServer() bool {
 
 		// Check again for hot file
 		if _, err := os.Stat(config.GetHotFile()); err == nil {
-			logger.Logger.Info("Development mode detected")
+			logger.Log.Info("Development mode detected")
 			return true
 		}
 	}
 
-	logger.Logger.Info("Vite development server not detected, using production mode")
+	logger.Log.Info("Vite development server not detected, using production mode")
 	return false
 }
 
@@ -177,7 +177,7 @@ func loadViteManifest(manifestPath string) map[string]*struct {
 
 	// Log available assets for debugging
 	for k, v := range viteAssets {
-		logger.Logger.Info(
+		logger.Log.Info(
 			"Vite asset",
 			"path", k,
 			"file", v.File,

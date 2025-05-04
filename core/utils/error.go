@@ -9,7 +9,7 @@ import (
 
 // Handles server errors with logging and response
 func HandleServerErr(w http.ResponseWriter, err error) {
-	logger.Logger.Error(
+	logger.Log.Error(
 		"http error",
 		"err", err,
 	)
@@ -20,7 +20,7 @@ func HandleServerErr(w http.ResponseWriter, err error) {
 
 // Logs the error and exits the application
 func HandleFatalError(message string, err error, fields ...any) {
-	logger.Logger.Error(
+	logger.Log.Error(
 		message,
 		append([]any{"error", err}, fields...)...,
 	)

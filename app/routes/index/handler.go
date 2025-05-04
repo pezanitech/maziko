@@ -1,6 +1,7 @@
 package index
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/pezanitech/maziko/core/router"
@@ -13,5 +14,9 @@ func Route() {
 			"line1": "A full-stack framework",
 			"line2": "built with Inertia.js and Go! 💚",
 		})
+	})
+
+	router.POST(func(i *inertia.Inertia, w http.ResponseWriter, r *http.Request) {
+		fmt.Println("POST request received at /")
 	})
 }

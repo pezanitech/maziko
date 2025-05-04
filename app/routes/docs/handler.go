@@ -1,6 +1,7 @@
 package docs
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/pezanitech/maziko/core/router"
@@ -13,5 +14,9 @@ func Route() {
 			"line1": "Documentation",
 			"line2": "Coming Soon",
 		})
+	})
+
+	router.POST(func(i *inertia.Inertia, w http.ResponseWriter, r *http.Request) {
+		fmt.Println("POST request received at /docs")
 	})
 }
