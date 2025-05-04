@@ -10,31 +10,33 @@ import (
 	inertia "github.com/romsar/gonertia"
 )
 
-// Renders a page with the provided props
-// a different component from the default can be specified
+// Renders a page with the provided props,
+// can optionally be specified with component parameter
 func RenderPage(i *inertia.Inertia, w http.ResponseWriter, r *http.Request, props inertia.Props, component ...string) {
 	componentName := ""
 
-	// use provided component or detect from caller's package
 	if len(component) > 0 && component[0] != "" {
-		componentName = component[0]
+		componentName = component[0] // use provided component name
 	} else {
-		// First try to get the component name from the route map based on the URL path
 		path := r.URL.Path
 		if path == "" {
 			path = "/"
 		}
 
+		// get name from routeComponents map using URL path
 		if storedComponent, exists := routeComponents[path]; exists {
 			componentName = storedComponent
+
 			logger.Log.Debug(
 				"Using component from route map",
 				"path", path,
 				"component", componentName,
 			)
 		} else {
-			// Fall back to determining component from caller's package
-			componentName = determineComponentName()
+			msg := "Component not found in routeComponents map"
+
+			logger.Log.Error(msg, "path", path)
+			panic(msg)
 		}
 	}
 
@@ -82,67 +84,76 @@ func extractPackageName(skipFrames int) (string, bool) {
 	return "", false
 }
 
-// Extracts the component name from the caller's package
-func determineComponentName() string {
-	// Try different stack depths to find the right caller
-	// Starting with 2 (direct caller of RenderPage)
-	for skipFrames := 2; skipFrames <= 4; skipFrames++ {
+// Finds the caller's package name by searching up the stack
+// Returns the package name and a boolean indicating success
+func findCallerPackage() (string, bool) {
+	// try different stack depths to find the right caller
+	// starting with 3 (skip findCallerPackage and it's parent)
+	for skipFrames := 3; skipFrames <= 5; skipFrames++ {
 		pkgName, ok := extractPackageName(skipFrames)
 		if !ok {
 			continue
 		}
 
-		// Skip our own router package
+		// Skip router and gen package
 		if pkgName == "router" || pkgName == "gen" {
 			continue
 		}
 
 		logger.Log.Debug(
-			"Component determined from package",
+			"Caller package found",
 			"package", pkgName,
 			"skipFrames", skipFrames,
 		)
 
-		return pkgName
+		return pkgName, true
 	}
 
 	logger.Log.Warn(
-		"Could not determine component name, using 'index'",
+		"Could not determine caller package",
+		"frames_checked", "3-5",
 	)
-	return "index"
+
+	return "", false
 }
 
-// Extracts the routes path from the caller's package
-func determineRoutePath() string {
-	// Try different stack depths to find the right caller
-	// Starting with 2 (direct caller of GET)
-	for skipFrames := 2; skipFrames <= 4; skipFrames++ {
-		pkgName, ok := extractPackageName(skipFrames)
-		if !ok {
-			continue
-		}
-
-		// Skip our own router package and gen package
-		if pkgName == "router" || pkgName == "gen" {
-			continue
-		}
-
-		logger.Log.Debug(
-			"Route path determined from package",
-			"package", pkgName,
-			"skipFrames", skipFrames,
+// Determines the component name from the caller's package
+func determineComponentName() string {
+	pkgName, ok := findCallerPackage()
+	if !ok {
+		logger.Log.Warn(
+			"Could not determine component name, using 'index'",
 		)
-
-		// handle index package as root path
-		if pkgName == "index" {
-			return "/"
-		}
-
-		return "/" + pkgName
+		return "index"
 	}
 
-	logger.Log.Warn(
-		"Could not determine route path, using root path",
+	logger.Log.Debug(
+		"Component determined from package",
+		"package", pkgName,
 	)
-	return "/"
+
+	return pkgName
+}
+
+// Determines the routes path from the caller's package
+func determineRoutePath() string {
+	pkgName, ok := findCallerPackage()
+	if !ok {
+		logger.Log.Warn(
+			"Could not determine route path, using root path",
+		)
+		return "/"
+	}
+
+	logger.Log.Debug(
+		"Route path determined from package",
+		"package", pkgName,
+	)
+
+	// handle index package as root path
+	if pkgName == "index" {
+		return "/"
+	}
+
+	return "/" + pkgName
 }
