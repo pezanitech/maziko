@@ -10,7 +10,7 @@ import (
 	"github.com/pezanitech/maziko/core/logger"
 )
 
-// Collects routes to import
+// Finds routes to import
 func FindRouteImports() ([]string, error) {
 	var imports []string
 
@@ -46,7 +46,7 @@ func buildImportFromPath(path string, dirEntry os.DirEntry) (string, error) {
 		return "", nil
 	}
 
-	// don't register routes directory
+	// don't include routes directory
 	if path == config.GetRoutesDir() {
 		return "", nil
 	}
@@ -58,7 +58,7 @@ func buildImportFromPath(path string, dirEntry os.DirEntry) (string, error) {
 	return importStatement, nil
 }
 
-// Generates route handlers route directories
+// Finds route handlers route directories
 func FindRouteHandlers() ([]RouteHandler, error) {
 	var handlers []RouteHandler
 
@@ -69,12 +69,12 @@ func FindRouteHandlers() ([]RouteHandler, error) {
 				return err
 			}
 
-			// Skip non-directories and the root routes directory
+			// skip non-directories and the root routes directory
 			if !dirEntry.IsDir() || path == config.GetRoutesDir() {
 				return nil
 			}
 
-			// Create a route handler for this directory
+			// create a route handler for this directory
 			handler, err := newHandlerFromPath(path)
 			if err != nil {
 				return err
@@ -115,6 +115,6 @@ func newHandlerFromPath(path string) (RouteHandler, error) {
 	return RouteHandler{
 		Path:     routePath,
 		Package:  packageName,
-		Function: "Route", // main Route function
+		Function: "Route", // main Route() function
 	}, nil
 }
