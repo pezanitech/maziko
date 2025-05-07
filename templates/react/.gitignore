@@ -1,0 +1,7 @@
+/ssrBuild
+/node_modules
+/tmp
+.env
+/public/build.css
+/build
+/.vscode

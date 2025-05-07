@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/pezanitech/maziko/core/router"
+	"github.com/pezanitech/maziko/libs/core/router"
 	inertia "github.com/romsar/gonertia"
 )
 

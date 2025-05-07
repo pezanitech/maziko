@@ -5,12 +5,12 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/pezanitech/maziko/core/config"
-	"github.com/pezanitech/maziko/core/logger"
-	"github.com/pezanitech/maziko/core/router"
 	"github.com/pezanitech/maziko/gen"
+	"github.com/pezanitech/maziko/libs/core/config"
+	"github.com/pezanitech/maziko/libs/core/logger"
+	"github.com/pezanitech/maziko/libs/core/router"
 
-	"github.com/pezanitech/maziko/core/cmd"
+	"github.com/pezanitech/maziko/libs/core/cmd"
 )
 
 func main() {

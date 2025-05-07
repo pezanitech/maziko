@@ -1,0 +1,39 @@
+{
+  "name": "maziko",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "genroutes": "go run main.go genroutes",
+    "dev": "pnpm genroutes && pnpm build:go:tmp && pnpm dev:live",
+    "dev:live": "concurrently -k -c 'green.bold,blue.bold' -p '[{name}]' -n 'vite,go' 'vite' './tmp/main dev'",
+    "build": "pnpm build:vite && pnpm genroutes && pnpm build:go",
+    "build:vite": "nx vite:build && nx vite:build --ssr",
+    "build:go": "go build -o ./build/main",
+    "build:go:tmp": "go build -o ./tmp/main",
+    "start": "concurrently -k -c 'green.bold,blue.bold' -p '[{name}]' -n 'SSR,App' 'pnpm start:ssr' './build/main'",
+    "start:ssr": "node ssrBuild/assets/app.js",
+    "clean": "rm -rfv tmp build ssrBuild node_modules/{.vite,.vite-temp}",
+    "clean:all": "pnpm clean && rm -rfv node_modules .pnpm-store && go clean -cache -testcache",
+    "reset": "pnpm clean:all && pnpm i"
+  },
+  "dependencies": {
+    "@inertiajs/react": "^2.0.8",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.4",
+    "@tailwindcss/vite": "^4.1.4",
+    "@types/node": "^22.15.2",
+    "@types/react": "^19.1.2",
+    "@vitejs/plugin-react": "^4.4.1",
+    "autoprefixer": "^10.4.21",
+    "axios": "^1.9.0",
+    "concurrently": "^9.1.2",
+    "laravel-vite-plugin": "^1.2.0",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.4",
+    "vite": "^6.3.3"
+  }
+}

@@ -1,0 +1,7 @@
+{
+    "$schema": "./node_modules/nx/schemas/nx-schema.json",
+    "plugins": ["@nx-go/nx-go"],
+    "namedInputs": {
+        "sharedGlobals": ["{workspaceRoot}/go.work"]
+    }
+}
