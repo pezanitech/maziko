@@ -3,7 +3,7 @@ module github.com/pezanitech/maziko/templates/react
 go 1.24.2
 
 require (
-	github.com/pezanitech/maziko/libs/core v0.0.0-20250508115308-c2fb17e52c66
+	github.com/pezanitech/maziko/libs/core v0.0.0-20250508143907-26662116ac92
 	github.com/romsar/gonertia v1.3.5
 )
 
