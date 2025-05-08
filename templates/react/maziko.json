@@ -22,7 +22,7 @@
         "gen": "./gen"
     },
     "package": {
-        "prefix": "github.com/pezanitech/maziko/"
+        "prefix": "github.com/pezanitech/maziko/templates/react/"
     },
     "logger": {
         "type": "concise",

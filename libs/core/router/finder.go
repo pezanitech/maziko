@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/pezanitech/maziko/core/config"
-	"github.com/pezanitech/maziko/core/logger"
+	"github.com/pezanitech/maziko/libs/core/config"
+	"github.com/pezanitech/maziko/libs/core/logger"
 )
 
 // Finds routes to import

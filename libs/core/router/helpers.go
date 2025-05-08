@@ -5,8 +5,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/pezanitech/maziko/core/errors"
-	"github.com/pezanitech/maziko/core/logger"
+	"github.com/pezanitech/maziko/libs/core/errors"
+	"github.com/pezanitech/maziko/libs/core/logger"
 )
 
 // Renders a page with the provided props,

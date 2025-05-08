@@ -3,7 +3,7 @@ package router
 import (
 	"net/http"
 
-	"github.com/pezanitech/maziko/core/logger"
+	"github.com/pezanitech/maziko/libs/core/logger"
 )
 
 // Registers a route with an HTTP method

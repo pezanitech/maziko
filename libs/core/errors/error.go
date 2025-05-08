@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/pezanitech/maziko/core/logger"
+	"github.com/pezanitech/maziko/libs/core/logger"
 )
 
 // Handles server errors with logging and response

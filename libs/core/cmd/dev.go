@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pezanitech/maziko/core/config"
-	"github.com/pezanitech/maziko/core/errors"
-	"github.com/pezanitech/maziko/core/logger"
+	"github.com/pezanitech/maziko/libs/core/config"
+	"github.com/pezanitech/maziko/libs/core/errors"
+	"github.com/pezanitech/maziko/libs/core/logger"
 
 	"github.com/fsnotify/fsnotify"
 )

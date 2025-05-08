@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/pezanitech/maziko/core/config"
-	"github.com/pezanitech/maziko/core/logger"
+	"github.com/pezanitech/maziko/libs/core/config"
+	"github.com/pezanitech/maziko/libs/core/logger"
 )
 
 // InertiaHTTPHandler is now using our abstracted type

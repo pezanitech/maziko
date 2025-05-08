@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/pezanitech/maziko/gen"
 	"github.com/pezanitech/maziko/libs/core/config"
 	"github.com/pezanitech/maziko/libs/core/logger"
 	"github.com/pezanitech/maziko/libs/core/router"
+	"github.com/pezanitech/maziko/templates/react/gen"
 
 	"github.com/pezanitech/maziko/libs/core/cmd"
 )

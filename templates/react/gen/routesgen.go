@@ -4,8 +4,8 @@
 package gen
 
 import (
-	"github.com/pezanitech/maziko/app/routes/docs"
-	"github.com/pezanitech/maziko/app/routes/index"
+	"github.com/pezanitech/maziko/templates/react/app/routes/docs"
+	"github.com/pezanitech/maziko/templates/react/app/routes/index"
 )
 
 func Routes() {

@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"github.com/joho/godotenv"
-	"github.com/pezanitech/maziko/core/config"
+	"github.com/pezanitech/maziko/libs/core/config"
 )
 
 // App wide logger instance

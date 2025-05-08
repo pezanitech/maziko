@@ -6,10 +6,10 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/pezanitech/maziko/core/config"
-	"github.com/pezanitech/maziko/core/errors"
-	"github.com/pezanitech/maziko/core/logger"
-	"github.com/pezanitech/maziko/core/router"
+	"github.com/pezanitech/maziko/libs/core/config"
+	"github.com/pezanitech/maziko/libs/core/errors"
+	"github.com/pezanitech/maziko/libs/core/logger"
+	"github.com/pezanitech/maziko/libs/core/router"
 )
 
 // Generates route definitions for the application

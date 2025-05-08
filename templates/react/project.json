@@ -5,6 +5,15 @@
     "sourceRoot": "templates/react",
     "tags": [],
     "targets": {
+        "genroutes": {
+            "cache": true,
+            "executor": "@nx-go/nx-go:serve",
+            "outputs": ["{projectRoot}/gen"],
+            "options": {
+                "main": "{projectRoot}/main.go",
+                "args": ["genroutes"]
+            }
+        },
         "build": {
             "executor": "@nx-go/nx-go:build",
             "options": {
