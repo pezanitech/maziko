@@ -1,14 +1,15 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"io"
+	"log/slog"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 
-	"github.com/pezanitech/maziko/libs/core/logger"
 	"github.com/spf13/cobra"
 )
 
@@ -47,17 +48,56 @@ func init() {
 	)
 }
 
+// Handler that outputs logs without timestamps and keys
+type CustomHandler struct {
+	w io.Writer
+}
+
+// Implements slog.Handler
+func (h *CustomHandler) Enabled(_ context.Context, _ slog.Level) bool {
+	return true
+}
+
+// Implements slog.Handler
+func (h *CustomHandler) Handle(_ context.Context, r slog.Record) error {
+	level := strings.ToUpper(r.Level.String())
+	msg := r.Message
+
+	output := fmt.Sprintf("%s %s", level, msg)
+
+	// Process attributes if any
+	r.Attrs(func(a slog.Attr) bool {
+		if a.Key != "time" && a.Key != "level" && a.Key != "msg" {
+			output += fmt.Sprintf(" %s=%v", a.Key, a.Value.Any())
+		}
+		return true
+	})
+
+	_, err := fmt.Fprintln(h.w, output)
+	return err
+}
+
+// Implements slog.Handler.
+func (h *CustomHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
+	return h
+}
+
+// Implements slog.Handler.
+func (h *CustomHandler) WithGroup(name string) slog.Handler {
+	return h
+}
+
 // Runs the create command
 func runCreate(cmd *cobra.Command, args []string) {
-	// initialize logger
-	log := logger.InitLogger()
+	// initialize custom logger without timestamps and extra keys
+	logger := slog.New(&CustomHandler{w: os.Stderr})
 
 	templateName := args[0]
 
 	// validate template
 	templatePath, ok := availableTemplates[templateName]
 	if !ok {
-		log.Error(
+		logger.Error(
 			"Unknown template",
 			"template", templateName,
 			"available", getAvailableTemplates(),
@@ -77,7 +117,7 @@ func runCreate(cmd *cobra.Command, args []string) {
 	if outputDir == "" {
 		currentDir, err := os.Getwd()
 		if err != nil {
-			log.Error(
+			logger.Error(
 				"Failed to get current directory",
 				"error", err,
 			)
@@ -97,13 +137,13 @@ func runCreate(cmd *cobra.Command, args []string) {
 
 	// create output directory if it doesn't exist
 	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
-		log.Info(
+		logger.Info(
 			"Creating project directory",
 			"path", outputDir,
 		)
 
 		if err := os.MkdirAll(outputDir, 0755); err != nil {
-			log.Error(
+			logger.Error(
 				"Failed to create project directory",
 				"error", err,
 			)
@@ -113,14 +153,14 @@ func runCreate(cmd *cobra.Command, args []string) {
 		// check if directory is empty
 		empty, err := isDirEmpty(outputDir)
 		if err != nil {
-			log.Error(
+			logger.Error(
 				"Failed to check if directory is empty",
 				"error", err,
 			)
 			os.Exit(1)
 		}
 		if !empty {
-			log.Error(
+			logger.Error(
 				"Directory is not empty",
 				"path", outputDir,
 			)
@@ -129,7 +169,7 @@ func runCreate(cmd *cobra.Command, args []string) {
 	}
 
 	// clone template
-	log.Info(
+	logger.Info(
 		"Creating new Maziko project",
 		"template", templateName,
 		"path", outputDir,
@@ -137,7 +177,7 @@ func runCreate(cmd *cobra.Command, args []string) {
 
 	// clone a specific template and not the whole repo
 	if err := cloneTemplate(outputDir, templatePath); err != nil {
-		log.Error(
+		logger.Error(
 			"Failed to clone template",
 			"error", err,
 		)
@@ -146,16 +186,16 @@ func runCreate(cmd *cobra.Command, args []string) {
 
 	// Customize the template
 	if err := customizeTemplate(outputDir, projectName); err != nil {
-		log.Error("Failed to customize template", "error", err)
+		logger.Error("Failed to customize template", "error", err)
 		os.Exit(1)
 	}
 
 	// Success message
-	log.Info("✅ Project created successfully!", "path", outputDir)
-	log.Info("Next steps:")
-	log.Info("   cd " + projectName)
-	log.Info("   pnpm install")
-	log.Info("   pnpm dev")
+	logger.Info("✅ Project created successfully!", "path", outputDir)
+	logger.Info("Next steps:")
+	logger.Info("cd " + projectName)
+	logger.Info("pnpm install")
+	logger.Info("pnpm dev")
 }
 
 // Helper function to check if directory is empty
