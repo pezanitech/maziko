@@ -1,7 +1,7 @@
 import { usePage } from "@inertiajs/react"
 
 export default function Page() {
-    const { line1, line2 } = usePage().props
+    const { props } = usePage()
 
     const styles = {
         main: "h-[100dvh] bg-amber-500 text-white flex items-center justify-center px-4",
@@ -21,8 +21,8 @@ export default function Page() {
             <div className={styles.container}>
                 <h1 className={styles.heading}>Maziko</h1>
                 <p className={styles.paragraph}>
-                    <span className="block">{line1}</span>
-                    <span className="block">{line2}</span>
+                    <span className="block">{props.line1}</span>
+                    <span className="block">{props.line2}</span>
                 </p>
 
                 <div className={styles.buttonContainer}>
