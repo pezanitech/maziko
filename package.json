@@ -1,11 +1,14 @@
 {
     "name": "maziko",
     "version": "0.1.0",
-    "scripts": {
-        "reset": "nx run-many -t clean && rm -rfv node_modules .pnpm-store .nx && pnpm i"
-    },
     "license": "MIT",
     "packageManager": "pnpm@10.10.0",
+    "scripts": {
+        "build": "nx run react:build",
+        "start": "nx run react:start",
+        "clean": "nx run-many -t clean && rm -rfv node_modules .pnpm-store .nx",
+        "reset": "pnpm clean && pnpm i"
+    },
     "devDependencies": {
         "@nx-go/nx-go": "^3.3.1",
         "@nx/vite": "20.8.1",
