@@ -4,24 +4,24 @@ Maziko is a full-stack web framework combining the power of Go for the backend w
 
 ## 🚀 Features
 
-- **Full-Stack Go & Frontend**: Develop your entire application with Go on the backend and your choice of frontend technology
-- **Multiple Frontend Templates**: Choose from React, Vue, or Svelte templates to start your project
-- **Single-Page Application Feel**: Uses Inertia.js to provide SPA-like navigation without API boilerplate
-- **File-Based Routing**: Automatic route generation based on directory structure
-- **Server-Side Rendering**: Built-in SSR support for improved SEO and initial load performance
-- **Hot Module Replacement**: Fast development feedback with HMR for both Go and frontend code
-- **CLI Tool**: Easy project scaffolding and management with the `maziko` command-line tool
-- **Tailwind CSS**: Modern utility-first CSS framework included out of the box
-- **Vite Building**: Fast builds and development server with Vite
-- **Nx Monorepo**: Efficient workspace management for multiple projects and templates
+-   **Full-Stack Go & Frontend**: Develop your entire application with Go on the backend and your choice of frontend technology
+-   **Multiple Frontend Templates**: Choose from React, Vue, or Svelte templates to start your project
+-   **Single-Page Application Feel**: Uses Inertia.js to provide SPA-like navigation without API boilerplate
+-   **File-Based Routing**: Automatic route generation based on directory structure
+-   **Server-Side Rendering**: Built-in SSR support for improved SEO and initial load performance
+-   **Hot Module Replacement**: Fast development feedback with HMR for both Go and frontend code
+-   **CLI Tool**: Easy project scaffolding and management with the `maziko` command-line tool
+-   **Tailwind CSS**: Modern utility-first CSS framework included out of the box
+-   **Vite Building**: Fast builds and development server with Vite
+-   **Nx Monorepo**: Efficient workspace management for multiple projects and templates
 
 ## 📋 Getting Started
 
 ### Prerequisites
 
-- Go 1.24.2 or higher
-- Node.js 18 or higher
-- pnpm 10.10.0 or higher
+-   Go 1.24.2 or higher
+-   Node.js 18 or higher
+-   pnpm 10.10.0 or higher
 
 ### CLI Installation
 
@@ -37,19 +37,19 @@ Use the Maziko CLI to create a new project with your preferred frontend:
 
 ```bash
 # Create a React project
-maziko create react -n my-project
+maziko create react -n my-app
 
 # Create a Vue project (coming soon)
-maziko create vue -n my-project
+maziko create vue -n my-app
 
 # Create a Svelte project (coming soon)
-maziko create svelte -n my-project
+maziko create svelte -n my-app
 ```
 
 Then follow the next steps:
 
 ```bash
-cd my-project
+cd my-app
 pnpm install
 pnpm dev
 ```
@@ -98,41 +98,43 @@ your-project/
 
 1. Create a new directory in `app/routes/` with your route name (e.g., `app/routes/about/`)
 2. Add a `handler.go` file with the HTTP methods you need:
-   ```go
-   package about
 
-   import (
-       "net/http"
-       
-       "github.com/pezanitech/maziko/libs/core/router"
-       inertia "github.com/romsar/gonertia"
-   )
+    ```go
+    package about
 
-   func Route() {
-       router.GET(func(i *inertia.Inertia, w http.ResponseWriter, r *http.Request) {
-           router.RenderPage(i, w, r, inertia.Props{
-               "title": "About Us",
-               "description": "Learn more about our team",
-           })
-       })
-   }
-   ```
+    import (
+        "net/http"
+
+        "github.com/pezanitech/maziko/libs/core/router"
+        inertia "github.com/romsar/gonertia"
+    )
+
+    func Route() {
+        router.GET(func(i *inertia.Inertia, w http.ResponseWriter, r *http.Request) {
+            router.RenderPage(i, w, r, inertia.Props{
+                "title": "About Us",
+                "description": "Learn more about our team",
+            })
+        })
+    }
+    ```
 
 3. Create a `page.tsx` file with your frontend component (React example):
-   ```tsx
-   import { usePage } from "@inertiajs/react"
 
-   export default function Page() {
-       const { props } = usePage()
+    ```tsx
+    import { usePage } from "@inertiajs/react"
 
-       return (
-           <div className="p-8">
-               <h1 className="text-3xl font-bold">{props.title}</h1>
-               <p className="mt-2">{props.description}</p>
-           </div>
-       )
-   }
-   ```
+    export default function Page() {
+        const { props } = usePage()
+
+        return (
+            <div className="p-8">
+                <h1 className="text-3xl font-bold">{props.title}</h1>
+                <p className="mt-2">{props.description}</p>
+            </div>
+        )
+    }
+    ```
 
 4. Run `pnpm genroutes` to generate the route or restart the development server
 
@@ -143,6 +145,7 @@ pnpm build
 ```
 
 This will:
+
 1. Build the Vite assets (both client and SSR versions)
 2. Generate route definitions
 3. Build the Go binary
@@ -155,40 +158,40 @@ pnpm start
 
 ## 🛠️ Available Scripts
 
-- `pnpm dev` - Start development server with hot reloading
-- `pnpm build` - Build for production
-- `pnpm start` - Start production server
-- `pnpm genroutes` - Generate route definitions
-- `pnpm clean` - Clean temporary files
-- `pnpm reset` - Clean everything and reinstall dependencies
+-   `pnpm dev` - Start development server with hot reloading
+-   `pnpm build` - Build for production
+-   `pnpm start` - Start production server
+-   `pnpm genroutes` - Generate route definitions
+-   `pnpm clean` - Clean temporary files
+-   `pnpm reset` - Clean everything and reinstall dependencies
 
 ## 📦 Nx Commands
 
 Maziko uses Nx for managing the monorepo and optimizing the build process. Here are some useful Nx commands:
 
-- `nx run [project]:build` - Build a specific project
-- `nx run-many --target=build` - Build all projects
-- `nx affected --target=build` - Build only affected projects
-- `nx graph` - Visualize the project dependencies
-- `nx dev --project=[project]` - Start development server for a specific project
-- `nx build --project=[project]` - Build a specific project
+-   `nx run [project]:build` - Build a specific project
+-   `nx run-many --target=build` - Build all projects
+-   `nx affected --target=build` - Build only affected projects
+-   `nx graph` - Visualize the project dependencies
+-   `nx dev --project=[project]` - Start development server for a specific project
+-   `nx build --project=[project]` - Build a specific project
 
 ### Available Nx Targets
 
-- `dev` - Start development server
-- `dev:live` - Start development server with live reloading
-- `build` - Build for production (generates routes, builds frontend and backend)
-- `build:vite` - Build only the frontend assets with Vite
-- `build:go` - Build only the Go backend
-- `build:go:tmp` - Build Go to temporary directory for development
-- `genroutes` - Generate route definitions
-- `start` - Start production server
-- `start:ssr` - Start production server with SSR
-- `clean` - Clean temporary files
-- `reset` - Clean everything and reinstall dependencies
-- `test` - Run tests (specific to each project)
-- `lint` - Run linters
-- `tidy` - Run Go mod tidy
+-   `dev` - Start development server
+-   `dev:live` - Start development server with live reloading
+-   `build` - Build for production (generates routes, builds frontend and backend)
+-   `build:vite` - Build only the frontend assets with Vite
+-   `build:go` - Build only the Go backend
+-   `build:go:tmp` - Build Go to temporary directory for development
+-   `genroutes` - Generate route definitions
+-   `start` - Start production server
+-   `start:ssr` - Start production server with SSR
+-   `clean` - Clean temporary files
+-   `reset` - Clean everything and reinstall dependencies
+-   `test` - Run tests (specific to each project)
+-   `lint` - Run linters
+-   `tidy` - Run Go mod tidy
 
 ## 🧩 Monorepo Structure
 
@@ -199,7 +202,7 @@ maziko/
 ├── libs/                 # Core libraries
 │   ├── core/             # Core framework functionality
 │   └── maziko/           # CLI tool implementation
-├── templates/            # Project templates 
+├── templates/            # Project templates
 │   ├── react/            # React template
 │   ├── vue/              # Vue template (coming soon)
 │   └── svelte/           # Svelte template (coming soon)
@@ -211,25 +214,28 @@ maziko/
 For development on the Maziko framework itself:
 
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/pezanitech/maziko.git
-   cd maziko
-   ```
+
+    ```bash
+    git clone https://github.com/pezanitech/maziko.git
+    cd maziko
+    ```
 
 2. Install dependencies:
-   ```bash
-   pnpm install
-   ```
+
+    ```bash
+    pnpm install
+    ```
 
 3. Build the framework:
-   ```bash
-   pnpm build
-   ```
+
+    ```bash
+    pnpm build
+    ```
 
 4. Run tests:
-   ```bash
-   pnpm test
-   ```
+    ```bash
+    pnpm test
+    ```
 
 ## 📜 Configuration
 
@@ -267,9 +273,10 @@ Maziko uses a configuration file (`maziko.json`) located in your project root:
 ```
 
 Environment variables can override configuration values:
-- `APP_URL` - URL for the application
-- `LOGGER_TYPE` - Logger type (text, json, concise)
-- `LOG_LEVEL` - Logging level (debug, info, warn, error)
+
+-   `APP_URL` - URL for the application
+-   `LOGGER_TYPE` - Logger type (text, json, concise)
+-   `LOG_LEVEL` - Logging level (debug, info, warn, error)
 
 ## 👥 Contributing
 
@@ -282,12 +289,13 @@ We welcome contributions to Maziko! Please see [contributing.md](contributing.md
 ## 🙏 Acknowledgements
 
 Maziko is built on top of several amazing open-source technologies:
-- [Go](https://golang.org/)
-- [React](https://react.dev/)
-- [Vue](https://vuejs.org/)
-- [Svelte](https://svelte.dev/)
-- [Inertia.js](https://inertiajs.com/)
-- [Vite](https://vite.dev/)
-- [Gonertia](https://github.com/romsar/gonertia/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Nx](https://nx.dev/)
+
+-   [Go](https://golang.org/)
+-   [React](https://react.dev/)
+-   [Vue](https://vuejs.org/)
+-   [Svelte](https://svelte.dev/)
+-   [Inertia.js](https://inertiajs.com/)
+-   [Vite](https://vite.dev/)
+-   [Gonertia](https://github.com/romsar/gonertia/)
+-   [Tailwind CSS](https://tailwindcss.com/)
+-   [Nx](https://nx.dev/)
