@@ -1,6 +1,8 @@
 import { createInertiaApp } from "@inertiajs/react"
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers"
 
+import { ThemeProvider } from "@/components/providers/themeProvider"
+
 // Component resolver function
 const resolveComponent = (name) => {
     return resolvePageComponent(
@@ -16,7 +18,11 @@ const createClientApp = async () => {
     createInertiaApp({
         resolve: resolveComponent,
         setup({ el, App, props }) {
-            createRoot(el).render(<App {...props} />)
+            createRoot(el).render(
+                <ThemeProvider>
+                    <App {...props} />
+                </ThemeProvider>,
+            )
         },
     })
 }
@@ -36,7 +42,11 @@ const createSSRApp = async () => {
                     render: renderToString,
                     resolve: resolveComponent,
                     setup({ App, props }) {
-                        return <App {...props} />
+                        return (
+                            <ThemeProvider>
+                                <App {...props} />
+                            </ThemeProvider>
+                        )
                     },
                 }),
             { cluster: true },

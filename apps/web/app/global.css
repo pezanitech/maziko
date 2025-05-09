@@ -1,13 +1,173 @@
 @import url("https://fonts.googleapis.com/css2?family=Grandstander:ital,wght@0,100..900;1,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap");
 @import "tailwindcss";
+@import "tw-animate-css";
 
-body {
-    font-family: "Grandstander", cursive;
-    font-optical-sizing: auto;
+@custom-variant dark (&:is(.dark *));
+
+:root {
+    --radius: 0.625rem;
+    --background: oklch(0.98 0 0);
+    --foreground: oklch(0.145 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+    --primary: oklch(0.205 0 0);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --accent: oklch(0.48 0.0737 203.79);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --success: oklch(0.51 0.1138 157.04);
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: var(--accent);
+    --chart-1: oklch(0.646 0.222 41.116);
+    --chart-2: oklch(0.78 0.1875 152.35);
+    --chart-3: oklch(0.398 0.07 227.392);
+    --chart-4: oklch(0.828 0.189 84.429);
+    --chart-5: oklch(0.769 0.188 70.08);
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.708 0 0);
 }
 
-.text-mono {
-    font-family: "Roboto Mono", monospace;
-    font-optical-sizing: auto;
-    font-variation-settings: "wdth" 100;
+.dark {
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.205 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.205 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.922 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.48 0.0737 203.79);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --success: oklch(0.51 0.1138 157.04);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: var(--accent);
+    --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.78 0.1875 152.35);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --sidebar-ring: oklch(0.556 0 0);
+}
+
+.prose {
+    --tw-prose-body: inherit;
+    --tw-prose-headings: inherit;
+    --tw-prose-lead: inherit;
+    --tw-prose-links: inherit;
+    --tw-prose-bold: inherit;
+    --tw-prose-counters: inherit;
+    --tw-prose-bullets: inherit;
+    --tw-prose-hr: inherit;
+    --tw-prose-quotes: inherit;
+    --tw-prose-quote-borders: inherit;
+    --tw-prose-captions: inherit;
+    --tw-prose-code: inherit;
+    --tw-prose-pre-code: inherit;
+    --tw-prose-pre-bg: inherit;
+    --tw-prose-th-borders: inherit;
+    --tw-prose-td-borders: inherit;
+    --tw-prose-invert-body: inherit;
+    --tw-prose-invert-headings: inherit;
+    --tw-prose-invert-lead: inherit;
+    --tw-prose-invert-links: inherit;
+    --tw-prose-invert-bold: inherit;
+    --tw-prose-invert-counters: inherit;
+    --tw-prose-invert-bullets: inherit;
+    --tw-prose-invert-hr: inherit;
+    --tw-prose-invert-quotes: inherit;
+    --tw-prose-invert-quote-borders: inherit;
+    --tw-prose-invert-captions: inherit;
+    --tw-prose-invert-code: inherit;
+    --tw-prose-invert-pre-code: inherit;
+    --tw-prose-invert-pre-bg: inherit;
+    --tw-prose-invert-th-borders: inherit;
+    --tw-prose-invert-td-borders: inherit;
+}
+
+.prose :is(h1, h2, h3, h4, h5, h6):first-of-type {
+    margin-top: 0;
+}
+
+@theme inline {
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-success: var(--success);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --font-sans: var(--font-default);
+    --font-mono: var(--font-monospace);
+}
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+    body {
+        @apply bg-background text-foreground;
+        font-family: "Grandstander", cursive;
+        font-optical-sizing: auto;
+    }
+
+    .font-mono {
+        font-family: "Roboto Mono", monospace;
+        font-optical-sizing: auto;
+        font-variation-settings: "wdth" 100;
+    }
 }

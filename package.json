@@ -7,6 +7,7 @@
         "build": "nx run web:build",
         "start": "nx run web:start",
         "clean": "nx run-many -t clean && rm -rfv node_modules .pnpm-store .nx",
+        "tidy": "nx run-many -t tidy",
         "reset": "pnpm clean && pnpm i"
     },
     "devDependencies": {
