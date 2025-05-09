@@ -36,7 +36,7 @@ export default function Page() {
     return (
         <div className="min-h-screen space-y-16 bg-gradient-to-b from-gray-900 to-black text-white">
             {/* Hero Section */}
-            <Container className="pt-32 text-center">
+            <Container className="text-center">
                 <h1 className="text-accent mb-4 text-5xl font-black md:text-6xl">
                     Maziko
                 </h1>
@@ -116,13 +116,6 @@ export default function Page() {
                     ))}
                 </div>
             </Container>
-
-            {/* Footer */}
-            <footer className="mt-12 border-t border-gray-800 py-8 text-center text-gray-500">
-                <Container>
-                    <p>© {new Date().getFullYear()} Maziko. MIT License.</p>
-                </Container>
-            </footer>
         </div>
     )
 }

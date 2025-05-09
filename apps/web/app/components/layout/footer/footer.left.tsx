@@ -1,6 +1,6 @@
 import clsx from "clsx"
 
-import { MSEToday } from "@/components/ui/icons"
+import { MazikoLogo } from "@/components/ui/icons"
 
 import { brand } from "./resources/data"
 
@@ -14,7 +14,7 @@ const styles = {
 
 export const FooterLeft = () => (
     <div className={styles.wrapper}>
-        <MSEToday className={styles.logo} />
-        <p className={styles.description}>{brand.description}</p>
+        <MazikoLogo className={styles.logo} />
+        <p className={styles.description}>{brand.copyright}</p>
     </div>
 )
