@@ -33,7 +33,7 @@ const styles = {
     codeYellowDot: "w-3 h-3 rounded-full bg-yellow-500",
     codeGreenDot: "w-3 h-3 rounded-full bg-green-500",
     codeLabel: "text-gray-400 text-sm ml-2",
-    codeFont: "font-mono text-sm",
+    codeFont: "text-mono",
 
     // Features section styles
     featuresSection: "",
