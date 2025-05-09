@@ -1,7 +1,7 @@
 // Documentation Page
+import { useEffect, useState } from "react"
 
 import { usePage } from "@inertiajs/react"
-import { useState, useEffect } from "react"
 import { CodeBlock, nord } from "react-code-blocks"
 
 type Subsection = {
@@ -56,7 +56,7 @@ const styles = {
     prose: "prose prose-invert prose-emerald max-w-none prose-pre:bg-gray-800 prose-pre:border prose-pre:border-gray-700",
 
     // Code blocks
-    codeBlock: "my-6 rounded-lg overflow-hidden text-mono",
+    codeBlock: "my-6 rounded-lg overflow-hidden font-mono",
 
     // Back to top
     backToTop:
@@ -124,7 +124,10 @@ export default function Page() {
                 const code = codeLines.join("\n")
 
                 return (
-                    <div key={index} className={styles.codeBlock}>
+                    <div
+                        key={index}
+                        className={styles.codeBlock}
+                    >
                         <CodeBlock
                             text={code}
                             language={language}
@@ -190,7 +193,7 @@ export default function Page() {
                                                 {section.title}
                                             </a>
                                             {section.subsections.length > 0 && (
-                                                <ul className="ml-4 mt-1 space-y-1">
+                                                <ul className="mt-1 ml-4 space-y-1">
                                                     {section.subsections.map(
                                                         (subsection) => (
                                                             <li
@@ -293,7 +296,7 @@ export default function Page() {
                         viewBox="0 0 24 24"
                         strokeWidth={2}
                         stroke="currentColor"
-                        className="w-6 h-6"
+                        className="h-6 w-6"
                     >
                         <path
                             strokeLinecap="round"

@@ -4,6 +4,8 @@ import react from "@vitejs/plugin-react"
 import tailwindcss from "@tailwindcss/vite"
 import fs from "fs"
 import path from "path"
+import { fileURLToPath } from "url"
+import { defineAlias } from "@/lib/vite"
 
 // create tmp directory
 const tmpDir = path.resolve(__dirname, "tmp")
@@ -13,6 +15,9 @@ if (!fs.existsSync(tmpDir)) {
 }
 
 const common = {
+    resolve: {
+        alias: [defineAlias("@", "./app")],
+    },
     plugins: [
         tailwindcss(),
         react({
@@ -31,6 +36,7 @@ const common = {
 }
 
 const clientConfig: UserConfig = {
+    resolve: common.resolve,
     plugins: [
         ...common.plugins,
         laravel({
@@ -56,6 +62,7 @@ const clientConfig: UserConfig = {
 }
 
 const ssrConfig = {
+    resolve: common.resolve,
     plugins: [
         ...common.plugins,
         laravel({
