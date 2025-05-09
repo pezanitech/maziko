@@ -34,7 +34,7 @@ export default function Page() {
     }>()
 
     return (
-        <div className="min-h-screen space-y-16 bg-gradient-to-b from-gray-900 to-black text-white">
+        <div className="min-h-screen space-y-16">
             {/* Hero Section */}
             <Container className="text-center">
                 <h1 className="text-accent mb-4 text-5xl font-black md:text-6xl">
