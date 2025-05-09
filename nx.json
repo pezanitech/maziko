@@ -12,7 +12,10 @@
         },
         "dev": {
             "cache": false,
-            "dependsOn": ["^dev"]
+            "dependsOn": ["^dev"],
+            "options": {
+                "cwd": "{workspaceRoot}"
+            }
         },
         "dev:live": {
             "cache": false,

@@ -1,0 +1,5 @@
+/ssrBuild
+/node_modules
+/tmp
+.env
+/build
