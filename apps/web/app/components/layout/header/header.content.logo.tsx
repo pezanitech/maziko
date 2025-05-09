@@ -6,7 +6,7 @@ import { Link } from "@/components/ui/link"
 import { brand } from "./resources/data"
 
 const styles = {
-    wrapper: clsx`text-foreground flex items-center gap-2`,
+    wrapper: clsx`text-foreground hover:text-accent flex items-center gap-2 transition-colors duration-300`,
     logo: clsx`h-8 w-8`,
     name: clsx`hidden text-2xl font-semibold sm:block`,
 }

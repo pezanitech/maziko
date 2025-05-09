@@ -10,7 +10,7 @@ const styles = {
 
     mobileLinks: clsx`flex flex-col space-y-4 py-6`,
 
-    mobileLink: clsx`text-muted-foreground hover:text-accent text-base font-medium transition-colors duration-300`,
+    mobileLink: clsx`text-foreground hover:text-accent text-base font-medium transition-colors duration-300`,
 }
 
 interface HeaderMobileNavProps {
