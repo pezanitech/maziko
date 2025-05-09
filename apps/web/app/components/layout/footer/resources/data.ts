@@ -1,6 +1,6 @@
 export const brand = {
-    name: "MSE Today",
-    description: `© ${new Date().getFullYear()} All rights reserved`,
+    name: "Maziko Logo",
+    copyright: `© ${new Date().getFullYear()} All rights reserved`,
 }
 
 export interface FooterLink {

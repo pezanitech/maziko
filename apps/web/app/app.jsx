@@ -1,6 +1,8 @@
 import { createInertiaApp } from "@inertiajs/react"
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers"
 
+import { Footer } from "@/components/layout/footer"
+import { Header } from "@/components/layout/header"
 import { ThemeProvider } from "@/components/providers/themeProvider"
 
 // Component resolver function
@@ -20,7 +22,9 @@ const createClientApp = async () => {
         setup({ el, App, props }) {
             createRoot(el).render(
                 <ThemeProvider>
+                    <Header />
                     <App {...props} />
+                    <Footer />
                 </ThemeProvider>,
             )
         },

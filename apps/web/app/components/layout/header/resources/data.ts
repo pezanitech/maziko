@@ -3,14 +3,9 @@ export interface NavigationItem {
     href: string
 }
 
-export const navigation: NavigationItem[] = [{ name: "News", href: "/news" }]
-
-export const help = {
-    href: "/help",
-    ariaLabel: "Help",
-}
+export const navigation: NavigationItem[] = [{ name: "Docs", href: "/docs" }]
 
 export const brand = {
-    name: "MSE Today",
+    name: "Maziko Logo",
     href: "/",
 }

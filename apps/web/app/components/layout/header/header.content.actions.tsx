@@ -1,13 +1,11 @@
 import React from "react"
 
 import clsx from "clsx"
-import { HelpCircle, Menu, X } from "lucide-react"
+import { Menu, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Link } from "@/components/ui/link"
 import { ModeToggle } from "@/components/ui/modeToggle"
-
-import { help } from "./resources/data"
 
 const styles = {
     base: clsx`ml-auto flex`,
@@ -208,16 +206,6 @@ export const HeaderContentActions: React.FC<HeaderContentActionsProps> = ({
     <div className={styles.base}>
         <div className={styles.left}>
             {/* <HeaderContentActionsNotifications /> */}
-            <Button
-                variant="outline"
-                size="icon"
-                asChild
-            >
-                <Link href={help.href}>
-                    <HelpCircle className={styles.githubIcon} />
-                    <span className="sr-only">{help.ariaLabel}</span>
-                </Link>
-            </Button>
             <ModeToggle />
         </div>
         <div className={styles.right}>
