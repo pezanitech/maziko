@@ -3,7 +3,6 @@ import { useState } from "react"
 import clsx from "clsx"
 import { Code, Terminal as TerminalIcon } from "lucide-react"
 
-import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Terminal } from "@/components/ui/terminal"
 
@@ -16,7 +15,6 @@ const styles = {
     grid: clsx`grid grid-cols-1 items-start gap-8 lg:grid-cols-12`,
     topics: clsx`space-y-4 lg:col-span-4 xl:col-span-3`,
     topicTitle: clsx`text-foreground mb-3 text-2xl font-bold`,
-    topicDescription: clsx`text-muted-foreground mb-6 text-sm`,
     terminal: clsx`lg:col-span-8 xl:col-span-9`,
     terminalWrapper: clsx`not-prose`,
     topic: clsx`relative cursor-pointer overflow-hidden rounded-lg border p-4 transition-all duration-200`,
@@ -53,7 +51,7 @@ export const CodeSection = ({ codeExamples }: CodeSectionProps) => {
 
     // Get the title for the terminal based on type
     const getTerminalTitle = (
-        example: CodeExample | CodeExample["steps"][0],
+        example: CodeExample | NonNullable<CodeExample["steps"]>[number],
     ) => {
         if (example.type === "code" && example.filename) {
             return example.filename
@@ -62,7 +60,9 @@ export const CodeSection = ({ codeExamples }: CodeSectionProps) => {
     }
 
     // Get the language for syntax highlighting based on type
-    const getLanguage = (example: CodeExample | CodeExample["steps"][0]) => {
+    const getLanguage = (
+        example: CodeExample | NonNullable<CodeExample["steps"]>[number],
+    ) => {
         if (example.type === "code") {
             if (example.filename) {
                 const extension = example.filename

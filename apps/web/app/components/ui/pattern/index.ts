@@ -1,1 +1,0 @@
-export { Pattern } from "./pattern"

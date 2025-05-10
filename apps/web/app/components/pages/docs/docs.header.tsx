@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { BookOpen } from "lucide-react"
 
-import { Pattern } from "@/components/ui/pattern"
+import { CircuitPattern } from "@/components/ui/circuitPattern"
 
 const styles = {
     header: clsx`relative pb-6`,
@@ -21,7 +21,7 @@ type DocsHeaderProps = {
 export const DocsHeader = ({ title, description }: DocsHeaderProps) => (
     <header className={styles.header}>
         <div className={styles.gradient} />
-        <Pattern />
+        <CircuitPattern />
         <div className={styles.content}>
             <div className={styles.titleWrapper}>
                 <div className={styles.icon}>

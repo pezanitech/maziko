@@ -2,8 +2,8 @@ import clsx from "clsx"
 import { BookOpen, Github } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { CircuitPattern } from "@/components/ui/circuitPattern"
 import { MazikoLogo } from "@/components/ui/icons"
-import { Pattern } from "@/components/ui/pattern"
 
 import { Container } from "@/components/layout/container"
 
@@ -15,7 +15,7 @@ const styles = {
     title: clsx`text-accent text-6xl font-black tracking-tight md:text-8xl`,
     description: clsx`text-muted-foreground mx-auto max-w-2xl text-lg leading-relaxed font-medium md:text-2xl`,
     buttons: clsx`mt-10 flex flex-wrap justify-center gap-6`,
-    button: clsx`w-32 md:w-40 justify-center`,
+    button: clsx`w-32 justify-center md:w-40`,
 }
 
 type HeroSectionProps = {
@@ -25,7 +25,10 @@ type HeroSectionProps = {
 export const HeroSection = (props: HeroSectionProps) => (
     <section className={styles.container}>
         <div className={styles.gradient} />
-        <Pattern />
+        <CircuitPattern
+            glowEffect
+            opacity={0.2}
+        />
         <Container className="pt-16 pb-8">
             <div className={styles.header}>
                 <MazikoLogo className={styles.logo} />
