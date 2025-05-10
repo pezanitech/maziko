@@ -13,7 +13,7 @@ import { CodeExample } from "./home"
 const styles = {
     wrapper: clsx`py-8`,
     grid: clsx`grid grid-cols-1 items-start gap-8 lg:grid-cols-12`,
-    topics: clsx`space-y-4 lg:col-span-4 xl:col-span-3`,
+    topics: clsx`hidden space-y-4 lg:col-span-4 lg:block xl:col-span-3`,
     topicTitle: clsx`text-foreground mb-3 text-2xl font-bold`,
     terminal: clsx`lg:col-span-8 xl:col-span-9`,
     terminalWrapper: clsx`not-prose`,
@@ -30,6 +30,11 @@ const styles = {
     topicDescription: clsx`text-muted-foreground text-sm leading-relaxed`,
     topicIconWrapper: clsx`mb-2 flex items-center gap-2`,
     topicIconContainer: clsx`flex h-6 w-6 items-center justify-center rounded-full`,
+    tabBar: clsx`scrollbar-none mb-5 flex gap-2 overflow-x-auto pb-3 lg:hidden`,
+    tab: clsx`flex-none cursor-pointer px-2 py-2 text-sm whitespace-nowrap transition-all duration-200`,
+    tabActive: clsx`text-foreground border-accent hover:bg-accent/5 border-b-2 font-medium`,
+    tabInactive: clsx`text-muted-foreground hover:bg-secondary/20 border-b-2`,
+    tabIcon: clsx`mr-2 inline-block h-4 w-4`,
 }
 
 type CodeSectionProps = {
@@ -98,6 +103,34 @@ export const CodeSection = ({ codeExamples }: CodeSectionProps) => {
     return (
         <>
             <Container className={styles.wrapper}>
+                {/* Scrollable Tab Bar (Mobile) */}
+                <div className={styles.tabBar}>
+                    {codeExamples.map((example, index) => (
+                        <button
+                            key={index}
+                            className={`${styles.tab} ${
+                                index === activeIndex
+                                    ? styles.tabActive
+                                    : styles.tabInactive
+                            }`}
+                            onClick={() => setActiveIndex(index)}
+                        >
+                            {example.type === "code" ? (
+                                <Code
+                                    size={14}
+                                    className={styles.tabIcon}
+                                />
+                            ) : (
+                                <TerminalIcon
+                                    size={14}
+                                    className={styles.tabIcon}
+                                />
+                            )}
+                            {example.name}
+                        </button>
+                    ))}
+                </div>
+
                 <div className={styles.grid}>
                     <div className={styles.topics}>
                         <h3 className={styles.topicTitle}>Code Examples</h3>

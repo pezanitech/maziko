@@ -23,8 +23,8 @@ const styles = {
     grid: clsx`grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3`,
     cardTitle: clsx`flex items-center gap-2 text-xl font-semibold tracking-tight md:text-xl`,
     cardDescription: clsx`text-sm font-light`,
-    rightSide: clsx`flex w-full flex-row items-start justify-between gap-3 lg:w-auto lg:flex-col lg:items-end`,
-    badge: clsx`p-1 px-2`,
+    rightSide: clsx`flex w-full flex-row items-center justify-between gap-3 lg:w-auto lg:flex-col lg:items-end`,
+    badge: clsx`p-2 px-2`,
     link: clsx`flex flex-nowrap items-center gap-2 font-medium whitespace-nowrap`,
 }
 

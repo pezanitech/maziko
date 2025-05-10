@@ -11,7 +11,7 @@ const styles = {
     container: clsx`relative isolate overflow-hidden text-center`,
     gradient: clsx`from-accent/5 via-background to-background absolute inset-0 -z-10 bg-gradient-to-b`,
     header: clsx`mb-4 flex flex-col items-center justify-center gap-4`,
-    logo: clsx`animate-float bg-accent/30 text-foreground h-16 w-16 rounded-full p-3 md:h-20 md:w-20`,
+    logo: clsx`animate-float bg-accent/50 text-foreground h-16 w-16 rounded-full p-3 md:h-20 md:w-20`,
     title: clsx`text-accent text-6xl font-black tracking-tight md:text-8xl`,
     description: clsx`text-muted-foreground mx-auto max-w-2xl text-lg leading-relaxed font-medium md:text-2xl`,
     buttons: clsx`mt-10 flex flex-wrap justify-center gap-6`,
@@ -27,7 +27,7 @@ export const HeroSection = (props: HeroSectionProps) => (
         <div className={styles.gradient} />
         <CircuitPattern
             glowEffect
-            opacity={0.4}
+            opacity={0.3}
         />
         <Container className="pt-16 pb-8">
             <div className={styles.header}>
