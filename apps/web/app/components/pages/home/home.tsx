@@ -9,7 +9,6 @@ const styles = {
 }
 
 export type HomePageProps = {
-    headline: string
     description: string
     features: {
         title: string
@@ -22,10 +21,7 @@ export type HomePageProps = {
 export const HomePage = (props: HomePageProps) => {
     return (
         <div className={styles.root}>
-            <HeroSection
-                headline={props.headline}
-                description={props.description}
-            />
+            <HeroSection description={props.description} />
             <CodeSection codeExample={props.codeExample} />
             <FeaturesSection features={props.features} />
         </div>

@@ -5,7 +5,7 @@ import clsx from "clsx"
 import { cn } from "@/lib/utils"
 
 const styles = {
-    card: clsx`bg-card text-card-foreground ring-accent flex flex-col gap-3 overflow-hidden rounded-xl border shadow-sm transition-all`,
+    card: clsx`bg-card text-card-foreground ring-accent flex flex-col gap-3 overflow-hidden rounded-xl border transition-all`,
 }
 
 export const Card = ({

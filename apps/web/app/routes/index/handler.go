@@ -13,8 +13,7 @@ import (
 func Route() {
 	router.GET(func(i *inertia.Inertia, w http.ResponseWriter, r *http.Request) {
 		router.RenderPage(i, w, r, inertia.Props{
-			"headline":    "A full-stack framework for modern web development",
-			"description": "Build apps with a Go backend and a frontend library of your choice",
+			"description": "A full-stack Go framework for modern web apps with your choice of frontend technology",
 			"features": []map[string]string{
 				{
 					"title":       "Full-Stack Go & Frontend",

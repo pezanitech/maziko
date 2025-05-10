@@ -13,13 +13,11 @@ const styles = {
     header: clsx`mb-4 flex flex-col items-center justify-center gap-4`,
     logo: clsx`animate-float bg-accent/30 text-foreground h-16 w-16 rounded-full p-3 md:h-20 md:w-20`,
     title: clsx`text-accent text-5xl font-black md:text-7xl`,
-    headline: clsx`text-muted-foreground mx-auto max-w-3xl text-2xl font-medium md:text-3xl`,
-    description: clsx`text-muted-foreground/80 mx-auto mt-4 max-w-2xl text-lg`,
+    description: clsx`text-muted-foreground mx-auto max-w-2xl text-xl md:text-2xl`,
     buttons: clsx`mt-8 flex flex-wrap justify-center gap-6`,
 }
 
 type HeroSectionProps = {
-    headline: string
     description: string
 }
 
@@ -32,7 +30,6 @@ export const HeroSection = (props: HeroSectionProps) => (
                 <MazikoLogo className={styles.logo} />
                 <h1 className={styles.title}>Maziko</h1>
             </div>
-            <p className={styles.headline}>{props.headline}</p>
             <p className={styles.description}>{props.description}</p>
             <div className={styles.buttons}>
                 <Button
