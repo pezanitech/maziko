@@ -4,7 +4,7 @@
     "license": "MIT",
     "packageManager": "pnpm@10.10.0",
     "scripts": {
-        "build": "nx run web:build",
+        "build": "nx run web:build:ssr",
         "start": "nx run web:start",
         "clean": "nx run-many -t clean && rm -rfv node_modules .pnpm-store .nx",
         "tidy": "nx run-many -t tidy",
