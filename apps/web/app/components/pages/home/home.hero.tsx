@@ -27,7 +27,7 @@ export const HeroSection = (props: HeroSectionProps) => (
         <div className={styles.gradient} />
         <CircuitPattern
             glowEffect
-            opacity={0.2}
+            opacity={0.4}
         />
         <Container className="pt-16 pb-8">
             <div className={styles.header}>

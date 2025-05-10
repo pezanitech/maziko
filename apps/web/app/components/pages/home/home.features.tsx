@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator"
 import { Container } from "@/components/layout/container"
 
 const styles = {
-    titleContainer: clsx`mb-6 flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center`,
+    titleContainer: clsx`mb-6 flex flex-col-reverse gap-6 lg:flex-row lg:items-center lg:justify-between`,
     titleContent: clsx`flex-1`,
     title: clsx`text-4xl font-extrabold tracking-tight md:text-5xl`,
     subtitle: clsx`text-muted-foreground mt-3 max-w-none text-lg md:text-xl lg:pr-4`,
@@ -23,7 +23,7 @@ const styles = {
     grid: clsx`grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3`,
     cardTitle: clsx`flex items-center gap-2 text-xl font-semibold tracking-tight md:text-xl`,
     cardDescription: clsx`text-sm font-light`,
-    rightSide: clsx`mt-2 flex flex-col items-end gap-3 lg:mt-0`,
+    rightSide: clsx`flex w-full flex-row items-start justify-between gap-3 lg:w-auto lg:flex-col lg:items-end`,
     badge: clsx`p-1 px-2`,
     link: clsx`flex flex-nowrap items-center gap-2 font-medium whitespace-nowrap`,
 }
