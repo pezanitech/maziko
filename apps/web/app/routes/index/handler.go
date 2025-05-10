@@ -48,7 +48,7 @@ func Route() {
 				},
 			},
 			"codeExample": fmt.Sprintf(
-				"%s\n%s\n\n%s\n%s\n%s\n%s\n%s\n",
+				"%s\n%s\n\n%s\n%s\n%s\n%s\n%s",
 				"# Install the Maziko CLI globally:",
 				"go install github.com/pezanitech/maziko/libs/maziko@latest",
 				"# Create a new maziko app",

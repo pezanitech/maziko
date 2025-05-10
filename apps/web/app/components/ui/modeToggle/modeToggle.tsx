@@ -1,41 +1,31 @@
+import clsx from "clsx"
 import { Moon, Sun } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdownMenu"
 
 import { useTheme } from "@/components/providers/themeProvider"
+import { cn } from "@/lib/utils"
+
+const styles = {
+    icon: clsx`h-[1.2rem] w-[1.2rem]`,
+
+    sunIcon: clsx`scale-100 rotate-0 dark:scale-0 dark:-rotate-90`,
+
+    moonIcon: clsx`absolute scale-0 rotate-90 dark:scale-100 dark:rotate-0`,
+}
 
 export function ModeToggle() {
-    const { setTheme } = useTheme()
+    const { theme, setTheme } = useTheme()
 
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button
-                    variant="outline"
-                    size="icon"
-                >
-                    <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
-                    <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
-                    <span className="sr-only">Toggle theme</span>
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setTheme("light")}>
-                    Light
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("dark")}>
-                    Dark
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("system")}>
-                    System
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
+        <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        >
+            <Sun className={cn(styles.icon, styles.sunIcon)} />
+            <Moon className={cn(styles.icon, styles.moonIcon)} />
+            <span className="sr-only">Toggle theme</span>
+        </Button>
     )
 }

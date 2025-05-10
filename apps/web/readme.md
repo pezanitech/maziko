@@ -196,6 +196,8 @@ createInertiaApp({
 
 ## File Naming Conventions
 
+The naming and structure of components was chosen in order to make components easy to plug in and out and to make the relationships between components more visible at a glance.
+
 ### 1. General Naming Rules
 - **Camel Cased Parent Scoped Naming**:
   - Files are named in camelCase, with descriptive scoped names indicating their parent and purpose.
@@ -258,12 +260,12 @@ const Component = ({ className, ...props }: React.ComponentProps<"div">) => (
 
 ## Routing and Pages
 
-### 1. Next.js App Router
-- Pages are defined in `src/app`, following the Next.js app directory structure.
-- Example: `src/app/companies/[companyId]/page.tsx` for dynamic routes.
+### 1. App Directory
+- Routes are defined in `app/routes`, following the app directory structure.
+- Example: `app/routes/companies/_companyid/page.tsx` for dynamic routes.
 
 ### 2. Page Components
-- Pages import and render components from `src/components/pages`.
+- Route components import and render components from `app/components/pages`.
 ```tsx
 import { PageComponent } from "@/components/pages/pageComponent"
 
@@ -275,18 +277,18 @@ export default Page
 ## Utilities
 
 ### 1. Utility Functions
-- Shared utility functions are placed in `src/lib` (e.g., `src/lib/chartDataTransforms.ts`, `src/lib/utils.ts`).
+- Shared utility functions are placed in `app/lib` (e.g., `app/lib/vite.ts`, `app/lib/utils.ts`).
 
 ### 2. Reusable Types
-- Type definitions are centralized in `src/types` (e.g., `src/types/company.ts`).
+- Type definitions are centralized in `app/types` (e.g., `app/types/company.ts`).
 
 ## Testing and Skeletons
 
 ### 1. Skeleton Components
-- Placeholder components (e.g., `StockCardSkeleton`) are used for loading states.
+- Placeholder components (e.g., `CardSkeleton`) are used for loading states.
 
 ### 2. Error Boundaries
-- Components like `CompaniesChart` use error boundaries for graceful error handling.
+- Components like tables use error boundaries for graceful error handling.
 
 ## Performance Considerations
 

@@ -3,7 +3,6 @@ import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers"
 
 import { Footer } from "@/components/layout/footer"
 import { Header } from "@/components/layout/header"
-import { Viewport } from "@/components/layout/viewport"
 import { ThemeProvider } from "@/components/providers/themeProvider"
 
 // Component resolver function
@@ -24,9 +23,7 @@ const createClientApp = async () => {
             createRoot(el).render(
                 <ThemeProvider>
                     <Header />
-                    <Viewport>
-                        <App {...props} />
-                    </Viewport>
+                    <App {...props} />
                     <Footer />
                 </ThemeProvider>,
             )

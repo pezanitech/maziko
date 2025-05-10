@@ -23,12 +23,12 @@ func Route() {
 						{
 							"title":   "Installation",
 							"id":      "installation",
-							"content": "Install the Maziko CLI globally:\n```bash\ngo install github.com/pezanitech/maziko/libs/maziko@latest```",
+							"content": "Install the Maziko CLI globally:\n\n```bash\ngo install github.com/pezanitech/maziko/libs/maziko@latest```",
 						},
 						{
 							"title":   "Creating a Project",
 							"id":      "creating-a-project",
-							"content": "Use the CLI to create your first project:\n```bash\nmaziko create react -n my-app\ncd my-app\npnpm i\npnpm dev```",
+							"content": "Use the CLI to create your first project:\n\n```bash\nmaziko create react -n my-app\ncd my-app\npnpm i\npnpm dev```",
 						},
 					},
 				},
@@ -62,7 +62,7 @@ func Route() {
 						{
 							"title":   "Accessing Properties",
 							"id":      "accessing-properties",
-							"content": "Use the `usePage` hook to access data passed from your Go handler:\n```tsx\nconst { props } = usePage()\nconsole.log(props.title) // Access data sent from handler.go```",
+							"content": "Use the `usePage` hook to access data passed from your Go handler:\n\n```tsx\nconst { props } = usePage()\nconsole.log(props.title) // Access data sent from handler.go```",
 						},
 					},
 				},
@@ -74,7 +74,7 @@ func Route() {
 						{
 							"title":   "Creating Routes",
 							"id":      "creating-routes",
-							"content": "Define routes in your handler.go file using the router package:\n```go\nfunc Route() {\n  router.GET(func(i *inertia.Inertia, w http.ResponseWriter, r *http.Request) {\n    router.RenderPage(i, w, r, inertia.Props{\n      \"key\": \"value\",\n    })\n  })\n}```",
+							"content": "Define routes in your handler.go file using the router package:\n\n```go\nfunc Route() {\n  router.GET(func(i *inertia.Inertia, w http.ResponseWriter, r *http.Request) {\n    router.RenderPage(i, w, r, inertia.Props{\n      \"key\": \"value\",\n    })\n  })\n}```",
 						},
 					},
 				},
@@ -86,12 +86,12 @@ func Route() {
 						{
 							"title":   "Building for Production",
 							"id":      "building-for-production",
-							"content": "Build your app for production:\n```bash\npnpm build```",
+							"content": "Build your app for production:\n\n```bash\npnpm build```",
 						},
 						{
 							"title":   "Running in Production",
 							"id":      "running-in-production",
-							"content": "Start your production server:\n```bash\npnpm start```",
+							"content": "Start your production server:\n\n```bash\npnpm start```",
 						},
 					},
 				},
