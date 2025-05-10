@@ -1,73 +1,223 @@
-import clsx from "clsx"
-import { Copy } from "lucide-react"
-import { CodeBlock, vs2015 } from "react-code-blocks"
+import { useState } from "react"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import clsx from "clsx"
+import { Code, Terminal as TerminalIcon } from "lucide-react"
+
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { Terminal } from "@/components/ui/terminal"
 
 import { Container } from "@/components/layout/container"
-import { cn } from "@/lib/utils"
+
+import { CodeExample } from "./home"
 
 const styles = {
-    wrapper: clsx`not-prose relative`,
-    card: clsx`mx-auto max-w-3xl rounded-lg border bg-[#191a20] backdrop-blur`,
-    header: clsx`flex h-10 items-center justify-between rounded-t-lg bg-[#191a20] px-4`,
-    dots: clsx`flex items-center gap-1.5`,
-    dot: clsx`h-2.5 w-2.5 rounded-full`,
-    label: clsx`text-muted-foreground ml-2 text-xs font-medium`,
-    copyButton: clsx`text-muted-foreground hover:text-foreground`,
-    cardContent: clsx`overflow-x-auto`,
-    codeWrapper: clsx`[&_*]:!bg-transparent`,
-    code: clsx`font-mono text-base`,
+    wrapper: clsx`py-8`,
+    grid: clsx`grid grid-cols-1 items-start gap-8 lg:grid-cols-12`,
+    topics: clsx`space-y-4 lg:col-span-4 xl:col-span-3`,
+    topicTitle: clsx`text-foreground mb-3 text-2xl font-bold`,
+    topicDescription: clsx`text-muted-foreground mb-6 text-sm`,
+    terminal: clsx`lg:col-span-8 xl:col-span-9`,
+    terminalWrapper: clsx`not-prose`,
+    topic: clsx`relative cursor-pointer overflow-hidden rounded-lg border p-4 transition-all duration-200`,
+    topicActive: clsx`bg-accent/10 border-accent shadow-sm`,
+    topicInactive: clsx`bg-secondary/20 hover:bg-accent/5 border-transparent`,
+    topicHeader: clsx`mb-2 flex items-center justify-between`,
+    topicName: clsx`text-foreground text-sm font-semibold`,
+    separator: clsx`mx-auto my-12 max-w-5xl`,
+    codeSection: clsx`space-y-8`,
+    stepTitle: clsx`mb-1 text-2xl font-semibold`,
+    stepDescription: clsx`text-muted-foreground mb-4`,
+    sidebarSeparator: clsx`my-4`,
+    topicDescription: clsx`text-muted-foreground text-sm leading-relaxed`,
+    topicIconWrapper: clsx`mb-2 flex items-center gap-2`,
+    topicIconContainer: clsx`flex h-6 w-6 items-center justify-center rounded-full`,
 }
 
 type CodeSectionProps = {
-    codeExample: string
+    codeExamples?: CodeExample[]
 }
 
-export const CodeSection = (props: CodeSectionProps) => {
-    const handleCopy = () => {
-        navigator.clipboard.writeText(props.codeExample)
+export const CodeSection = ({ codeExamples }: CodeSectionProps) => {
+    // Return null if no code examples are provided
+    if (!codeExamples || codeExamples.length === 0) {
+        return null
+    }
+
+    const [activeIndex, setActiveIndex] = useState(0)
+
+    // Check if current example has steps (like Getting Started)
+    const hasSteps =
+        codeExamples[activeIndex].steps &&
+        codeExamples[activeIndex].steps!.length > 0
+
+    // Get the title for the terminal based on type
+    const getTerminalTitle = (
+        example: CodeExample | CodeExample["steps"][0],
+    ) => {
+        if (example.type === "code" && example.filename) {
+            return example.filename
+        }
+        return "terminal"
+    }
+
+    // Get the language for syntax highlighting based on type
+    const getLanguage = (example: CodeExample | CodeExample["steps"][0]) => {
+        if (example.type === "code") {
+            if (example.filename) {
+                const extension = example.filename
+                    .split(".")
+                    .pop()
+                    ?.toLowerCase()
+
+                // Map file extensions to languages
+                switch (extension) {
+                    case "go":
+                        return "go"
+                    case "js":
+                        return "javascript"
+                    case "ts":
+                        return "typescript"
+                    case "tsx":
+                        return "tsx"
+                    case "jsx":
+                        return "jsx"
+                    case "html":
+                        return "html"
+                    case "css":
+                        return "css"
+                    default:
+                        return "text"
+                }
+            }
+            return "text"
+        }
+        return "bash" // For shell commands
     }
 
     return (
-        <Container>
-            <div className={styles.wrapper}>
-                <Card className={styles.card}>
-                    <div className={styles.header}>
-                        <div className={styles.dots}>
+        <>
+            <Container className={styles.wrapper}>
+                <div className={styles.grid}>
+                    <div className={styles.topics}>
+                        <h3 className={styles.topicTitle}>Code Examples</h3>
+                        <p className={styles.topicDescription}>
+                            Explore some examples to get started with Maziko.
+                        </p>
+
+                        <Separator className={styles.sidebarSeparator} />
+
+                        {codeExamples.map((example, index) => (
                             <div
-                                className={cn(styles.dot, "bg-destructive/70")}
-                            />
-                            <div className={cn(styles.dot, "bg-warning/70")} />
-                            <div className={cn(styles.dot, "bg-success/70")} />
-                            <span className={styles.label}>Terminal</span>
-                        </div>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className={styles.copyButton}
-                            onClick={handleCopy}
-                        >
-                            <Copy className="h-4 w-4" />
-                        </Button>
+                                key={index}
+                                className={`${styles.topic} ${
+                                    index === activeIndex
+                                        ? styles.topicActive
+                                        : styles.topicInactive
+                                }`}
+                                onMouseEnter={() => setActiveIndex(index)}
+                                onClick={() => setActiveIndex(index)}
+                            >
+                                <div className={styles.topicHeader}>
+                                    <div className={styles.topicIconWrapper}>
+                                        <div
+                                            className={
+                                                styles.topicIconContainer
+                                            }
+                                            style={{
+                                                backgroundColor:
+                                                    index === activeIndex
+                                                        ? "rgba(var(--accent), 0.2)"
+                                                        : "rgba(var(--secondary), 0.2)",
+                                            }}
+                                        >
+                                            {example.type === "code" ? (
+                                                <Code
+                                                    size={14}
+                                                    className="text-accent"
+                                                />
+                                            ) : (
+                                                <TerminalIcon
+                                                    size={14}
+                                                    className="text-accent"
+                                                />
+                                            )}
+                                        </div>
+                                        <span className={styles.topicName}>
+                                            {example.name}
+                                        </span>
+                                    </div>
+                                </div>
+                                <span className={styles.topicDescription}>
+                                    {example.description}
+                                </span>
+                            </div>
+                        ))}
                     </div>
 
-                    <CardContent className={styles.cardContent}>
-                        <div className={styles.codeWrapper}>
-                            <div className={styles.code}>
-                                <CodeBlock
-                                    text={props.codeExample}
-                                    language="bash"
-                                    showLineNumbers={false}
-                                    theme={vs2015}
-                                    wrapLongLines={false}
-                                />
+                    <div className={styles.terminal}>
+                        {hasSteps ? (
+                            <div className={styles.codeSection}>
+                                {codeExamples[activeIndex].steps!.map(
+                                    (step, index) => (
+                                        <div key={index}>
+                                            <h4 className={styles.stepTitle}>
+                                                {step.title}
+                                            </h4>
+                                            <p
+                                                className={
+                                                    styles.stepDescription
+                                                }
+                                            >
+                                                {step.description}
+                                            </p>
+                                            <div
+                                                className={
+                                                    styles.terminalWrapper
+                                                }
+                                            >
+                                                <Terminal
+                                                    content={step.code}
+                                                    className="w-full"
+                                                    title={getTerminalTitle(
+                                                        step,
+                                                    )}
+                                                    language={getLanguage(step)}
+                                                />
+                                            </div>
+                                        </div>
+                                    ),
+                                )}
                             </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
-        </Container>
+                        ) : (
+                            <div className={styles.codeSection}>
+                                <div>
+                                    <h4 className={styles.stepTitle}>
+                                        {codeExamples[activeIndex].name}
+                                    </h4>
+                                    <p className={styles.stepDescription}>
+                                        {codeExamples[activeIndex].description}
+                                    </p>
+                                    <div className={styles.terminalWrapper}>
+                                        <Terminal
+                                            content={
+                                                codeExamples[activeIndex].code
+                                            }
+                                            className="w-full"
+                                            title={getTerminalTitle(
+                                                codeExamples[activeIndex],
+                                            )}
+                                            language={getLanguage(
+                                                codeExamples[activeIndex],
+                                            )}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </Container>
+        </>
     )
 }

@@ -19,9 +19,9 @@ const styles = {
         lg: clsx`h-12 w-12`,
     },
     variants: {
-        default: clsx`bg-accent/10 text-accent hover:bg-accent/20 rounded-xl`,
-        solid: clsx`bg-accent text-accent-foreground hover:bg-accent/90 rounded-xl`,
-        outline: clsx`border-accent/20 text-accent hover:border-accent/40 rounded-xl border-2`,
+        default: clsx`bg-accent/10 text-accent hover:bg-accent/20 rounded-lg`,
+        solid: clsx`bg-accent text-accent-foreground hover:bg-accent/90 rounded-lg`,
+        outline: clsx`border-accent/20 text-accent hover:border-accent/40 rounded-lg border-2`,
         ghost: clsx`text-accent hover:bg-accent/10 rounded-xl`,
     },
 }
@@ -38,28 +38,24 @@ const iconMap = {
 type FeatureIconProps = {
     icon: string
     variant?: keyof typeof styles.variants
+    iconSize?: number
     size?: keyof typeof styles.sizes
     className?: string
 }
 
-export const FeatureIcon = ({
-    icon,
-    variant = "default",
-    size = "md",
-    className,
-}: FeatureIconProps) => {
-    const Icon = iconMap[icon as keyof typeof iconMap] || HelpCircle
+export const FeatureIcon = (props: FeatureIconProps) => {
+    const Icon = iconMap[props.icon as keyof typeof iconMap] || HelpCircle
 
     return (
         <div
             className={cn(
                 styles.base,
-                styles.sizes[size],
-                styles.variants[variant],
-                className,
+                styles.sizes[props.size ?? "md"],
+                styles.variants[props.variant ?? "default"],
+                props.className,
             )}
         >
-            <Icon className="h-5 w-5" />
+            <Icon size={props.iconSize} />
         </div>
     )
 }

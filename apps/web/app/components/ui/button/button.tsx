@@ -23,13 +23,15 @@ export const buttonVariants = cva(
 
         variants: {
             variant: {
-                default: clsx`bg-accent text-accent-foreground hover:bg-accent/90 shadow-xs`,
+                default: clsx`bg-foreground text-background hover:bg-accent/90 hover:text-foreground shadow-xs`,
+
+                accent: clsx`bg-accent text-accent-foreground hover:bg-accent/90 shadow-xs`,
 
                 destructive: clsx`bg-destructive hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 text-white shadow-xs`,
 
                 success: clsx`bg-success hover:bg-success/90 focus-visible:ring-success/20 dark:focus-visible:ring-success/40 dark:bg-success/60 text-white shadow-xs`,
 
-                outline: clsx`bg-background dark:bg-input/30 dark:border-input hover:dark:border-accent hover:border-accent hover:text-accent-foreground dark:hover:text-accent-foreground dark:hover:bg-accent hover:bg-accent border shadow-xs`,
+                outline: clsx`dark:border-input hover:dark:border-accent hover:border-accent hover:text-accent-foreground dark:hover:text-accent-foreground dark:hover:bg-accent hover:bg-accent border bg-transparent shadow-xs`,
 
                 secondary: clsx`bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-xs`,
 

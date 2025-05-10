@@ -12,7 +12,7 @@ import (
 func Route() {
 	router.GET(func(i *inertia.Inertia, w http.ResponseWriter, r *http.Request) {
 		router.RenderPage(i, w, r, inertia.Props{
-			"title":       "Maziko Documentation",
+			"title":       "Documentation",
 			"description": "Learn how to build full-stack applications with Maziko",
 			"sections": []map[string]interface{}{
 				{

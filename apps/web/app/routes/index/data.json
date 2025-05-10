@@ -1,0 +1,79 @@
+{
+  "description": "A modern full-stack web framework designed for performance, developer experience, and scalability",
+  "featuresTitle": "Key Features",
+  "featuresSubtitle": "Everything you need to build modern web applications efficiently and elegantly",
+  "features": [
+    {
+      "title": "Full-Stack Integration",
+      "description": "Seamlessly connect backend and frontend with your choice of modern UI technology",
+      "icon": "rocket"
+    },
+    {
+      "title": "SPA Experience",
+      "description": "Enjoy SPA-like navigation without API boilerplate using Inertia.js",
+      "icon": "sparkles"
+    },
+    {
+      "title": "File-Based Routing",
+      "description": "Automatic route generation based on directory structure",
+      "icon": "folder"
+    },
+    {
+      "title": "Server-Side Rendering",
+      "description": "Built-in SSR support for improved SEO and initial load performance",
+      "icon": "server"
+    },
+    {
+      "title": "Hot Module Replacement",
+      "description": "Fast development feedback with HMR for both Go and frontend code",
+      "icon": "bolt"
+    },
+    {
+      "title": "Modern Tooling",
+      "description": "Includes CLI tools, Tailwind CSS, Vite, and Nx monorepo support",
+      "icon": "wrench"
+    }
+  ],
+  "codeExamples": [
+    {
+      "name": "Getting Started",
+      "description": "From installation to running your first project",
+      "type": "shell",
+      "code": "go install github.com/pezanitech/maziko/libs/maziko@latest\n\nmaziko create react -n my-app\n\ncd my-app\npnpm install\npnpm dev",
+      "steps": [
+        {
+          "title": "Install the Maziko CLI",
+          "description": "First, install the Maziko CLI tool globally using Go",
+          "type": "shell",
+          "code": "go install github.com/pezanitech/maziko/libs/maziko@latest"
+        },
+        {
+          "title": "Create a New Project",
+          "description": "Use the CLI to create a new project with your preferred frontend framework",
+          "type": "shell",
+          "code": "maziko create react -n my-app"
+        },
+        {
+          "title": "Set Up and Run Your Project",
+          "description": "Navigate to your new project directory and start the development server",
+          "type": "shell",
+          "code": "cd my-app\npnpm install\npnpm dev"
+        }
+      ]
+    },
+    {
+      "name": "Creating Routes",
+      "description": "File-based routing with Go backend",
+      "type": "code",
+      "filename": "app/routes/about/handler.go",
+      "code": "package about\n\nimport (\n    \"net/http\"\n\n    \"github.com/pezanitech/maziko/libs/core/router\"\n    inertia \"github.com/romsar/gonertia\"\n)\n\nfunc Route() {\n    router.GET(func(i *inertia.Inertia, w http.ResponseWriter, r *http.Request) {\n        router.RenderPage(i, w, r, inertia.Props{\n            \"title\": \"About Us\",\n            \"description\": \"Learn more about our team\",\n        })\n    })\n}"
+    },
+    {
+      "name": "Frontend Components",
+      "description": "React components with Inertia.js integration",
+      "type": "code",
+      "filename": "app/routes/about/page.tsx",
+      "code": "import { usePage } from \"@inertiajs/react\"\n\nexport default function Page() {\n    const { props } = usePage()\n\n    return (\n        <div className=\"p-8\">\n            <h1 className=\"text-3xl font-bold\">{props.title}</h1>\n            <p className=\"mt-2\">{props.description}</p>\n        </div>\n    )\n}"
+    }
+  ]
+}
