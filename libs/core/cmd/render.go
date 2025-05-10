@@ -124,11 +124,27 @@ func createDevViteFunction() func(string) (string, error) {
 
 // Creates an Inertia instance configured for production
 func initProdRenderer() router.Inertia {
-	i, err := router.NewInertia(
-		router.RootHTMLTemplate,
-		router.InertiaOptions.WithVersionFromFile(config.GetViteManifestFile()),
-		router.InertiaOptions.WithSSR(),
-	)
+	// check if SSR_URL environment variable is set
+	ssrURL := os.Getenv("SSR_URL")
+
+	var i router.Inertia
+	var err error
+
+	if ssrURL != "" {
+		// pass SSR_URL to WithSSR if it exists
+		i, err = router.NewInertia(
+			router.RootHTMLTemplate,
+			router.InertiaOptions.WithVersionFromFile(config.GetViteManifestFile()),
+			router.InertiaOptions.WithSSR(ssrURL),
+		)
+	} else {
+		// pass nothing to WithSSR if SSR_URL doesn't exist
+		i, err = router.NewInertia(
+			router.RootHTMLTemplate,
+			router.InertiaOptions.WithVersionFromFile(config.GetViteManifestFile()),
+			router.InertiaOptions.WithSSR(),
+		)
+	}
 
 	if err != nil {
 		errors.HandleFatalError(
