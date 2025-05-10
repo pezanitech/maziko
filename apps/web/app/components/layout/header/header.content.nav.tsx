@@ -7,7 +7,7 @@ import { navigation } from "./resources/data"
 const styles = {
     nav: clsx`hidden flex-1 items-center space-x-8 md:flex`,
 
-    link: clsx`text-foreground hover:text-accent text-xl font-bold transition-colors`,
+    link: clsx`text-foreground hover:text-accent text-xl font-bold transition-colors duration-300`,
 }
 
 export const HeaderContentNav = () => (

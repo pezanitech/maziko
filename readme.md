@@ -99,42 +99,42 @@ your-project/
 1. Create a new directory in `app/routes/` with your route name (e.g., `app/routes/about/`)
 2. Add a `handler.go` file with the HTTP methods you need:
 
-    ```go
-    package about
+```go
+package about
 
-    import (
-        "net/http"
+import (
+    "net/http"
 
-        "github.com/pezanitech/maziko/libs/core/router"
-        inertia "github.com/romsar/gonertia"
-    )
+    "github.com/pezanitech/maziko/libs/core/router"
+    inertia "github.com/romsar/gonertia"
+)
 
-    func Route() {
-        router.GET(func(i *inertia.Inertia, w http.ResponseWriter, r *http.Request) {
-            router.RenderPage(i, w, r, inertia.Props{
-                "title": "About Us",
-                "description": "Learn more about our team",
-            })
+func Route() {
+    router.GET(func(i *inertia.Inertia, w http.ResponseWriter, r *http.Request) {
+        router.RenderPage(i, w, r, inertia.Props{
+            "title": "About Us",
+            "description": "Learn more about our team",
         })
-    }
-    ```
+    })
+}
+```
 
 3. Create a `page.tsx` file with your frontend component (React example):
 
-    ```tsx
-    import { usePage } from "@inertiajs/react"
+```tsx
+import { usePage } from "@inertiajs/react"
 
-    export default function Page() {
-        const { props } = usePage()
+export default function Page() {
+    const { props } = usePage()
 
-        return (
-            <div className="p-8">
-                <h1 className="text-3xl font-bold">{props.title}</h1>
-                <p className="mt-2">{props.description}</p>
-            </div>
-        )
-    }
-    ```
+    return (
+        <div className="p-8">
+            <h1 className="text-3xl font-bold">{props.title}</h1>
+            <p className="mt-2">{props.description}</p>
+        </div>
+    )
+}
+```
 
 4. Run `pnpm genroutes` to generate the route or restart the development server
 

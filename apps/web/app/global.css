@@ -2,9 +2,16 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@plugin "@tailwindcss/typography";
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
+    /* Font */
+    --font-default: "Grandstander", cursive;
+    --font-monospace: "Roboto Mono", monospace;
+
+    /* Colors */
     --radius: 0.625rem;
     --background: oklch(0.98 0 0);
     --foreground: oklch(0.145 0 0);
@@ -22,6 +29,7 @@
     --accent-foreground: oklch(0.985 0 0);
     --destructive: oklch(0.577 0.245 27.325);
     --success: oklch(0.51 0.1138 157.04);
+    --warning: oklch(66.6% 0.179 58.318);
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
     --ring: var(--accent);
@@ -57,6 +65,7 @@
     --accent-foreground: oklch(0.985 0 0);
     --destructive: oklch(0.577 0.245 27.325);
     --success: oklch(0.51 0.1138 157.04);
+    --warning: oklch(66.6% 0.179 58.318);
     --border: oklch(1 0 0 / 10%);
     --input: oklch(1 0 0 / 15%);
     --ring: var(--accent);
@@ -73,6 +82,22 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
 }
 
 .prose {
@@ -135,6 +160,7 @@
     --color-accent-foreground: var(--accent-foreground);
     --color-destructive: var(--destructive);
     --color-success: var(--success);
+    --color-warning: var(--warning);
     --color-border: var(--border);
     --color-input: var(--input);
     --color-ring: var(--ring);
@@ -161,13 +187,6 @@
     }
     body {
         @apply bg-background text-foreground;
-        font-family: "Grandstander", cursive;
         font-optical-sizing: auto;
-    }
-
-    .font-mono {
-        font-family: "Roboto Mono", monospace;
-        font-optical-sizing: auto;
-        font-variation-settings: "wdth" 100;
     }
 }
