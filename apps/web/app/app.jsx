@@ -3,7 +3,6 @@ import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers"
 
 import { Footer } from "@/components/layout/footer"
 import { Header } from "@/components/layout/header"
-import { ThemeProvider } from "@/components/providers/themeProvider"
 
 // Component resolver function
 const resolveComponent = (name) => {
@@ -16,6 +15,9 @@ const resolveComponent = (name) => {
 // CLIENT-SIDE ENTRY POINT
 const createClientApp = async () => {
     const { createRoot } = await import("react-dom/client")
+    const { ThemeProvider } = await import(
+        "@/components/providers/themeProvider"
+    )
 
     createInertiaApp({
         resolve: resolveComponent,
@@ -39,23 +41,21 @@ const createSSRApp = async () => {
             "@inertiajs/react/server"
         )
 
-        createServer(
-            (page) =>
-                createInertiaApp({
-                    page,
-                    render: renderToString,
-                    resolve: resolveComponent,
-                    setup({ App, props }) {
-                        return (
-                            <ThemeProvider>
-                                <Header />
-                                <App {...props} />
-                                <Footer />
-                            </ThemeProvider>
-                        )
-                    },
-                }),
-            { cluster: true },
+        createServer((page) =>
+            createInertiaApp({
+                page,
+                render: renderToString,
+                resolve: resolveComponent,
+                setup({ App, props }) {
+                    return (
+                        <>
+                            <Header />
+                            <App {...props} />
+                            <Footer />
+                        </>
+                    )
+                },
+            }),
         )
     }
 }
