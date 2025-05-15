@@ -1,0 +1,21 @@
+{
+    "name": "maziko",
+    "version": "0.1.0",
+    "license": "MIT",
+    "packageManager": "pnpm@10.10.0",
+    "scripts": {
+        "clean": "nx run-many -t clean && rm -rfv node_modules .pnpm-store .nx",
+        "tidy": "nx run-many -t tidy",
+        "reset": "pnpm clean && pnpm i"
+    },
+    "devDependencies": {
+        "@nx-go/nx-go": "^3.3.1",
+        "@nx/vite": "20.8.1",
+        "@nx/web": "20.8.1",
+        "@vitest/ui": "^3.0.0",
+        "jiti": "2.4.2",
+        "nx": "20.8.1",
+        "vite": "^6.0.0",
+        "vitest": "^3.0.0"
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "singleQuote": false,
+    "semi": false,
+    "tabWidth": 4,
+    "useTabs": false,
+    "arrowParens": "always",
+    "endOfLine": "lf",
+    "jsxSingleQuote": false,
+    "printWidth": 80,
+    "singleAttributePerLine": true,
+    "trailingComma": "all",
+    "tailwindFunctions": ["clsx"],
+    "plugins": [
+        "@trivago/prettier-plugin-sort-imports",
+        "prettier-plugin-tailwindcss"
+    ],
+    "importOrder": [
+        "^react$|react-dom|react-helmet",
+        "<THIRD_PARTY_MODULES>",
+        "^(cplibrary|cpicons|cputil|cpclient|@cpclient|cpshots).*$",
+        "@/components/routes/(?!.*types$).*$",
+        "@/components/ui/(?!.*types$).*$",
+        "@/(?!.*types$).*$",
+        "@/.*?/types$",
+        "^(constants|data|hooks|util|utils)/.*$",
+        "^(\\.|\\.\\.)/(.(?!.(css|scss)))*$",
+        "\\.(css|scss)$"
+    ],
+    "importOrderSeparation": true,
+    "importOrderSortSpecifiers": true,
+    "importOrderCaseInsensitive": true
+}

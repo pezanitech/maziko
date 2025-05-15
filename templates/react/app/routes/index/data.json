@@ -1,0 +1,35 @@
+{
+    "description": "A modern full-stack web framework designed for performance, developer experience, and scalability",
+    "features": [
+        {
+            "title": "Full-Stack Integration",
+            "description": "Seamlessly connect backend and frontend with your choice of modern UI technology",
+            "icon": "rocket"
+        },
+        {
+            "title": "SPA Experience",
+            "description": "Enjoy SPA-like navigation without API boilerplate using Inertia.js",
+            "icon": "sparkles"
+        },
+        {
+            "title": "File-Based Routing",
+            "description": "Automatic route generation based on directory structure",
+            "icon": "folder"
+        },
+        {
+            "title": "Server-Side Rendering",
+            "description": "Built-in SSR support for improved SEO and initial load performance",
+            "icon": "server"
+        },
+        {
+            "title": "Hot Module Replacement",
+            "description": "Fast development feedback with HMR for both Go and frontend code",
+            "icon": "bolt"
+        },
+        {
+            "title": "Modern Tooling",
+            "description": "Includes CLI tools, Tailwind CSS, Vite, and Nx monorepo support",
+            "icon": "wrench"
+        }
+    ]
+}

@@ -1,0 +1,65 @@
+{
+    "$schema": "./node_modules/nx/schemas/nx-schema.json",
+    "plugins": ["@nx-go/nx-go"],
+    "namedInputs": {
+        "sharedGlobals": ["{workspaceRoot}/go.work"]
+    },
+    "targetDefaults": {
+        "genroutes": {
+            "cache": true,
+            "dependsOn": ["^genroutes"],
+            "outputs": ["{projectRoot}/gen"]
+        },
+        "dev": {
+            "cache": false,
+            "dependsOn": ["^dev"],
+            "options": {
+                "cwd": "{workspaceRoot}"
+            }
+        },
+        "dev:live": {
+            "cache": false,
+            "dependsOn": ["^dev:live"]
+        },
+        "build": {
+            "cache": true,
+            "dependsOn": ["^build"],
+            "outputs": [
+                "{projectRoot}/gen",
+                "{projectRoot}/build",
+                "{projectRoot}/ssrBuild"
+            ]
+        },
+        "build:vite": {
+            "cache": true,
+            "dependsOn": ["^build:vite"],
+            "outputs": ["{projectRoot}/build", "{projectRoot}/ssrBuild"]
+        },
+        "build:go": {
+            "cache": true,
+            "dependsOn": ["^build:go"],
+            "outputs": ["{projectRoot}/build"]
+        },
+        "build:go:tmp": {
+            "cache": true,
+            "dependsOn": ["^build:go:tmp"],
+            "outputs": ["{projectRoot}/tmp"]
+        },
+        "start": {
+            "cache": false,
+            "dependsOn": ["^start"]
+        },
+        "start:ssr": {
+            "cache": false,
+            "dependsOn": ["^start:ssr"]
+        },
+        "clean": {
+            "cache": false,
+            "dependsOn": ["^clean"]
+        },
+        "reset": {
+            "cache": false,
+            "dependsOn": ["^reset"]
+        }
+    }
+}

@@ -1,0 +1,6 @@
+packages:
+    - libs/**
+    - templates/**
+onlyBuiltDependencies:
+    - esbuild
+    - nx

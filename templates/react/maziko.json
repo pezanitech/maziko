@@ -1,0 +1,38 @@
+{
+    "app": {
+        "name": "react",
+        "url": "http://localhost:3080",
+        "port": 3080
+    },
+    "build": {
+        "prefix": "/build/",
+        "dir": "./build",
+        "tempDir": "./tmp",
+        "ssrDir": "./ssrBuild"
+    },
+    "vite": {
+        "manifestFile": "./build/.vite/manifest.json",
+        "hotFile": "tmp/hot",
+        "detectionAttempts": 5,
+        "detectionInterval": 2000
+    },
+    "paths": {
+        "routes": "./app/routes",
+        "public": "./app/public",
+        "gen": "./gen"
+    },
+    "package": {
+        "prefix": "github.com/pezanitech/maziko/apps/react/"
+    },
+    "logger": {
+        "type": "concise",
+        "level": "debug"
+    },
+    "dev": {
+        "rootDir": ".",
+        "excludeRegexes": ["_test.go"],
+        "excludeDirs": ["assets", "vendor", "testdata", "node_modules", "bin"],
+        "includeExts": [".go", ".tpl", ".tmpl", ".html", ".env", "maziko.json"],
+        "buildDelay": 1000
+    }
+}
