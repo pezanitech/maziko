@@ -2,8 +2,10 @@ module github.com/pezanitech/maziko/apps/react
 
 go 1.24.2
 
+toolchain go1.24.3
+
 require (
-	github.com/pezanitech/maziko/libs/core v0.0.0-20250514173358-d17abcb49745
+	github.com/pezanitech/maziko/libs/core v0.1.2
 	github.com/romsar/gonertia v1.3.5
 )
 
