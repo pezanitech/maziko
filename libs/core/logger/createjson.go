@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-// Creates a JSON formatted logger
+// createJSONLogger creates a JSON formatted logger
 func createJSONLogger(logLevel slog.Level) (*slog.Logger, string) {
 	handler := slog.NewJSONHandler(
 		os.Stdout,

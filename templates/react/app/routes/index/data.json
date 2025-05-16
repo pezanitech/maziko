@@ -28,8 +28,7 @@
         },
         {
             "title": "Modern Tooling",
-            "description": "Includes CLI tools, Tailwind CSS, Vite, and Nx monorepo support",
-            "icon": "wrench"
+            "description": "Includes a maziko CLI tool for managing projects, and Vite for bundling"
         }
     ]
 }

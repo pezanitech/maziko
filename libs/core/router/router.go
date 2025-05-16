@@ -8,9 +8,6 @@ import (
 	"github.com/pezanitech/maziko/libs/core/logger"
 )
 
-// InertiaHTTPHandler is now using our abstracted type
-type InertiaHTTPHandler = InertiaHandler
-
 type AppRouter struct {
 	Router   *chi.Mux
 	renderer Inertia
@@ -22,7 +19,7 @@ var appRouter AppRouter
 // Stores route component names for handlers
 var routeComponents map[string]string
 
-// Initializes and returns a global AppRouter instance
+// InitRouter initializes and returns a global AppRouter instance
 func InitRouter(i Inertia) AppRouter {
 	appRouter = AppRouter{
 		Router:   chi.NewRouter(),
@@ -47,7 +44,7 @@ func InitRouter(i Inertia) AppRouter {
 	return appRouter
 }
 
-// Serves files from a directory
+// fileServer serves files from a directory
 func fileServer(r chi.Router, path string, root http.FileSystem) {
 	if path != "/" && path[len(path)-1] != '/' {
 		path += "/"

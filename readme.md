@@ -19,9 +19,9 @@ Maziko is a full-stack web framework combining the power of Go for the backend w
 
 ### Prerequisites
 
--   Go 1.24.2 or higher
--   Node.js 18 or higher
--   pnpm 10.10.0 or higher
+-   Go 1.24.2
+-   Node.js >= 18
+-   pnpm >= 10 
 
 ### CLI Installation
 

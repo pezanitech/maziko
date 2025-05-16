@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-// Creates a text formatted logger
+// createTextLogger creates a text formatted logger
 func createTextLogger(logLevel slog.Level) (*slog.Logger, string) {
 	handler := slog.NewTextHandler(
 		os.Stdout,

@@ -8,14 +8,14 @@ import (
 
 type Inertia = *inertia.Inertia
 type Props = inertia.Props
-type InertiaHandler func(Inertia, http.ResponseWriter, *http.Request)
+type InertiaHandlerFunc func(Inertia, http.ResponseWriter, *http.Request)
 
-// Renders an Inertia page with the component and props
+// RenderInertiaPage renders an Inertia page with the component and props
 func RenderInertiaPage(i Inertia, w http.ResponseWriter, r *http.Request, component string, props Props) error {
 	return i.Render(w, r, component, props)
 }
 
-// Creates a new Inertia instance with the given options
+// NewInertia creates a new Inertia instance with the given options
 func NewInertia(templateString string, options ...inertia.Option) (Inertia, error) {
 	return inertia.New(templateString, options...)
 }

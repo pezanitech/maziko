@@ -5,6 +5,34 @@
     "sourceRoot": "templates/react",
     "tags": [],
     "targets": {
+        "dev": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "{projectRoot}",
+                "command": "maziko dev"
+            }
+        },
+        "build": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "{projectRoot}",
+                "command": "maziko build"
+            }
+        },
+        "start": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "{projectRoot}",
+                "command": "maziko start"
+            }
+        },
+        "clean": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "{projectRoot}",
+                "command": "maziko clean"
+            }
+        },
         "test": {
             "executor": "@nx-go/nx-go:test"
         },

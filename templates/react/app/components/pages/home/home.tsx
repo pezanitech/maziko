@@ -63,14 +63,6 @@ export const HomePage = (props: HomePageProps) => {
                         >
                             Get Started
                         </a>
-                        <a
-                            href="https://github.com/pezanitech/maziko"
-                            className={styles.secondaryButton}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            GitHub
-                        </a>
                     </div>
                 </div>
             </section>

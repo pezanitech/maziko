@@ -12,7 +12,7 @@ import (
 var Log *slog.Logger
 var loggerOnce sync.Once
 
-// Initialize the logger if it hasn't been
+// InitLogger initializes the logger if it hasn't been
 func InitLogger() *slog.Logger {
 	loggerOnce.Do(func() {
 		loadEnvVariables() // load .env
@@ -24,7 +24,7 @@ func InitLogger() *slog.Logger {
 	return Log
 }
 
-// Initializes a logger with logger type and level
+// InitLoggerWithOptions initializes a logger with logger type and level
 func InitLoggerWithOptions(loggerType string, logLevelStr string) *slog.Logger {
 	loadEnvVariables() // load .env
 
@@ -46,7 +46,7 @@ func InitLoggerWithOptions(loggerType string, logLevelStr string) *slog.Logger {
 	return createLogger(loggerType, logLevel)
 }
 
-// Loads variables from .env file if available
+// loadEnvVariables loads variables from .env file if available
 func loadEnvVariables() {
 	if err := godotenv.Load(); err != nil {
 		slog.Info(

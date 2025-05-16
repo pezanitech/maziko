@@ -8,6 +8,7 @@ import (
 	"github.com/pezanitech/maziko/apps/react/gen"
 	"github.com/pezanitech/maziko/libs/core/config"
 	"github.com/pezanitech/maziko/libs/core/logger"
+	"github.com/pezanitech/maziko/libs/core/reload"
 	"github.com/pezanitech/maziko/libs/core/router"
 
 	"github.com/pezanitech/maziko/libs/core/cmd"
@@ -27,7 +28,7 @@ func main() {
 
 	switch {
 	case len(os.Args) > 1 && os.Args[1] == "dev":
-		cmd.RunDev()
+		reload.Run()
 
 	case len(os.Args) > 1 && os.Args[1] == "genroutes":
 		cmd.GenerateRoutes()

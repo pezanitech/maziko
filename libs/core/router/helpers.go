@@ -9,7 +9,7 @@ import (
 	"github.com/pezanitech/maziko/libs/core/logger"
 )
 
-// Renders a page with the provided props,
+// RenderPage renders a page with the provided props,
 // can optionally be specified with component parameter
 func RenderPage(i Inertia, w http.ResponseWriter, r *http.Request, props Props, component ...string) {
 	componentName := ""
@@ -51,7 +51,7 @@ func RenderPage(i Inertia, w http.ResponseWriter, r *http.Request, props Props, 
 	}
 }
 
-// Extracts the package name from the caller's stack
+// extractPackageName extracts the package name from the caller's stack
 // skipFrames defines how many stack frames to skip (2 means caller of the caller)
 // returns the package name and whether the extraction was successful
 func extractPackageName(skipFrames int) (string, bool) {
@@ -83,7 +83,7 @@ func extractPackageName(skipFrames int) (string, bool) {
 	return "", false
 }
 
-// Finds the caller's package name by searching up the stack
+// findCallerPackage finds the caller's package name by searching up the stack
 // Returns the package name and a boolean indicating success
 func findCallerPackage() (string, bool) {
 	// try different stack depths to find the right caller
@@ -116,7 +116,7 @@ func findCallerPackage() (string, bool) {
 	return "", false
 }
 
-// Determines the component name from the caller's package
+// determineComponentName determines the component name from the caller's package
 func determineComponentName() string {
 	pkgName, ok := findCallerPackage()
 	if !ok {
@@ -134,7 +134,7 @@ func determineComponentName() string {
 	return pkgName
 }
 
-// Determines the routes path from the caller's package
+// determineRoutePath determines the routes path from the caller's package
 func determineRoutePath() string {
 	pkgName, ok := findCallerPackage()
 	if !ok {

@@ -12,7 +12,7 @@ import (
 	"github.com/pezanitech/maziko/libs/core/router"
 )
 
-// Generates route definitions for the application
+// GenerateRoutes generates route definitions for the application.
 // The core mechanism behind Maziko's routing system
 func GenerateRoutes() {
 	logger.Log.Info("Generating routes definitions...")
@@ -35,7 +35,7 @@ func GenerateRoutes() {
 	)
 }
 
-// Ensures the generation directory exists
+// prepareGenerationDirectory ensures the generation directory exists
 func prepareGenerationDirectory() string {
 	genDir := config.GetGenDir()
 	if err := os.MkdirAll(genDir, 0755); err != nil {
@@ -46,7 +46,7 @@ func prepareGenerationDirectory() string {
 	return genDir
 }
 
-// Collects all route packages that need to be imported
+// collectRouteImports collects all route packages that need to be imported
 func collectRouteImports() []string {
 	imports, err := router.FindRouteImports()
 	if err != nil {
@@ -57,7 +57,7 @@ func collectRouteImports() []string {
 	return imports
 }
 
-// Collects all route handlers defined in the application
+// collectRouteHandlers collects all route handlers defined in the application
 func collectRouteHandlers() []router.RouteHandler {
 	routeHandlers, err := router.FindRouteHandlers()
 	if err != nil {
@@ -68,7 +68,7 @@ func collectRouteHandlers() []router.RouteHandler {
 	return routeHandlers
 }
 
-// Generates a routesgen file using a template
+// generateRoutesFromTemplate generates a routesgen file using a template
 func generateRoutesFromTemplate(outputFile string, imports []string, routeHandlers []router.RouteHandler) {
 	// prepare template data
 	templateData := router.RouteTemplateData{

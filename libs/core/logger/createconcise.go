@@ -14,7 +14,7 @@ type conciseHandler struct {
 	writer io.Writer
 }
 
-// Creates a concise formatted logger
+// createConciseLogger creates a concise formatted logger
 func createConciseLogger(logLevel slog.Level) (*slog.Logger, string) {
 	handler := &conciseHandler{
 		level:  logLevel,
@@ -23,11 +23,12 @@ func createConciseLogger(logLevel slog.Level) (*slog.Logger, string) {
 	return slog.New(handler), "concise"
 }
 
-// Implements slog.Handler interface
+// Enabled implements slog.Handler interface
 func (h *conciseHandler) Enabled(ctx context.Context, level slog.Level) bool {
 	return level >= h.level
 }
 
+// Handle implements slog.Handler interface for formatting log records
 func (h *conciseHandler) Handle(ctx context.Context, r slog.Record) error {
 	// format time to be human readable
 	timeStr := r.Time.Format("2006-01-02 15:04:05.000")
@@ -62,10 +63,12 @@ func (h *conciseHandler) Handle(ctx context.Context, r slog.Record) error {
 	return nil
 }
 
+// WithAttrs implements slog.Handler interface
 func (h *conciseHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
 	return h // not yet storing attrs
 }
 
+// WithGroup implements slog.Handler interface
 func (h *conciseHandler) WithGroup(name string) slog.Handler {
 	return h // not yet supporting groups
 }

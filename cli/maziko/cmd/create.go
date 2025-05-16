@@ -191,12 +191,23 @@ func runCreate(cmd *cobra.Command, args []string) {
 	}
 
 	// Success message
-	logger.Info("✅ Project created successfully!", "path", outputDir)
-	logger.Info("Next steps:")
-	logger.Info("Make sure you have go & pnpm installed")
-	logger.Info("cd " + projectName)
-	logger.Info("maziko install")
-	logger.Info("maziko dev")
+	message := "Project created successfully at: " + outputDir +
+		"\n\n--------------------" +
+		"\nNEXT STEPS:" +
+		"\n1. Make sure you have the required dependencies:" +
+		"\n   - Go (https://go.dev/doc/install)" +
+		"\n   - Node.js (https://nodejs.org/en/download/)" +
+		"\n   - PNPM (https://pnpm.io/installation)" +
+		"\n2. Navigate to your project:" +
+		"\n   cd " + projectName +
+		"\n3. Install dependencies:" +
+		"\n   maziko install" +
+		"\n4. Start the development server:" +
+		"\n   maziko dev" +
+		"\n--------------------" +
+		"\nDocumentation: https://maziko.pezani.com/docs"
+
+	fmt.Print(message)
 }
 
 // Helper function to check if directory is empty
