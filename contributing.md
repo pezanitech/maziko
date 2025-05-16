@@ -46,7 +46,6 @@ Example template:
 ## Bug Report
 
 ### Environment
-- Maziko version: v0.1.0
 - Go version: 1.24.2
 - Node.js version: 18.12.0
 - OS: Ubuntu 22.04

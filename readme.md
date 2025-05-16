@@ -28,7 +28,7 @@ Maziko is a full-stack web framework combining the power of Go for the backend w
 Install the Maziko CLI globally:
 
 ```bash
-go install github.com/pezanitech/maziko/cli/maziko@v0.1.0
+go install github.com/pezanitech/maziko/cli/maziko@latest
 ```
 
 ### Creating a New Project
