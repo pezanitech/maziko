@@ -91,6 +91,9 @@ func initDevRenderer() router.Inertia {
 	// enable hot module reloading
 	i.ShareTemplateData("hmr", true)
 
+	// share default metadata with the template
+	i.ShareTemplateData("meta", router.DefaultMetaData)
+
 	return i
 }
 
@@ -124,9 +127,32 @@ func createDevViteFunction() func(string) (string, error) {
 
 // Creates an Inertia instance configured for production
 func initProdRenderer() router.Inertia {
+	manifestPath := config.GetViteManifestFile()
+	var serverVersion string
+	versionBytes, err := os.ReadFile(manifestPath)
+
+	if err != nil {
+		logger.Log.Error(
+			"Failed to read Vite manifest file for versioning. Inertia asset versioning will be disabled. This can lead to issues with stale browser tabs after deployments.",
+			"path", manifestPath,
+			"error", err,
+		)
+		// serverVersion will remain "", which effectively disables version checks in gonertia if i.version == ""
+	} else {
+		serverVersion = strings.TrimSpace(string(versionBytes))
+		if serverVersion == "" {
+			logger.Log.Warn(
+				"Vite manifest file is empty or only whitespace. Inertia asset versioning may be ineffective.",
+				"path", manifestPath,
+			)
+		} else {
+			logger.Log.Info("Successfully loaded version from manifest file.", "path", manifestPath)
+		}
+	}
+
 	i, err := router.NewInertia(
 		router.RootHTMLTemplate,
-		router.InertiaOptions.WithVersionFromFile(config.GetViteManifestFile()),
+		router.InertiaOptions.WithVersion(serverVersion), // Use the explicitly loaded version
 		router.InertiaOptions.WithSSR(),
 	)
 
@@ -144,6 +170,9 @@ func initProdRenderer() router.Inertia {
 			config.GetBuildPrefix(),
 		),
 	)
+
+	// share default metadata with the template
+	i.ShareTemplateData("meta", router.DefaultMetaData)
 
 	return i
 }

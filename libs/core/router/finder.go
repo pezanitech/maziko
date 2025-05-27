@@ -112,6 +112,17 @@ func newHandlerFromPath(path string) (RouteHandler, error) {
 	// get name end of the path
 	packageName := filepath.Base(path)
 
+	// For dynamic routes (directories starting with underscore),
+	// create a unique package identifier based on the full path
+	if strings.HasPrefix(packageName, "_") {
+		// Get the parent directory name to create unique package identifier
+		parentDir := filepath.Base(filepath.Dir(path))
+		if parentDir != "routes" {
+			// Add the parent directory name to make the package name unique
+			packageName = parentDir + "." + packageName
+		}
+	}
+
 	return RouteHandler{
 		Path:     routePath,
 		Package:  packageName,

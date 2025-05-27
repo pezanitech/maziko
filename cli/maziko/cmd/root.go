@@ -7,7 +7,7 @@ import (
 )
 
 // Version of the CLI
-const Version = "0.1.4"
+const Version = "0.1.6"
 
 // Represents the base command when called without subcommands
 var RootCmd = &cobra.Command{

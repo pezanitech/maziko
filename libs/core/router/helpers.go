@@ -2,7 +2,6 @@ package router
 
 import (
 	"net/http"
-	"runtime"
 	"strings"
 
 	"github.com/pezanitech/maziko/libs/core/errors"
@@ -31,6 +30,15 @@ func RenderPage(i Inertia, w http.ResponseWriter, r *http.Request, props Props, 
 				"path", path,
 				"component", componentName,
 			)
+			// check if there is dynamic segment path matching the URL path
+		} else if dynamicComponent, found := findDynamicRouteComponent(path); found {
+			componentName = dynamicComponent
+
+			logger.Log.Debug(
+				"Using component from dynamic route match",
+				"path", path,
+				"component", componentName,
+			)
 		} else {
 			msg := "Component not found in routeComponents map"
 
@@ -51,108 +59,112 @@ func RenderPage(i Inertia, w http.ResponseWriter, r *http.Request, props Props, 
 	}
 }
 
-// extractPackageName extracts the package name from the caller's stack
-// skipFrames defines how many stack frames to skip (2 means caller of the caller)
-// returns the package name and whether the extraction was successful
-func extractPackageName(skipFrames int) (string, bool) {
-	pc, _, _, ok := runtime.Caller(skipFrames)
-	if !ok {
+// RenderPageWithMeta renders a page with the provided props and metadata,
+// can optionally be specified with component parameter
+func RenderPageWithMeta(i Inertia, w http.ResponseWriter, r *http.Request, props Props, meta MetaData, component ...string) {
+	componentName := ""
+
+	if len(component) > 0 && component[0] != "" {
+		componentName = component[0] // use provided component name
+	} else {
+		path := r.URL.Path
+		if path == "" {
+			path = "/"
+		}
+
+		// get name from routeComponents map using URL path
+		if storedComponent, exists := routeComponents[path]; exists {
+			componentName = storedComponent
+
+			logger.Log.Debug(
+				"Using component from route map",
+				"path", path,
+				"component", componentName,
+			)
+			// check if there is dynamic segment path matching the URL path
+		} else if dynamicComponent, found := findDynamicRouteComponent(path); found {
+			componentName = dynamicComponent
+
+			logger.Log.Debug(
+				"Using component from dynamic route match",
+				"path", path,
+				"component", componentName,
+			)
+		} else {
+			msg := "Component not found in routeComponents map"
+
+			logger.Log.Error(msg, "path", path)
+			panic(msg)
+		}
+	}
+
+	logger.Log.Info(
+		"Rendering page with metadata",
+		"component", componentName,
+		"title", meta.Title,
+	)
+
+	// render the page with metadata
+	err := RenderInertiaPageWithMeta(i, w, r, componentName, props, meta)
+	if err != nil {
+		errors.HandleServerErr(w, err)
+	}
+}
+
+// findDynamicRouteComponent looks for a matching dynamic route in routeComponents
+// It checks if any route with URL parameters matches the given path
+func findDynamicRouteComponent(path string) (string, bool) {
+	// If path is empty, return not found
+	if path == "" {
 		return "", false
 	}
 
-	callerFunction := runtime.FuncForPC(pc).Name()
+	// Split the current path into segments
+	pathSegments := strings.Split(strings.Trim(path, "/"), "/")
 
-	logger.Log.Debug(
-		"Extracting package from caller",
-		"function", callerFunction,
-		"skipFrames", skipFrames,
-	)
-
-	// extract the package path
-	parts := strings.Split(callerFunction, "/")
-
-	if len(parts) >= 2 {
-		lastPart := parts[len(parts)-1]
-		pkgFunc := strings.Split(lastPart, ".")
-
-		if len(pkgFunc) >= 1 {
-			return pkgFunc[0], true
-		}
-	}
-
-	return "", false
-}
-
-// findCallerPackage finds the caller's package name by searching up the stack
-// Returns the package name and a boolean indicating success
-func findCallerPackage() (string, bool) {
-	// try different stack depths to find the right caller
-	// starting with 3 (skip findCallerPackage and it's parent)
-	for skipFrames := 3; skipFrames <= 5; skipFrames++ {
-		pkgName, ok := extractPackageName(skipFrames)
-		if !ok {
+	// Iterate through all registered routes
+	for routePath, component := range routeComponents {
+		// Skip if this isn't a dynamic route (doesn't contain '{')
+		if !strings.Contains(routePath, "{") {
 			continue
 		}
 
-		// Skip router and gen package
-		if pkgName == "router" || pkgName == "gen" {
+		// Split the route path into segments
+		routeSegments := strings.Split(strings.Trim(routePath, "/"), "/")
+
+		// Skip if segment count doesn't match
+		if len(routeSegments) != len(pathSegments) {
 			continue
 		}
 
-		logger.Log.Debug(
-			"Caller package found",
-			"package", pkgName,
-			"skipFrames", skipFrames,
-		)
+		// Check if this route matches the path
+		matches := true
+		for i, routeSegment := range routeSegments {
+			// If this segment is a parameter (wrapped in {}), it matches any value
+			if strings.HasPrefix(routeSegment, "{") && strings.HasSuffix(routeSegment, "}") {
+				// Parameter segments always match
+				continue
+			}
 
-		return pkgName, true
+			// For regular segments, they must match exactly
+			if routeSegment != pathSegments[i] {
+				matches = false
+				break
+			}
+		}
+
+		// If all segments matched, return the component
+		if matches {
+			logger.Log.Debug(
+				"Found matching dynamic route",
+				"path", path,
+				"route", routePath,
+				"component", component,
+			)
+			return component, true
+		}
 	}
 
-	logger.Log.Warn(
-		"Could not determine caller package",
-		"frames_checked", "3-5",
-	)
-
+	// No matching dynamic route found
 	return "", false
-}
-
-// determineComponentName determines the component name from the caller's package
-func determineComponentName() string {
-	pkgName, ok := findCallerPackage()
-	if !ok {
-		logger.Log.Warn(
-			"Could not determine component name, using 'index'",
-		)
-		return "index"
-	}
-
-	logger.Log.Debug(
-		"Component determined from package",
-		"package", pkgName,
-	)
-
-	return pkgName
-}
-
-// determineRoutePath determines the routes path from the caller's package
-func determineRoutePath() string {
-	pkgName, ok := findCallerPackage()
-	if !ok {
-		logger.Log.Warn(
-			"Could not determine route path, using root path",
-		)
-		return "/"
-	}
-
-	logger.Log.Debug(
-		"Route path determined from package",
-		"package", pkgName,
-	)
-
-	// handle index package as root path
-	if pkgName == "index" {
-		return "/"
-	}
-
-	return "/" + pkgName
 }

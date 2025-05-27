@@ -5,7 +5,7 @@ go 1.24.2
 toolchain go1.24.3
 
 require (
-	github.com/pezanitech/maziko/libs/core v0.1.4
+	github.com/pezanitech/maziko/libs/core v0.1.5
 	github.com/romsar/gonertia v1.3.5
 )
 

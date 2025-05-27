@@ -12,7 +12,7 @@ if ! command -v go >/dev/null 2>&1; then
   exit 1
 fi
 
-go install github.com/pezanitech/maziko/cli/maziko@v0.1.4
+go install github.com/pezanitech/maziko/cli/maziko@v0.1.6
 
 # Determine GOBIN
 if [ -z "$GOBIN" ]; then

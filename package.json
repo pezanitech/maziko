@@ -1,6 +1,6 @@
 {
     "name": "maziko",
-    "version": "0.1.4",
+    "version": "0.1.6",
     "license": "MIT",
     "packageManager": "pnpm@10.10.0",
     "scripts": {

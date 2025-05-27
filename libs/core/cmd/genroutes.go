@@ -77,8 +77,8 @@ func generateRoutesFromTemplate(outputFile string, imports []string, routeHandle
 		RouteHandlers: routeHandlers,
 	}
 
-	// parse routes template
-	tmpl, err := template.New("routes").Parse(router.RoutesTemplate)
+	// parse routes template with custom functions
+	tmpl, err := template.New("routes").Funcs(router.GetTemplateFuncs()).Parse(router.RoutesTemplate)
 	if err != nil {
 		errors.HandleFatalError(
 			"Error parsing template", err,
